@@ -1,9 +1,5 @@
-/*
-CryptoJS v3.0.2
-code.google.com/p/crypto-js
-(c) 2009-2012 by Jeff Mott. All rights reserved.
-code.google.com/p/crypto-js/wiki/License
-*/
+
+//hmac-sha512
 var CryptoJS=CryptoJS||function(a,g){var c={},b=c.lib={},k=b.Base=function(){function a(){}return{extend:function(h){a.prototype=this;var e=new a;h&&e.mixIn(h);e.$super=this;return e},create:function(){var a=this.extend();a.init.apply(a,arguments);return a},init:function(){},mixIn:function(a){for(var m in a)a.hasOwnProperty(m)&&(this[m]=a[m]);a.hasOwnProperty("toString")&&(this.toString=a.toString)},clone:function(){return this.$super.extend(this)}}}(),n=b.WordArray=k.extend({init:function(a,h){a=
 this.words=a||[];this.sigBytes=h!=g?h:4*a.length},toString:function(a){return(a||r).stringify(this)},concat:function(a){var h=this.words,e=a.words,d=this.sigBytes,a=a.sigBytes;this.clamp();if(d%4)for(var b=0;b<a;b++)h[d+b>>>2]|=(e[b>>>2]>>>24-8*(b%4)&255)<<24-8*((d+b)%4);else if(65535<e.length)for(b=0;b<a;b+=4)h[d+b>>>2]=e[b>>>2];else h.push.apply(h,e);this.sigBytes+=a;return this},clamp:function(){var m=this.words,h=this.sigBytes;m[h>>>2]&=4294967295<<32-8*(h%4);m.length=a.ceil(h/4)},clone:function(){var a=
 k.clone.call(this);a.words=this.words.slice(0);return a},random:function(m){for(var h=[],b=0;b<m;b+=4)h.push(4294967296*a.random()|0);return n.create(h,m)}}),x=c.enc={},r=x.Hex={stringify:function(a){for(var b=a.words,a=a.sigBytes,e=[],d=0;d<a;d++){var l=b[d>>>2]>>>24-8*(d%4)&255;e.push((l>>>4).toString(16));e.push((l&15).toString(16))}return e.join("")},parse:function(a){for(var b=a.length,e=[],d=0;d<b;d+=2)e[d>>>3]|=parseInt(a.substr(d,2),16)<<24-4*(d%8);return n.create(e,b/2)}},j=x.Latin1={stringify:function(a){for(var b=
@@ -82,129 +78,10 @@ this._hasher,a=b.finalize(a);b.reset();return b.finalize(this._oKey.clone().conc
 
             return base64Chars.join('');
         },
-
-        /**
-         * Converts a Base64 string to a word array.
-         *
-         * @param {string} base64Str The Base64 string.
-         *
-         * @return {WordArray} The word array.
-         *
-         * @static
-         *
-         * @example
-         *
-         *     var wordArray = CryptoJS.enc.Base64.parse(base64String);
-         */
-        parse: function (base64Str) {
-            // Ignore whitespaces
-            base64Str = base64Str.replace(/\s/g, '');
-
-            // Shortcuts
-            var base64StrLength = base64Str.length;
-            var map = this._map;
-
-            // Ignore padding
-            var paddingChar = map.charAt(64);
-            if (paddingChar) {
-                var paddingIndex = base64Str.indexOf(paddingChar);
-                if (paddingIndex != -1) {
-                    base64StrLength = paddingIndex;
-                }
-            }
-
-            // Convert
-            var words = [];
-            var nBytes = 0;
-            for (var i = 0; i < base64StrLength; i++) {
-                if (i % 4) {
-                    var bitsHigh = map.indexOf(base64Str.charAt(i - 1)) << ((i % 4) * 2);
-                    var bitsLow  = map.indexOf(base64Str.charAt(i)) >>> (6 - (i % 4) * 2);
-                    words[nBytes >>> 2] |= (bitsHigh | bitsLow) << (24 - (nBytes % 4) * 8);
-                    nBytes++;
-                }
-            }
-
-            return WordArray.create(words, nBytes);
-        },
-
+        // Modified for no symbols, at the cost of some entropy!
         _map: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ABC'
     };
 }());
-
-// enc-utf16
-(function () {
-    // Shortcuts
-    var C = CryptoJS;
-    var C_lib = C.lib;
-    var WordArray = C_lib.WordArray;
-    var C_enc = C.enc;
-
-    /**
-     * UTF-16 BE encoding strategy.
-     */
-    var Utf16 = C_enc.Utf16 = {
-        /**
-         * Converts a word array to a UTF-16 string.
-         *
-         * @param {WordArray} wordArray The word array.
-         *
-         * @return {string} The UTF-16 string.
-         *
-         * @static
-         *
-         * @example
-         *
-         *     var utf16String = CryptoJS.enc.Utf16.stringify(wordArray);
-         */
-        stringify: function (wordArray) {
-            // Shortcuts
-            var words = wordArray.words;
-            var sigBytes = wordArray.sigBytes;
-
-            // Convert
-            var utf16Chars = [];
-            for (var i = 0; i < sigBytes; i += 2) {
-                var codePoint = (words[i >>> 2] >>> (16 - (i % 4) * 8)) & 0xffff;
-                utf16Chars.push(String.fromCharCode(codePoint));
-            }
-
-            return utf16Chars.join('');
-        },
-
-        /**
-         * Converts a UTF-16 string to a word array.
-         *
-         * @param {string} utf16Str The UTF-16 string.
-         *
-         * @return {WordArray} The word array.
-         *
-         * @static
-         *
-         * @example
-         *
-         *     var wordArray = CryptoJS.enc.Utf16.parse(utf16String);
-         */
-        parse: function (utf16Str) {
-            // Shortcut
-            var utf16StrLength = utf16Str.length;
-
-            // Convert
-            var words = [];
-            for (var i = 0; i < utf16StrLength; i++) {
-                words[i >>> 1] |= utf16Str.charCodeAt(i) << (16 - (i % 2) * 16);
-            }
-
-            return WordArray.create(words, utf16StrLength * 2);
-        }
-    };
-}());
-
-var pw = process.argv[2];
-var site = process.argv[3];
-var generation = process.argv[4];
-var safety = parseInt (process.argv[5]);
-var nsyms = parseInt(process.argv[6]);
 
 function pwgen (key, site, generation, safety, digits) {
     var d = 1 << safety;
@@ -228,7 +105,7 @@ function pwgen (key, site, generation, safety, digits) {
     }
 }
 
-function add_sym_at_indices (input, indices) {
+function add_syms_at_indices (input, indices) {
     var _map = "`~!@#$%^&*()-_+={}[]|;:,<>.?/";
 
     var last = 0;
@@ -254,10 +131,11 @@ function add_syms (input, n) {
     for (var i = 0; i < n; i++) {
         indices.push(2*i + 1);
     }
-    return add_sym_at_indices(input, indices);
+    return add_syms_at_indices(input, indices);
 }
 
-var arr = pwgen(pw, site, generation, safety, 20);
-var pw = add_syms(arr[0], nsyms);
-
-console.log (pw);
+if (exports) {
+    exports.add_syms = add_syms;
+    exports.add_syms_at_indices = add_syms_at_indices;
+    exports.pwgen = pwgen;
+}
