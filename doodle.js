@@ -228,7 +228,7 @@ function pwgen (key, site, generation, safety, digits) {
     }
 }
 
-function add_sym (input, indices) {
+function add_sym_at_indices (input, indices) {
     var _map = "`~!@#$%^&*()-_+={}[]|;:,<>.?/";
 
     var last = 0;
@@ -246,11 +246,18 @@ function add_sym (input, indices) {
     return arr.join("");
 }
 
-var arr = pwgen(pw, site, generation, safety, 20);
-var indices = []
-for (var i = 0; i < nsyms; i++) {
-    indices.push(2*i + 1);
+function add_syms (input, n) {
+    var indices = []
+    if (n*2 > input.length) {
+        n = input.length / 2;
+    }
+    for (var i = 0; i < n; i++) {
+        indices.push(2*i + 1);
+    }
+    return add_sym_at_indices(input, indices);
 }
-var pw = add_sym(arr[0], indices);
+
+var arr = pwgen(pw, site, generation, safety, 20);
+var pw = add_syms(arr[0], nsyms);
 
 console.log (pw);
