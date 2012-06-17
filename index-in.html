@@ -7,36 +7,18 @@
   {% include lib-min.js %}
   </script>
   <style type="text/css">
-  .name  {
-    margin-left: 36px;
-    width: 100px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    display: block;
-  }
-  .field {
-    white-space: nowrap;
-    display: block;
-    width: 300px;
-    float: right; 
-    margin-right: 36px;
-  }
-  .row {
-    position: relative;
-    width: 600px;
-    height: 18px;
-  }
+  {% include main.css %}
   </style>
  </head>
  <body>
- <div id="key" class="row">
+ <div class="centered">
+  <div class="row">
   <div class="name">Passphrase</div>
   <div class="field">
     <input type="text" id="key">
   <div>
-  </div>
+ </div>
+ </div>
  </div>
  </body>
 </html>
