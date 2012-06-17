@@ -1,25 +1,29 @@
-  .name  {
-    margin-left: 36px;
-    width: 100px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    display: block;
-	float: right;
-  }
-  .field {
+.biglabel {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 14px;
+    width: 96px;
+    height: 34px;
+    line-height: 34px;
+    text-align: right;
+    font-weight: bold;
+    border: 1px solid transparent;
+}
+body {
+    font-family: helvetica, arial, verdana, sans;
+}
+.field {
     white-space: nowrap;
     display: block;
     width: 300px;
     float: right; 
     margin-right: 36px;
-  }
-  .row {
+}
+.full-row {
     margin-bottom: 9px;
-	white-space: nowrap;
-  }
-  .centered {
-     width: 1100px;
-	 margin: 0px auto;
-  }
+    white-space: nowrap;
+}
+.centered {
+    width: 1100px;
+    margin: 0px auto;
+}
