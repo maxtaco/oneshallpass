@@ -8,6 +8,7 @@
     text-align: right;
     font-weight: bold;
     border: 1px solid transparent;
+    float: left;
 }
 body {
     font-family: helvetica, arial, verdana, sans;
@@ -26,4 +27,22 @@ body {
 .centered {
     width: 1100px;
     margin: 0px auto;
+    float: center;
+}
+.input-row {
+    display: inline-block;
+    position: relative;
+    left: -4px;
+}
+.search-form {
+    position: relative;
+    background-color: cornsilk;
+    font-size: 22px;
+}
+.input-field {
+    border-width: 2px;
+    width: 395px;
+    padding: 2px;
+    height: 28px;
+    font-size: 100%;
 }
