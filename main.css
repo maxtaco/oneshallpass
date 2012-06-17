@@ -1,0 +1,25 @@
+  .name  {
+    margin-left: 36px;
+    width: 100px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    display: block;
+	float: right;
+  }
+  .field {
+    white-space: nowrap;
+    display: block;
+    width: 300px;
+    float: right; 
+    margin-right: 36px;
+  }
+  .row {
+    margin-bottom: 9px;
+	white-space: nowrap;
+  }
+  .centered {
+     width: 1100px;
+	 margin: 0px auto;
+  }
