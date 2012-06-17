@@ -2,7 +2,7 @@
     display: inline-block;
     vertical-align: top;
     margin-right: 14px;
-    width: 96px;
+    width: 140px;
     height: 34px;
     line-height: 34px;
     text-align: right;
@@ -13,19 +13,12 @@
 body {
     font-family: helvetica, arial, verdana, sans;
 }
-.field {
-    white-space: nowrap;
-    display: block;
-    width: 300px;
-    float: right; 
-    margin-right: 36px;
-}
 .full-row {
     margin-bottom: 9px;
     white-space: nowrap;
 }
 .centered {
-    width: 1100px;
+    width: 800px;
     margin: 0px auto;
     float: center;
 }
@@ -40,9 +33,50 @@ body {
     font-size: 22px;
 }
 .input-field {
+    color: gray;
     border-width: 2px;
-    width: 395px;
+    width: 300px;
     padding: 2px;
-    height: 28px;
+    height: 36px;
     font-size: 100%;
+    bottom: auto;
+    top: auto;
+}
+.input-black {
+    color: black;
+}
+.frontbox {
+    margin: 20px auto;
+    width: 558px;
+    position: relative;
+    border-radius: 0 0 10px 10px;
+}
+
+#f3 {
+    width: 100px;
+}
+
+#f5 {
+    width: 60px;
+}
+
+.title {
+    margin: 30px;
+}
+
+.title h1 {
+    font-size: 36px;
+    height: 40px;
+    font-weight: bold;
+    margin: 6px;
+    text-align: center;
+}
+
+.title h2 {
+    font-size: 22px;
+    height: 22px;
+    font-weight: bold;
+    margin: 6px;
+    position: relative;
+    text-align: center;
 }

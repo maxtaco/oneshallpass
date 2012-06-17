@@ -134,7 +134,7 @@ function add_syms (input, n) {
     return add_syms_at_indices(input, indices);
 }
 
-if (exports) {
+if (typeof(exports) != "undefined") {
     exports.add_syms = add_syms;
     exports.add_syms_at_indices = add_syms_at_indices;
     exports.pwgen = pwgen;
