@@ -31,6 +31,9 @@ body {
     position: relative;
     background-color: #eef;
     font-size: 22px;
+    padding: 20px;
+    padding-bottom: 12px;
+    margin-bottom: 5px;
 }
 .input-field {
     color: gray;
@@ -61,7 +64,11 @@ body {
 }
 
 #field-nsym {
-    width: 60px;
+    width: 90px;
+}
+
+#field-length {
+    width: 90px;
 }
 
 .title {
@@ -85,27 +92,25 @@ body {
     text-align: center;
 }
 
-.form-wrapper {
-    padding: 20px;
-}
-
-#spacer {
-    height: 5px;
-    background-color: white;
-}
-
-#result {
+#result-wrapper {
     background-color: #efe;
     height: 28px;
+    font-size: 22px;
+    padding-top: 10px;
+    padding-bottom: 15px;
+    padding-right: 20px;
+    padding-left: 20px;
 }
 .result-field {
-    color: black;
+    color: red;
     border-width: 2px;
     width: 300px;
-    padding: 5px;
+    padding: 4px;
+    margin: 0px;
     height: 26px;
     font-size: 100%;
     bottom: auto;
     top: auto;
     border: 1px solid;
+    left: -4px;
 }

@@ -83,12 +83,13 @@ this._hasher,a=b.finalize(a);b.reset();return b.finalize(this._oKey.clone().conc
     };
 }());
 
-function pwgen (key, site, generation, safety, digits) {
-    var d = 1 << safety;
+function pwgen (context, attempt, input) {
+    var d = 1 << input.safety;
     var attempt = 1;
-    while (true) {
+    while (context.attempt == attempt) {
 
-        var arr = [ "PassThePeas v1.0", site, generation, attempt ];
+        var arr = [ "PassThePeas v1.0", input.email, input.site, 
+                    input.generation, attempt ];
         var text = arr.join ("; ")
         var hash = CryptoJS.HmacSHA512(text, key);
         var b16 = hash.toString();
@@ -97,12 +98,13 @@ function pwgen (key, site, generation, safety, digits) {
         var tail = parseInt(b16.slice (b16.length-8, b16.length), 16);
 
         if (tail % d == 0) {
-            var pw = b64.slice(0,digits);
+            var pw = b64.slice(0,input.digits);
             return [ pw, attempt ];
         } else {
             attempt ++;
         }
     }
+    return null;
 }
 
 function add_syms_at_indices (input, indices) {

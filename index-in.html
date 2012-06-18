@@ -22,19 +22,32 @@
     </div>
 
     <form action="#" class="search-form" id="search-main">
-     <div class="form-wrapper">
 
       <div class="full-row">
        <label for="field-passphrase" class="biglabel"> passphrase </label>
        <div class="input-row">
-        <input id="field-passphrase" name="passphrase" type="text" class="input-field" value="c@t$ s3cr4t" onkeydown="acceptInput(event);" />
+        <input id="field-passphrase" name="passphrase" type="text" class="input-field" value="c@t$ s3cr4t" onkeydown="acceptInput(event);" onkeyup="swizzle(event);" />
        </div>
       </div>
 
       <div class="full-row">
        <label for="field-email" class="biglabel"> e-mail </label>
        <div class="input-row">
-        <input id="field-email" name="email" type="text" class="input-field" value="myname@gmail.com" onkeydown="acceptInput(event);" />
+        <input id="field-email" name="email" type="text" class="input-field" value="myname@gmail.com" onkeydown="acceptInput(event);" onkeyup="swizzle(event);" />
+       </div>
+      </div>
+
+      <div class="full-row">
+       <label for="field-domain" class="biglabel"> domain </label>
+       <div class="input-row">
+        <input id="field-domain" name="domain" type="text" class="input-field" value="chase.com" onkeydown="acceptInput(event);" onkeyup="swizzle(event);" />
+       </div>
+      </div>
+
+      <div class="full-row">
+       <label for="field-version" class="biglabel"> version </label>
+       <div class="input-row">
+        <input id="field-version" name="version" type="text" class="input-field" value="1" onkeydown="acceptInput(event);" onkeyup="swizzle(event);" />
        </div>
       </div>
 
@@ -64,20 +77,6 @@
       </div>
 
       <div class="full-row">
-       <label for="field-domain" class="biglabel"> domain </label>
-       <div class="input-row">
-        <input id="field-domain" name="domain" type="text" class="input-field" value="chase.com" onkeydown="acceptInput(event);" />
-       </div>
-      </div>
-
-      <div class="full-row">
-       <label for="field-version" class="biglabel"> version </label>
-       <div class="input-row">
-        <input id="field-version" name="version" type="text" class="input-field" value="1" onkeydown="acceptInput(event);" />
-       </div>
-      </div>
-
-      <div class="full-row">
        <label for="field-nsym" class="biglabel">symbs needed</label>
        <div class="input-row">
         <select id="field-nsym" name="nsym" class="input-field input-black" onChange="swizzle(event);">
@@ -89,19 +88,35 @@
        </div>
       </div>
 
-      <div id="spacer"></div>
-       <div id="result">
-        <div class="full-row">
-         <label for="field-result" class="biglabel">hash</label>
-         <div class="input-row">
-          <div id="result" class="result-field">yo</div>
-         </div>
-        </div>
+      <div class="full-row">
+       <label for="field-length" class="biglabel"> length </label>
+       <div class="input-row">
+        <select id="field-length" name="length" type="text" class="input-field input-black" onChange="swizzle(event);" />
+         <option>12</option>
+         <option>16</option>
+         <option>8</option>
+         <option>9</option>
+         <option>10</option>
+         <option>11</option>
+         <option>13</option>
+         <option>14</option>
+         <option>15</option>
+        </select>
        </div>
       </div>
 
-     </div>
+
     </form>
+
+    <div id="result-wrapper">
+     <div class="full-row">
+      <label for="field-result" class="biglabel">hash</label>
+      <div class="input-row">
+       <div id="result" class="result-field">yo</div>
+      </div>
+     </div>
+    </div>
+
 
    </div>
   </div>
