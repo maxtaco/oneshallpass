@@ -23,21 +23,21 @@
    <div class="full-row">
     <label for="f1" class="biglabel"> passphrase </label>
     <div class="input-row">
-     <input id="f1" name="passphrase" type="text" class="input-field" value="c@t$ s3cr4t" onkeydown="turnBlack(event);" >
+     <input id="f1" name="passphrase" type="text" class="input-field" value="c@t$ s3cr4t" onkeydown="acceptInput(event,'passphrase');" />
     </div>
    </div>
 
    <div class="full-row">
     <label for="f2" class="biglabel"> e-mail </label>
     <div class="input-row">
-     <input id="f2" name="email" type="text" class="input-field" value="myname@gmail.com">
+     <input id="f2" name="email" type="text" class="input-field" value="myname@gmail.com" onkeydown="acceptInput(event,'email');" />
     </div>
    </div>
 
    <div class="full-row">
     <label for="f3" class="biglabel"> safety </label>
     <div class="input-row">
-     <select id="f3" name="secbits" class="input-field">
+     <select id="f3" name="secbits" class="input-field input-black">
       <option>8</option>
       <option>4</option>
       <option>16</option>
@@ -62,7 +62,7 @@
    <div class="full-row">
     <label for="f4" class="biglabel"> domain </label>
     <div class="input-row">
-     <input id="f4" name="domain" type="text" class="input-field" value="foo.com">
+     <input id="f4" name="domain" type="text" class="input-field" value="chase.com" onkeydown="acceptInput(event, 'domain');" />
     </div>
    </div>
 
