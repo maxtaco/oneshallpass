@@ -12,69 +12,98 @@
   </style>
  </head>
  <body>
+
   <div class="centered">
-  <div class="frontbox">
-   <div class="title">
-   <h1>Pass The Peas</h1>
-   <h2>Site-Specific PWs, Free and Easy!</h2>
-   </div>
-   <form action="#" class="search-form" id="search-main">
+   <div class="frontbox">
 
-   <div class="full-row">
-    <label for="f1" class="biglabel"> passphrase </label>
-    <div class="input-row">
-     <input id="f1" name="passphrase" type="text" class="input-field" value="c@t$ s3cr4t" onkeydown="acceptInput(event,'passphrase');" />
+    <div class="title">
+     <h1>Pass The Peas</h1>
+     <h2>Site-Specific PWs, Free and Easy!</h2>
     </div>
-   </div>
 
-   <div class="full-row">
-    <label for="f2" class="biglabel"> e-mail </label>
-    <div class="input-row">
-     <input id="f2" name="email" type="text" class="input-field" value="myname@gmail.com" onkeydown="acceptInput(event,'email');" />
-    </div>
-   </div>
+    <form action="#" class="search-form" id="search-main">
+     <div class="form-wrapper">
 
-   <div class="full-row">
-    <label for="f3" class="biglabel"> safety </label>
-    <div class="input-row">
-     <select id="f3" name="secbits" class="input-field input-black">
-      <option>8</option>
-      <option>4</option>
-      <option>16</option>
-      <option>0</option>
-      <option>1</option>
-      <option>2</option>
-      <option>3</option>
-      <option>5</option>
-      <option>6</option>
-      <option>7</option>
-      <option>9</option>
-      <option>10</option>
-      <option>11</option>
-      <option>12</option>
-      <option>13</option>
-      <option>14</option>
-      <option>15</option>
-     </select>
-    </div>
-   </div>
+      <div class="full-row">
+       <label for="field-passphrase" class="biglabel"> passphrase </label>
+       <div class="input-row">
+        <input id="field-passphrase" name="passphrase" type="text" class="input-field" value="c@t$ s3cr4t" onkeydown="acceptInput(event);" />
+       </div>
+      </div>
 
-   <div class="full-row">
-    <label for="f4" class="biglabel"> domain </label>
-    <div class="input-row">
-     <input id="f4" name="domain" type="text" class="input-field" value="chase.com" onkeydown="acceptInput(event, 'domain');" />
-    </div>
-   </div>
+      <div class="full-row">
+       <label for="field-email" class="biglabel"> e-mail </label>
+       <div class="input-row">
+        <input id="field-email" name="email" type="text" class="input-field" value="myname@gmail.com" onkeydown="acceptInput(event);" />
+       </div>
+      </div>
 
-   <div class="full-row">
-    <label for="f5" class="biglabel"> version </label>
-    <div class="input-row">
-     <input id="f5" name="version" type="text" class="input-field" value="1">
-    </div>
-   </div>
+      <div class="full-row">
+       <label for="field-secbits" class="biglabel"> safety </label>
+       <div class="input-row">
+        <select id="field-secbits" name="secbits" class="input-field input-black" onChange="swizzle(event);">
+         <option>8</option>
+         <option>4</option>
+         <option>16</option>
+         <option>0</option>
+         <option>1</option>
+         <option>2</option>
+         <option>3</option>
+         <option>5</option>
+         <option>6</option>
+         <option>7</option>
+         <option>9</option>
+         <option>10</option>
+         <option>11</option>
+         <option>12</option>
+         <option>13</option>
+         <option>14</option>
+         <option>15</option>
+        </select>
+       </div>
+      </div>
 
-   </form>
-  </div>
+      <div class="full-row">
+       <label for="field-domain" class="biglabel"> domain </label>
+       <div class="input-row">
+        <input id="field-domain" name="domain" type="text" class="input-field" value="chase.com" onkeydown="acceptInput(event);" />
+       </div>
+      </div>
+
+      <div class="full-row">
+       <label for="field-version" class="biglabel"> version </label>
+       <div class="input-row">
+        <input id="field-version" name="version" type="text" class="input-field" value="1" onkeydown="acceptInput(event);" />
+       </div>
+      </div>
+
+      <div class="full-row">
+       <label for="field-nsym" class="biglabel">symbs needed</label>
+       <div class="input-row">
+        <select id="field-nsym" name="nsym" class="input-field input-black" onChange="swizzle(event);">
+         <option>0</option>
+         <option>1</option>
+         <option>2</option>
+         <option>3</option>
+        </select>
+       </div>
+      </div>
+
+      <div id="spacer"></div>
+       <div id="result">
+        <div class="full-row">
+         <label for="field-result" class="biglabel">hash</label>
+         <div class="input-row">
+          <div id="result" class="result-field">yo</div>
+         </div>
+        </div>
+       </div>
+      </div>
+
+     </div>
+    </form>
+
+   </div>
   </div>
  </body>
 </html>

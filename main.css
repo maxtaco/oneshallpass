@@ -2,7 +2,7 @@
     display: inline-block;
     vertical-align: top;
     margin-right: 14px;
-    width: 140px;
+    width: 180px;
     height: 34px;
     line-height: 34px;
     text-align: right;
@@ -29,7 +29,7 @@ body {
 }
 .search-form {
     position: relative;
-    background-color: cornsilk;
+    background-color: #eef;
     font-size: 22px;
 }
 .input-field {
@@ -52,16 +52,20 @@ body {
     border-radius: 0 0 10px 10px;
 }
 
-#f3 {
+#field-secbits {
     width: 100px;
 }
 
-#f5 {
+#field-version {
+    width: 60px;
+}
+
+#field-nsym {
     width: 60px;
 }
 
 .title {
-    margin: 30px;
+    margin: 20px;
 }
 
 .title h1 {
@@ -79,4 +83,29 @@ body {
     margin: 6px;
     position: relative;
     text-align: center;
+}
+
+.form-wrapper {
+    padding: 20px;
+}
+
+#spacer {
+    height: 5px;
+    background-color: white;
+}
+
+#result {
+    background-color: #efe;
+    height: 28px;
+}
+.result-field {
+    color: black;
+    border-width: 2px;
+    width: 300px;
+    padding: 5px;
+    height: 26px;
+    font-size: 100%;
+    bottom: auto;
+    top: auto;
+    border: 1px solid;
 }
