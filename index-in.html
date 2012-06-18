@@ -45,9 +45,9 @@
       </div>
 
       <div class="full-row">
-       <label for="field-version" class="biglabel"> version </label>
+       <label for="field-generation" class="biglabel"> generation </label>
        <div class="input-row">
-        <input id="field-version" name="version" type="text" class="input-field" value="1" onkeydown="acceptInput(event);" onkeyup="swizzle(event);" />
+        <input id="field-generation" name="generation" type="text" class="input-field" value="1" onkeydown="acceptInput(event);" onkeyup="swizzle(event);" />
        </div>
       </div>
 
@@ -112,7 +112,9 @@
      <div class="full-row">
       <label for="field-result" class="biglabel">hash</label>
       <div class="input-row">
-       <div id="result" class="result-field">yo</div>
+       <div id="result" class="result-field">
+       <span id="generated_pw">computing....</span>
+       </div>
       </div>
      </div>
     </div>

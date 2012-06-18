@@ -83,28 +83,29 @@ this._hasher,a=b.finalize(a);b.reset();return b.finalize(this._oKey.clone().conc
     };
 }());
 
-function pwgen (context, attempt, input) {
-    var d = 1 << input.safety;
-    var attempt = 1;
-    while (context.attempt == attempt) {
+function pwgen (obj, iters, context) {
 
-        var arr = [ "PassThePeas v1.0", input.email, input.site, 
-                    input.generation, attempt ];
+    obj.generated_pw = null;
+    var d = 1 << obj.secbits;
+    var i;
+    for (i = 0; i < iters && !obj.generated_pw && obj.key == context.key; i++) {
+
+        var arr = [ "PassThePeas v1.0", obj.email, obj.domain, 
+                    obj.generation, obj.iter ];
         var text = arr.join ("; ")
-        var hash = CryptoJS.HmacSHA512(text, key);
+        var hash = CryptoJS.HmacSHA512(text, obj.passphrase);
         var b16 = hash.toString();
         var b64 = hash.toString(CryptoJS.enc.Base64);
 
         var tail = parseInt(b16.slice (b16.length-8, b16.length), 16);
 
         if (tail % d == 0) {
-            var pw = b64.slice(0,input.digits);
-            return [ pw, attempt ];
+            obj.generated_pw = b64;
         } else {
-            attempt ++;
+            obj.iter++;
         }
     }
-    return null;
+    return !!obj.generated_pw;
 }
 
 function add_syms_at_indices (input, indices) {
