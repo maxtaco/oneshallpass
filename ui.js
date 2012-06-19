@@ -25,13 +25,14 @@ function format_pw (input) {
 function finish_compute (obj) {
     obj.computing = false;
     context.key = null;
+    toggle_computed();
     var e = document.getElementById("generated_pw").firstChild;
     e.nodeValue = format_pw (obj.generated_pw);
 }
 
 function do_compute_loop (key, obj) {
     var my_obj = obj;
-    var iters = 100;
+    var iters = 10;
     if (key != context.key) {
         console.log ("dbg 1 " + obj.key);
         /* bail out, we've changed to a different computation ... */
@@ -46,6 +47,7 @@ function do_compute_loop (key, obj) {
 }
 
 function do_compute (data) {
+    toggle_computing();
     var key = data.key;
     var co = cache[key];
     if (!co) {
@@ -61,6 +63,19 @@ function do_compute (data) {
         co.iter = 0;
         do_compute_loop (key, co);
     }
+}
+
+function toggle_computing() {
+    console.log ("toggle computing...");
+    document.getElementById('result-need-input').style.visibility = "hidden";
+    document.getElementById('result-computing').style.visibility = "visible";
+    document.getElementById('result-computed').style.visibility = "hidden";
+}
+
+function toggle_computed () {
+    document.getElementById('result-need-input').style.visibility = "hidden";
+    document.getElementById('result-computed').style.visibility = "visible";
+    document.getElementById('result-computing').style.visibility = "hidden";
 }
 
 function swizzle (event) { 
