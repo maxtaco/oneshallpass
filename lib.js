@@ -83,10 +83,63 @@ this._hasher,a=b.finalize(a);b.reset();return b.finalize(this._oKey.clone().conc
     };
 }());
 
+function isUpper(c) {
+    return "A".charCodeAt(0) <= c && c <= "Z".charCodeAt(0);
+}
+
+function isLower(c) {
+    return "a".charCodeAt(0) <= c && c <= "z".charCodeAt(0);
+}
+
+function isDigit (c) {
+    return "0".charCodeAt(0) <= c && c <= "9".charCodeAt(0);
+}
+
+function is_varied_pw (input) {
+    var v = 0;
+    var i = 0;
+    for (i = 0; v != 7 &&  i < 8; i++) {
+        var c = input.charCodeAt(i);
+        if (isDigit(c)) {
+            v |= 1;
+        } else if (isUpper(c)) {
+            v |= 2;
+        } else if (isLower(c)) {
+            v |= 4;
+        }
+    }
+    return v == 7;
+}
+
+function shifting_base64 (hash) {
+    var orig_map = CryptoJS.enc.Base64._map;
+    var map = orig_map;
+    var cut = 32;
+    var x;
+    var go = true;
+    var i = 0;
+    while (go) {
+        x = hash.toString(CryptoJS.enc.Base64);
+        if (is_varied_pw (x)) {
+            go = false;
+        } else {
+            console.log ("shit! try again " + i);
+            map = map.slice(cut,64) + map.slice(0, cut);
+            cut--;
+            if (cut < 1) { cut = 32; }
+            CryptoJS.enc.Base64._map = map;
+        }
+        i++;
+    } 
+    CryptoJS.enc.Base64._map = orig_map;
+    return x;
+}
+
+
 function pwgen (obj, iters, context) {
 
     obj.generated_pw = null;
-    var d = 1 << obj.secbits;
+    var d = 1 << parseInt(obj.secbits);
     var i;
     for (i = 0; i < iters && !obj.generated_pw && obj.key == context.key; i++) {
 
@@ -95,7 +148,7 @@ function pwgen (obj, iters, context) {
         var text = arr.join ("; ")
         var hash = CryptoJS.HmacSHA512(text, obj.passphrase);
         var b16 = hash.toString();
-        var b64 = hash.toString(CryptoJS.enc.Base64);
+        var b64 = shifting_base64 (hash);
 
         var tail = parseInt(b16.slice (b16.length-8, b16.length), 16);
 
@@ -108,8 +161,8 @@ function pwgen (obj, iters, context) {
     return !!obj.generated_pw;
 }
 
-function add_syms_at_indices (input, indices) {
-    var _map = "`~!@#$%^&*()-_+={}[]|;:,<>.?/";
+
+function translate_at_indices (input, indices, _map) {
 
     var last = 0;
     var arr = []
@@ -124,6 +177,11 @@ function add_syms_at_indices (input, indices) {
     }
     arr.push(input.slice(last, input.length));
     return arr.join("");
+}
+
+function add_syms_at_indices (input, indices) {
+    var _map = "`~!@#$%^&*()-_+={}[]|;:,<>.?/";
+    return translate_at_indices(input, indices, _map);
 }
 
 function add_syms (input, n) {

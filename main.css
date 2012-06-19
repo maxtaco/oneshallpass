@@ -118,6 +118,7 @@ body {
     border: 1px gray solid;
     position: absolute;
     visibility: hidden;
+    text-decoration: blink;
 }
 
 #result-need-input {
@@ -131,4 +132,5 @@ body {
     border: 2px #f33 solid;
     position: absolute;
     visibility: hidden;
+    font-weight: bold;
 }
