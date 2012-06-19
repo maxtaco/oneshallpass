@@ -111,6 +111,8 @@ function is_varied_pw (input) {
     return v == 7;
 }
 
+// a weird base64 encoding that always winds up with at least
+// 1 digit, 1 upper, and 1 lower in the first 8 characters...
 function shifting_base64 (hash) {
     var orig_map = CryptoJS.enc.Base64._map;
     var map = orig_map;
@@ -123,7 +125,6 @@ function shifting_base64 (hash) {
         if (is_varied_pw (x)) {
             go = false;
         } else {
-            console.log ("shit! try again " + i);
             map = map.slice(cut,64) + map.slice(0, cut);
             cut--;
             if (cut < 1) { cut = 32; }
@@ -148,11 +149,11 @@ function pwgen (obj, iters, context) {
         var text = arr.join ("; ")
         var hash = CryptoJS.HmacSHA512(text, obj.passphrase);
         var b16 = hash.toString();
-        var b64 = shifting_base64 (hash);
+        var b64 = hash.toString(CryptoJS.enc.Base64);
 
         var tail = parseInt(b16.slice (b16.length-8, b16.length), 16);
 
-        if (tail % d == 0) {
+        if (tail % d == 0 && is_varied_pw(b64)) {
             obj.generated_pw = b64;
         } else {
             obj.iter++;
