@@ -17,6 +17,13 @@ body {
     margin-bottom: 9px;
     white-space: nowrap;
 }
+
+.spacer {
+    height: 3px;
+    margin-bottom: 11px;
+    background-color: #fff;
+}
+
 .centered {
     width: 800px;
     margin: 0px auto;

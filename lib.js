@@ -11,47 +11,25 @@ function isDigit (c) {
     return "0".charCodeAt(0) <= c && c <= "9".charCodeAt(0);
 }
 
-function is_varied_pw (input) {
+function is_ok_pw (input) {
     var v = 0;
     var i = 0;
-    for (i = 0; v != 7 &&  i < 8; i++) {
+    var nosym = true;
+    for (i = 0; i < 16; i++) {
         var c = input.charCodeAt(i);
+        var base = (i < 8);
         if (isDigit(c)) {
-            v |= 1;
+            if (base) { v |= 1; }
         } else if (isUpper(c)) {
-            v |= 2;
+            if (base) { v |= 2; }
         } else if (isLower(c)) {
-            v |= 4;
+            if (base) { v |= 4; }
+        } else {
+            nosym = false;
         }
     }
-    return v == 7;
+    return v == 7 && nosym;
 }
-
-// a weird base64 encoding that always winds up with at least
-// 1 digit, 1 upper, and 1 lower in the first 8 characters...
-function shifting_base64 (hash) {
-    var orig_map = CryptoJS.enc.Base64._map;
-    var map = orig_map;
-    var cut = 32;
-    var x;
-    var go = true;
-    var i = 0;
-    while (go) {
-        x = hash.toString(CryptoJS.enc.Base64);
-        if (is_varied_pw (x)) {
-            go = false;
-        } else {
-            map = map.slice(cut,64) + map.slice(0, cut);
-            cut--;
-            if (cut < 1) { cut = 32; }
-            CryptoJS.enc.Base64._map = map;
-        }
-        i++;
-    } 
-    CryptoJS.enc.Base64._map = orig_map;
-    return x;
-}
-
 
 function pwgen (obj, iters, context) {
 
@@ -69,7 +47,7 @@ function pwgen (obj, iters, context) {
 
         var tail = parseInt(b16.slice (b16.length-8, b16.length), 16);
 
-        if (tail % d === 0 && is_varied_pw(b64)) {
+        if (tail % d === 0 && is_ok_pw(b64)) {
             obj.generated_pw = b64;
         } else {
             obj.iter++;
