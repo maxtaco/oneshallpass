@@ -75,7 +75,8 @@ function pwgen (obj, iters, context) {
             obj.iter++;
         }
     }
-    return !!obj.generated_pw;
+    var ret = !!obj.generated_pw;
+    return ret;
 }
 
 
