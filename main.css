@@ -55,19 +55,19 @@ body {
     border-radius: 0 0 10px 10px;
 }
 
-#field-secbits {
+#secbits {
     width: 100px;
 }
 
-#field-generation {
+#generation {
     width: 60px;
 }
 
-#field-nsym {
+#nsym {
     width: 90px;
 }
 
-#field-length {
+#length {
     width: 90px;
 }
 

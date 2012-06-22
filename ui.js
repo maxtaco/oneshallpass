@@ -76,7 +76,7 @@ function toggle_computed () {
 function swizzle (event) { 
 
     var se = event.srcElement;
-    inputs[se.id.split('-')[1]] = 1;
+    inputs[se.id] = 1;
 
     if (inputs.passphrase && inputs.domain && inputs.email && inputs.generation) {
         var data = {};
@@ -85,13 +85,12 @@ function swizzle (event) {
         for (i = 0; i < fields.length; i++) {
             if (true) {
                 var f = fields[i];
-                var k = "field-" + f;
-                var v = document.getElementById(k).value;
+                var v = document.getElementById(f).value;
                 data[f] = v;
             }
         }
-        display_prefs.length = document.getElementById("field-length").value;
-        display_prefs.nsym = document.getElementById("field-nsym").value;
+        display_prefs.length = document.getElementById("length").value;
+        display_prefs.nsym = document.getElementById("nsym").value;
 
         // Key the data, so that we can look it up in a hash-table.
         key_data (data);
