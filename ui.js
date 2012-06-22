@@ -76,7 +76,9 @@ function toggle_computed () {
 function swizzle (event) { 
 
     var se = event.srcElement;
-    inputs[se.id] = 1;
+    if (se.value.length > 0) {
+        inputs[se.id] = 1;
+    }
 
     if (inputs.passphrase && inputs.domain && inputs.email && inputs.generation) {
         var data = {};
