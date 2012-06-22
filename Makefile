@@ -4,16 +4,12 @@ all: index.html
 
 JSFILT=cat
 
-lib-min.js : lib.js
-	$(JSFILT) < $< > $@
-ui-min.js : ui.js
-	$(JSFILT) < $< > $@
-crypto-min.js : crypto.js
+%-min.js : %.js
 	$(JSFILT) < $< > $@
 index.html : index-in.html lib-min.js make.py main.css ui-min.js crypto-min.js
 	python make.py < $< > $@
 
 clean:
-	rm -f index.html lib-min.js ui-min.js
+	rm -f index.html *-min.js
 
 .PHONY: clean
