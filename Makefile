@@ -8,7 +8,9 @@ lib-min.js : lib.js
 	$(JSFILT) < $< > $@
 ui-min.js : ui.js
 	$(JSFILT) < $< > $@
-index.html : index-in.html lib-min.js make.py main.css ui-min.js
+crypto-min.js : crypto.js
+	$(JSFILT) < $< > $@
+index.html : index-in.html lib-min.js make.py main.css ui-min.js crypto-min.js
 	python make.py < $< > $@
 
 clean:
