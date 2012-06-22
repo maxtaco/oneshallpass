@@ -84,6 +84,7 @@ body {
 
 .title h1 {
     font-weight: normal;
+    font-family: helvetica, arial, verdana, sans;
     font-size: 36px;
     height: 40px;
     margin: 6px;
@@ -92,6 +93,7 @@ body {
 
 .title h2 {
     font-weight: normal;
+    font-family: helvetica, arial, verdana, sans;
     font-size: 22px;
     height: 22px;
     margin: 6px;
@@ -110,7 +112,7 @@ body {
 }
 
 .result-slot {
-    width: 300px;
+    width: 220px;
     padding: 4px;
     margin: 0px;
     height: 26px;
@@ -136,8 +138,16 @@ body {
 
 #result-computed {
     color: #f33;
-    border: 2px #f33 solid;
+    border: 1px #f33 solid;
+    font-family: monospace;
+    font-size: 22px;
     position: absolute;
     visibility: hidden;
     font-weight: bold;
+}
+
+#select {
+    float: right;
+    font-size: 22px;
+    visibility: hidden;
 }

@@ -16,6 +16,32 @@ function key_data (data) {
     data.key = key;
 }
 
+function fnDeSelect() {
+    if (document.selection) { 
+        document.selection.empty(); 
+    } else if (window.getSelection) { 
+        window.getSelection().removeAllRanges(); 
+    }
+}
+
+function fnSelect(obj) {
+    fnDeSelect();
+    if (document.selection) {
+        var range = document.body.createTextRange();
+        range.moveToElementText(obj);
+        range.select();
+    } else if (window.getSelection) {
+        var range = document.createRange();
+        range.selectNode(obj);
+        window.getSelection().addRange(range);
+    }
+}
+
+function select_pw (event) {
+    var e = document.getElementById("generated_pw").firstChild;
+    fnSelect(e); 
+}
+
 function format_pw (input) {
     var ret = input.slice(0, display_prefs.length);
     ret = add_syms (ret, display_prefs.nsym);
@@ -65,11 +91,13 @@ function toggle_computing() {
     document.getElementById('result-need-input').style.visibility = "hidden";
     document.getElementById('result-computing').style.visibility = "visible";
     document.getElementById('result-computed').style.visibility = "hidden";
+    document.getElementById('select').style.visibility = "hidden";
 }
 
 function toggle_computed () {
     document.getElementById('result-need-input').style.visibility = "hidden";
     document.getElementById('result-computed').style.visibility = "visible";
+    document.getElementById('select').style.visibility = "visible";
     document.getElementById('result-computing').style.visibility = "hidden";
 }
 
