@@ -101,7 +101,7 @@ function swizzle (event) {
     return 0;
 }
 
-function acceptInput (event) { 
+function acceptFocus (event) { 
     var se = event.srcElement;
     if (!se.className.match("input-black")) {
         event.srcElement.className += " input-black";
