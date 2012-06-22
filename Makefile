@@ -2,14 +2,22 @@
 default: index.html
 all: index.html
 
-JSFILT=cat
+JSFILT=uglifyjs
 
 %-min.js : %.js
 	$(JSFILT) < $< > $@
-index.html : index-in.html lib-min.js make.py main.css ui-min.js crypto-min.js
+
+crypto-min.js: crypto/core.js \
+	crypto/x64-core.js \
+	crypto/hmac.js \
+	crypto/sha512.js \
+	crypto/enc-base64.js
+	cat $^ | $(JSFILT) > $@
+
+index.html : index-in.html lib-min.js make.py main.css ui-min.js crypto-min.js 
 	python make.py < $< > $@
 
 clean:
-	rm -f index.html *-min.js
+	rm -f index.html *-min.js crypt/*-min.js
 
 .PHONY: clean

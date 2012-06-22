@@ -56,20 +56,20 @@ function shifting_base64 (hash) {
 function pwgen (obj, iters, context) {
 
     obj.generated_pw = null;
-    var d = 1 << parseInt(obj.secbits);
+    var d = 1 << parseInt(obj.secbits, 10);
     var i;
     for (i = 0; i < iters && !obj.generated_pw && obj.key == context.key; i++) {
 
         var arr = [ "PassThePeas v1.0", obj.email, obj.domain, 
                     obj.generation, obj.iter ];
-        var text = arr.join ("; ")
+        var text = arr.join ("; ");
         var hash = CryptoJS.HmacSHA512(text, obj.passphrase);
         var b16 = hash.toString();
         var b64 = hash.toString(CryptoJS.enc.Base64);
 
         var tail = parseInt(b16.slice (b16.length-8, b16.length), 16);
 
-        if (tail % d == 0 && is_varied_pw(b64)) {
+        if (tail % d === 0 && is_varied_pw(b64)) {
             obj.generated_pw = b64;
         } else {
             obj.iter++;
@@ -82,7 +82,7 @@ function pwgen (obj, iters, context) {
 function translate_at_indices (input, indices, _map) {
 
     var last = 0;
-    var arr = []
+    var arr = [];
     for (var j = 0; j < indices.length; j++) {
         var index = indices[j];
         arr.push (input.slice(last, index));
