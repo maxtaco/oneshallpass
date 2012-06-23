@@ -11,24 +11,48 @@ function isDigit (c) {
     return "0".charCodeAt(0) <= c && c <= "9".charCodeAt(0);
 }
 
+// Rules for 'OK' passwords:
+//    - Within the first 8 characters:
+//       - At least one: uppercase, lowercase, and digit
+//       - No more than 5 of any one character class
+//       - No symbols
+//    - From characters 7 to 16:
+//       - No symbols
 function is_ok_pw (input) {
     var v = 0;
     var i = 0;
-    var nosym = true;
-    for (i = 0; i < 16; i++) {
-        var c = input.charCodeAt(i);
-        var base = (i < 8);
+
+    var caps = 0;
+    var lowers = 0;
+    var digits = 0;
+    var symbols = 0;
+    var c;
+
+    for (i = 0; i < 8; i++) {
+        c = input.charCodeAt(i);
         if (isDigit(c)) {
-            if (base) { v |= 1; }
+            digits++;
         } else if (isUpper(c)) {
-            if (base) { v |= 2; }
+            caps++;
         } else if (isLower(c)) {
-            if (base) { v |= 4; }
+            lowers++;
         } else {
-            nosym = false;
+            return false;
         }
     }
-    return v == 7 && nosym;
+    if (digits === 0 || lowers === 0 || caps === 0 || 
+        digits > 5 || lowers > 5 || caps > 5) {
+        return false;
+    }
+
+    for ( ; i < 16; i++) {
+        c = input.charCodeAt(i);
+        if (!isDigit(c) && !isUpper(c) && !isLower(c)) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 function pwgen (obj, iters, context) {

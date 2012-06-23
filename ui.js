@@ -3,7 +3,6 @@ var inputs = {};
 var cache = {};
 
 var context = {
-    attempt : 1,
     running : 0,
     key : null
 };
@@ -64,6 +63,8 @@ function do_compute_loop (key, obj) {
     } else if (pwgen(obj, iters, context)) {
         finish_compute (obj);
     } else {
+        var e = document.getElementById("computing").firstChild;
+        e.nodeValue = "computing.... " + obj.iter;
         /* don't block the browser */
         setTimeout (function () { do_compute_loop (key, my_obj); }, 0); 
     }

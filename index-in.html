@@ -55,7 +55,7 @@
       </div>
 
       <div class="full-row">
-       <label for="secbits" class="biglabel"> safety </label>
+       <label for="secbits" class="biglabel"> security</label>
        <div class="input-row">
         <select id="secbits" name="secbits" class="input-field input-black" onChange="swizzle(event);">
          <option>8</option>
@@ -116,7 +116,7 @@
       <label for="result" class="biglabel">hash</label>
       <div class="input-row">
        <div id="result-computing" class="result-slot">
-        <span>computing....</span>
+        <span id="computing">computing....</span>
        </div>
        <div id="result-computed" class="result-slot">
         <span id="generated_pw"> &nbsp; </span>
@@ -129,6 +129,11 @@
      </div>
     </div>
 
+    <div id="info">
+     <span>
+     See the <a href="https://github.com/maxtaco/passthepeas">GitHub</a> repo to learn more, audit, and fork.
+     </span>
+    </div>
 
    </div>
   </div>

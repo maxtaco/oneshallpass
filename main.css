@@ -152,3 +152,9 @@ body {
     visibility: hidden;
     border: 1px black solid;
 }
+
+#info {
+    margin-top: 14px;
+    text-align: center;
+    font-size: 18px;
+}
