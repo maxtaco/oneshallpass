@@ -72,7 +72,7 @@ checking to see if the output of the above function is what he stole from the
 database.  But he'll have to run the above function on average 2^s times per
 guess.  It won't make guessing your password impossible, just a nice constant
 factor harder.  This is the same proof-of-work idea as in
-HashCash[[3](#citations)], BitCoin[[4](#citation)], and many others.  The key
+HashCash [[3](#citations)], BitCoin [[4](#citations)], and many others.  The key
 idea is that there is no know way to do the work better than
 the obvious (intended) way.
 
