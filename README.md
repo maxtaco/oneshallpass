@@ -20,7 +20,7 @@ the third camp, you're doing what cryptography should be doing for you
 automatically.  And if you're in the fourth, you're out several
 beans a month and can't audit the code that your security depends upon.
 
-This app --- “PassThePeas”  --- is an attempt to get you the best of all
+This app — “PassThePeas” — is an attempt to get you the best of all
 worlds.  The ideas is that you remember one passphrase (which should be a
 quality password!), and PassThePeas will generate for you as many site-specific
 passwords as you need.  It runs on any browser, like that of your laptop, your
@@ -33,6 +33,19 @@ on strong cryptographic primitives, so you'll be secure.
 
 Still not convinced?  Read on to our FAQ-style introduction.
 
+
+FAQ
+=======
+
+### What is the crypto behind PassThePeas?
+
+In a nutshuell, HMAC-SHA512 [[1][1]].
+
 Author
 ======
 Maxwell Krohn 
+
+Citations
+=========
+
+[1]: http://www.ietf.org/rfc/rfc2104.txt
