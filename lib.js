@@ -54,8 +54,41 @@ function is_ok_pw (input) {
             return false;
         }
     }
-
     return true;
+}
+
+// Given a PW, find which class to substitute for symbols.
+// The rules are:
+//    - Pick the class that has the most instances in the first
+//      8 characters.
+//    - Tie goes to lowercase first, and to digits second
+// Return a function that will say yes to the chosen type of character.
+function find_class_to_sub(pw) {
+    var n = pw.length;
+    var i;
+    var caps = 0;
+    var lowers = 0;
+    var digits = 0;
+    var symbols = 0;
+    var c;
+
+    for (i = 0; i < min_size; i++) {
+        c = pw.charCodeAt(i);
+        if (isDigit(c)) {
+            digits++;
+        } else if (isUpper(c)) {
+            caps++;
+        } else if (isLower(c)) {
+            lowers++;
+        }
+    }
+    if (lowers >= caps && lowers >= digits) {
+        return isLower;
+    } else if (digits > lowers && digits >= caps) {
+        return isDigit;
+    } else {
+        return isUpper;
+    }
 }
 
 function pwgen (obj, iters, context) {
@@ -88,7 +121,8 @@ function translate_at_indices (input, indices, _map) {
 
     var last = 0;
     var arr = [];
-    for (var j = 0; j < indices.length; j++) {
+    var j;
+    for (j = 0; j < indices.length; j++) {
         var index = indices[j];
         arr.push (input.slice(last, index));
         var c = input.charAt(index);
@@ -107,12 +141,18 @@ function add_syms_at_indices (input, indices) {
 }
 
 function add_syms (input, n) {
-    var indices = []
-    if (n*2 > input.length) {
-        n = input.length / 2;
-    }
-    for (var i = 0; i < n; i++) {
-        indices.push(2*i + 1);
+    if (n <= 0) { return input; }
+    var fn = find_class_to_sub(input);
+    var i;
+    var indices = [];
+    for (i = 0; n > 0 && i < min_size; i++) {
+        var c = input.charCodeAt(i);
+        console.log ("char " + c + " @ + " + i + "\n");
+        if (fn(c)) {
+            console.log ("push!\n");
+            n--;
+            indices.push(i);
+        }
     }
     return add_syms_at_indices(input, indices);
 }
