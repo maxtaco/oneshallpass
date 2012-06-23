@@ -147,9 +147,7 @@ function add_syms (input, n) {
     var indices = [];
     for (i = 0; n > 0 && i < min_size; i++) {
         var c = input.charCodeAt(i);
-        console.log ("char " + c + " @ + " + i + "\n");
         if (fn(c)) {
-            console.log ("push!\n");
             n--;
             indices.push(i);
         }
