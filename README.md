@@ -39,7 +39,29 @@ FAQ
 
 ### What is the crypto behind PassThePeas?
 
-HMAC-SHA512 [[1](#Citations),[2](#Citations)], with some slight tweaks.
+In a nuthsell, HMAC-SHA512 [[1](#Citations),[2](#Citations)], with some slight tweaks.
+
+The PassThePeas input form takes as input five key pieces of information:
+
+* _p_, the passphrase
+* _e_, the email address
+* _d_, the site or domain to generate a password for
+* _g_, the generation number of this password
+* _s_, the security parameter.
+
+It then generates a sequence of passwords of the form
+
+   HMAC(_p_, [ "PassThePeas v1.0", _e_, _d_, _g_, _i_ ])
+
+for a sequence of integers _i_ that vary from 1 to infinity.  PassThePeas
+will terminate on a given _i_ once the following three conditions are met:
+
+1. The rightmight 2^_s_ bits of the output are 0s.
+1. When the hash is base64-encoded, the leftmost 8 characters contain 
+at least 1 uppercase, 1 lowercase, and 1 digit, and no more than 5 
+uppercase, lowercase or digit characters.
+1. The first 16 characters of the base64-encoding contain no symbols
+(_e.g._, "/", "+" or "-")
 
 Author
 ======
