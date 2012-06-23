@@ -1,4 +1,7 @@
 
+var min_size = 8;
+var max_size = 16;
+
 function isUpper(c) {
     return "A".charCodeAt(0) <= c && c <= "Z".charCodeAt(0);
 }
@@ -28,7 +31,7 @@ function is_ok_pw (input) {
     var symbols = 0;
     var c;
 
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < min_size; i++) {
         c = input.charCodeAt(i);
         if (isDigit(c)) {
             digits++;
@@ -45,7 +48,7 @@ function is_ok_pw (input) {
         return false;
     }
 
-    for ( ; i < 16; i++) {
+    for ( ; i < max_size; i++) {
         c = input.charCodeAt(i);
         if (!isDigit(c) && !isUpper(c) && !isLower(c)) {
             return false;
@@ -80,7 +83,6 @@ function pwgen (obj, iters, context) {
     var ret = !!obj.generated_pw;
     return ret;
 }
-
 
 function translate_at_indices (input, indices, _map) {
 
