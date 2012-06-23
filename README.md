@@ -51,7 +51,7 @@ The PassThePeas input form takes as input five key pieces of information:
 
 It then generates a sequence of passwords of the form
 
-   HMAC(_p_, [ "PassThePeas v1.0", _e_, _d_, _g_, _i_ ])
+      HMAC-SHA512(_p_, [ "PassThePeas v1.0", _e_, _d_, _g_, _i_ ])
 
 for a sequence of integers _i_ that vary from 1 to infinity.  PassThePeas
 will terminate on a given _i_ once the following three conditions are met:
