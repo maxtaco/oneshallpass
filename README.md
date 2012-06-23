@@ -51,7 +51,7 @@ The PassThePeas input form takes as input five key pieces of information:
 
 It then generates a sequence of passwords of the form
 
-    HMAC-SHA512(_p_, [ "PassThePeas v1.0", _e_, _d_, _g_, _i_ ])
+  HMAC-SHA512(_p_, [ "PassThePeas v1.0", _e_, _d_, _g_, _i_ ])
 
 for a sequence of integers _i_ that vary from 1 to infinity.  PassThePeas
 will terminate on a given _i_ once the following three conditions are met:
@@ -62,6 +62,24 @@ at least 1 uppercase, 1 lowercase, and 1 digit, and no more than 5
 uppercase, lowercase or digit characters.
 1. The first 16 characters of the base64-encoding contain no symbols
 (_e.g._, "/", "+" or "-")
+
+This iterative process serves two goals.  First, it makes it more difficult for
+an adversary to "crack" your password by a factor of at least 2^s.  That is, if
+you assume your adversary got access to a site's password file, and that
+password file was in plaintext, and the adversary knew the parameters _e_, _d_
+and _g_, he might still try to guess _p_ by checking all passwords, and
+checking to see if the output of the above function is what he stole from the
+database.  But he'll have to run the above function on average 2^s times per
+guess.  It won't make guessing your password impossible, just a nice constant
+factor harder.
+
+The second goal of the iterative process is to generate a password
+that sites will accept. Some sites won't accept the 3 symbolic characters
+in Base64-encoding as password characters, so we throw away all passwords that
+contain them without sacrificing entropy.  Moreover, since some sites
+require passwords with uppercase, lowercase, and numerical characters,
+we also require those to be present in the first 8 bytes of the password.
+In practice, these practical conditions are usual met the first time through.
 
 Author
 ======
