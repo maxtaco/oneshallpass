@@ -39,7 +39,7 @@ FAQ
 
 ### What is the crypto behind PassThePeas?
 
-In a nutshuell, HMAC-SHA512 [[1][1]].
+HMAC-SHA512 [[1](#Citations),[2](#Citations)], with some slight tweaks.
 
 Author
 ======
@@ -48,4 +48,6 @@ Maxwell Krohn
 Citations
 =========
 
-[1]: http://www.ietf.org/rfc/rfc2104.txt
+\[1\]: HMAC: Keyed-Hashing for Message Authentication. http://www.ietf.org/rfc/rfc2104.txt
+
+\[2\]: Secure Hash Standard, March 2012. http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf
