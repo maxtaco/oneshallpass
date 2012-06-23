@@ -39,7 +39,7 @@ FAQ
 
 ### What is the crypto behind PassThePeas?
 
-In a nuthsell, HMAC-SHA512 [[1](#Citations),[2](#Citations)], with some slight tweaks.
+In a nuthsell, HMAC-SHA512 [[1](#citations),[2](#citations)], with some slight tweaks.
 
 The PassThePeas input form takes as input five key pieces of information:
 
