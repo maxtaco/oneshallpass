@@ -71,7 +71,10 @@ and _g_, he might still try to guess _p_ by checking all passwords, and
 checking to see if the output of the above function is what he stole from the
 database.  But he'll have to run the above function on average 2^s times per
 guess.  It won't make guessing your password impossible, just a nice constant
-factor harder.
+factor harder.  This is the same proof-of-work idea as in
+HashCash[[3](#citations)], BitCoin[[4](#citation)], and many others.  The key
+idea is that there is no know way to do the work better than
+the obvious (intended) way.
 
 The second goal of the iterative process is to generate a password
 that sites will accept. Some sites won't accept the 3 symbolic characters
@@ -91,3 +94,7 @@ Citations
 \[1\]: HMAC: Keyed-Hashing for Message Authentication. http://www.ietf.org/rfc/rfc2104.txt
 
 \[2\]: Secure Hash Standard, March 2012. http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf
+
+\[3\]: http://www.hashcash.org
+
+\[4\]: http://www.bitcoin.org
