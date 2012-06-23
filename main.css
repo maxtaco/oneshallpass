@@ -150,4 +150,5 @@ body {
     float: right;
     font-size: 22px;
     visibility: hidden;
+    border: 1px black solid;
 }
