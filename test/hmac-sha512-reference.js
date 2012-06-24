@@ -34,22 +34,77 @@ function repeat_string (s, n) {
 
 function make_wa_from_bytes_between(a,b) {
     var v = [];
-    while (a < b) {
-        var word = (a++ << 24) | ((a++) << 16) | ((a++) << 8) | (a++);
+    var slot = 0;
+    var word = 0;
+    var bytes = 0;
+    while (a <= b) {
+        word |= (a << 8*(3-slot));
+        slot++;
+        a++;
+        if (slot == 4) {
+            slot = 0;
+            v.push(word);
+            word = 0;
+        }
+        bytes++;
+    }
+    if (slot !== 0) {
         v.push(word);
     }
-    return CryptoJS.lib.WordArray.create(v);
+    return CryptoJS.lib.WordArray.create(v, bytes);
 }
 
 // Test vectors from http://tools.ietf.org/rfc/rfc4868.txt
 // Test vectors from http://tools.ietf.org/html/rfc4231.txt
 
 var test_vectors = [
-    { "rfc" : 4231,
-      "case" : 3,
-      "key" : make_wa_from_byte (0xaa, 20),
-      "data" : make_wa_from_byte (0xdd, 50),
-      "res" : "fa73b0089d56a284efb0f0756c890be9b1b5dbdd8ee81a3655f83e33b2279d39bf3e848279a722c806b485a47e67c807b946a337bee8942674278859e13292fb"
+    { 
+        "rfc" : 4231,
+        "case" : 1, 
+        "key" : make_wa_from_byte(0x0b, 20),
+        "data" : "Hi There",
+        "res" : "87aa7cdea5ef619d4ff0b4241a1d6cb02379f4e2ce4ec2787ad0b30545e17cdedaa833b7d6b8a702038b274eaea3f4e4be9d914eeb61f1702e696c203a126854"
+    },
+
+    { 
+        "rfc" : 4231,
+        "case" : 2,
+        "key" : make_wa_from_byte (0xaa, 20),
+        "data" : make_wa_from_byte (0xdd, 50),
+        "res" : "fa73b0089d56a284efb0f0756c890be9b1b5dbdd8ee81a3655f83e33b2279d39bf3e848279a722c806b485a47e67c807b946a337bee8942674278859e13292fb"
+    },
+
+    {
+        "rfc" : 4231,
+        "case" : 3,
+        "key" : "Jefe",
+        "data": "what do ya want for nothing?",
+        "res" : "164b7a7bfcf819e2e395fbe73b56e0a387bd64222e831fd610270cd7ea2505549758bf75c05a994a6d034f65f8f0e6fdcaeab1a34d4a6b4b636e070a38bce737"
+    },
+
+    {
+        "rfc" : 4231,
+        "case" : 4,
+        "key" : make_wa_from_bytes_between(0x01,0x19),
+        "data" : make_wa_from_byte(0xcd,50),
+        "res" : "b0ba465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd"
+    },
+
+    {
+        "rfc" : 4231,
+        "case" : 6,
+        "key" : make_wa_from_byte (0xaa, 131),
+        "data" : "Test Using Larger Than Block-Size Key - Hash Key First",
+        "res" : "80b24263c7c1a3ebb71493c1dd7be8b49b46d1f41b4aeec1121b013783f8f3526b56d037e05f2598bd0fd2215d6a1e5295e64f73f63f0aec8b915a985d786598"
+    },
+
+    {
+        "rfc" : 4231,
+        "case" : 7,
+        "key" : make_wa_from_byte(0xaa, 131),
+        "data" : "This is a test using a larger than block-size key and a larger than block-size data. The key needs to be hashed before being used by the HMAC algorithm.",
+        "res" : "e37b6a775dc87dbaa4dfa9f96e5e3ffddebd71f8867289865df5a32d20cdc944b6022cac3c4982b10d5eeb55c3e4de15134676fb6de0446065c97440fa8c6a58"
+
     },
 
     {
@@ -75,15 +130,9 @@ var test_vectors = [
         "key" : make_wa_from_byte (0xaa, 64),
         "data" : make_wa_from_byte (0xdd, 50),
         "res" : "2ee7acd783624ca9398710f3ee05ae41b9f9b0510c87e49e586cc9bf961733d8623c7b55cebefccf02d5581acc1c9d5fb1ff68a1de45509fbe4da9a433922655"
-    },
+    }
 
-    {
-        "rfc" : 4868,
-        "case": 4,
-        "key" : make_wa_from_bytes_between(0x10, 0x40),
-        "data": make_wa_from_byte (0xcd, 50),
-        "res" : "5e6688e5a3daec826ca32eaea224eff5e700628947470e13ad01302561bab108b8c48cbc6b807dcfbd850521a685babc7eae4a2a2e660dc0e86b931d65503fd2"
-    } ];
+    ];
 
 var j;
 var rc = 0;
