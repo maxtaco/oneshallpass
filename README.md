@@ -33,9 +33,8 @@ primitives, so you'll be secure.
 
 Still not convinced?  Read on to our FAQ-style introduction.
 
-
-FAQ
-=======
+Technical FAQ
+=============
 
 ### What is the crypto behind One Shall Pass?
 
@@ -45,23 +44,26 @@ The 1SP input form takes as input five key pieces of information:
 
 * _p_, the passphrase
 * _e_, the email address
-* _d_, the site or domain to generate a password for
+* _h_, the host to generate a password for
 * _g_, the generation number of this password
 * _s_, the security parameter.
 
 It then generates a sequence of passwords of the form
 
-  HMAC-SHA512(_p_, [ "OneShallPass v1.0", _e_, _d_, _g_, _i_ ])
+  HMAC-SHA512(_p_, [ "OneShallPass v1.0", _e_, _h_, _g_, _i_ ])
 
-for a sequence of integers _i_ that vary from 1 to infinity.  1SP
-will terminate on a given _i_ once the following three conditions are met:
+for a sequence of integers _i_ that vary from 1 to infinity. You
+can think of this roughly as signing the message "User _e_ wants to
+log into site _h_" with the private signing key _p_.
+    
+1SP will terminate on a given _i_ once the following three conditions are met:
 
 1. The rightmight 2^_s_ bits of the output are 0s.
 1. When the hash is base64-encoded, the leftmost 8 characters contain 
 at least 1 uppercase, 1 lowercase, and 1 digit, and no more than 5 
 uppercase, lowercase or digit characters.
 1. The first 16 characters of the base64-encoding contain no symbols
-(_e.g._, "/", "+" or "-")
+(_e.g._, "/", "+" or "=")
 
 This iterative process serves two goals.  First, it makes it more difficult for
 an adversary to "crack" your password by a factor of at least 2^s.  That is, if
@@ -87,24 +89,37 @@ In practice, these practical conditions are usual met the first time through.
 ### Why not `bcrypt`?
 
 `bcrypt` does not offer the security properties we need for 1SP.
-`bcrypt` and their ilk are useful for hashing passwords on the server-side;
-they erect obstacles to attackers who have compromised a host's password
-file and are attempting to "crack" it by guessing which passwords
-the users of the site enter when they log in.  We seek different
-properties.  In particular, we assume that an attacker has acceess
-to some of your passwords stored on servers that he broke into (and whose
-programmers failed to secure with any sort of hashing mechanism). And
-he's smart enough to know that you're using 1SP.  Thus, for each
-site he's broken into, he has a pair (t,m), where t is the input
-text to the 1SP function above, and m is the output.  His goal is 
-now to log-in as you to a different site, that he hasn't compromised.
-In other words, he seeks a new pair (t',m'), that he hasn't seen
-before, where m' is the output of the 1SP function for some new text
-t', referring to a new site.
+`bcrypt` and their ilk are useful for hashing passwords on the server-side.
+They make guesses expensive for adversaries trying to "crack" a compromised
+password file, in which the adversary's goal is to recover as many
+as passwords possible in the shortest amount of time.
 
-In turns out this is exactly the property HMAC provably provides under 
-certain assumptions [[5](#citations),[6](#citations)].  That is,
-they resist "existential forgery" under "known plaintext attacks".
+We seek different properties.  In particular, we assume that an attacker has
+acceess to some of your passwords stored on servers that he broke into (and
+whose programmers failed to secure with any sort of hashing mechanism). And
+he's smart enough to know that you're using 1SP.  Thus, for each site he's
+broken into, he has a pair (t,m), where t is the input text to the 1SP function
+above, and m is the output.  His goal is now to log-in as you to a different
+site, that he hasn't compromised.  In other words, he seeks a new pair (t',m'),
+that he hasn't seen before, where m' is the output of the 1SP function for some
+new text t', referring to a new site.
+
+This is exactly the property HMAC provides [[5](#citations),[6](#citations)].
+It resists "existential forgery" under "known plaintext attacks".
+
+### What about salt?
+
+If you're asking about "salting" 1SP's passwords, you envision a
+better world in which many millions of people are using 1SP to manage
+their passwords! We're not they're yet, but that "American Dream" is
+handled by the current 1SP mechanism.
+
+Imagine an attacker who breaks into a site, steals its password file, and
+concludes that many of its users manage their passwords with 1SP.
+He now wants to crack all of their passwords in parallel.  The
+"salt" that prevents such a rainbow table attack is that your email
+address is an input to 1SP.  So you and your friend who both use the
+password "dog" will have to be cracked independently.
 
 ### What implementation of SHA2 and HMAC is 1SP using?
 
