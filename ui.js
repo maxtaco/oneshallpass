@@ -10,10 +10,25 @@ var context = {
 var display_prefs = {};
 
 function key_data (data) {
-    var tmp = [ data.email, data.passphrase, data.domain, data.generation, data.secbits ];
+    var tmp = [ data.email, data.passphrase, data.host, data.generation, data.secbits ];
     var key = tmp.join(";");
     data.key = key;
 }
+
+function toggle_computing() {
+    document.getElementById('result-need-input').style.visibility = "hidden";
+    document.getElementById('result-computing').style.visibility = "visible";
+    document.getElementById('result-computed').style.visibility = "hidden";
+    document.getElementById('select').style.visibility = "hidden";
+}
+
+function toggle_computed () {
+    document.getElementById('result-need-input').style.visibility = "hidden";
+    document.getElementById('result-computed').style.visibility = "visible";
+    document.getElementById('select').style.visibility = "visible";
+    document.getElementById('result-computing').style.visibility = "hidden";
+}
+
 
 function fnDeSelect() {
     if (document.selection) { 
@@ -71,6 +86,11 @@ function finish_compute (obj) {
     e.nodeValue = format_pw (obj.generated_pw);
 }
 
+function display_computing (val) {
+    var e = document.getElementById("computing").firstChild;
+    e.nodeValue = "computing.... " + val;
+}
+
 function do_compute_loop (key, obj) {
     var my_obj = obj;
     var iters = 10;
@@ -79,8 +99,7 @@ function do_compute_loop (key, obj) {
     } else if (pwgen(obj, iters, context)) {
         finish_compute (obj);
     } else {
-        var e = document.getElementById("computing").firstChild;
-        e.nodeValue = "computing.... " + obj.iter;
+        display_computing(obj.iter);
         /* don't block the browser */
         setTimeout (function () { do_compute_loop (key, my_obj); }, 0); 
     }
@@ -100,22 +119,9 @@ function do_compute (data) {
         context.key = key;
         co.computing = true;
         co.iter = 0;
-        do_compute_loop (key, co);
+        display_computing("");
+        setTimeout(function() { do_compute_loop (key, co); }, 500);
     }
-}
-
-function toggle_computing() {
-    document.getElementById('result-need-input').style.visibility = "hidden";
-    document.getElementById('result-computing').style.visibility = "visible";
-    document.getElementById('result-computed').style.visibility = "hidden";
-    document.getElementById('select').style.visibility = "hidden";
-}
-
-function toggle_computed () {
-    document.getElementById('result-need-input').style.visibility = "hidden";
-    document.getElementById('result-computed').style.visibility = "visible";
-    document.getElementById('select').style.visibility = "visible";
-    document.getElementById('result-computing').style.visibility = "hidden";
 }
 
 function swizzle (event) { 
@@ -125,16 +131,14 @@ function swizzle (event) {
         inputs[se.id] = 1;
     }
 
-    if (inputs.passphrase && inputs.domain && inputs.email) {
+    if (inputs.passphrase && inputs.host && inputs.email) {
         var data = {};
-        var fields = [ "passphrase", "domain", "email", "generation", "secbits" ];
-        var i;
+        var fields = [ "passphrase", "host", "email", "generation", "secbits" ];
+        var i, f, v;
         for (i = 0; i < fields.length; i++) {
-            if (true) {
-                var f = fields[i];
-                var v = document.getElementById(f).value;
-                data[f] = v;
-            }
+            f = fields[i];
+            v = document.getElementById(f).value;
+            data[f] = v;
         }
         display_prefs.length = document.getElementById("length").value;
         display_prefs.nsym = document.getElementById("nsym").value;
