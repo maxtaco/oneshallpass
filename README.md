@@ -84,6 +84,9 @@ require passwords with uppercase, lowercase, and numerical characters,
 we also require those to be present in the first 8 bytes of the password.
 In practice, these practical conditions are usual met the first time through.
 
+### Why not `bcrypt`?
+
+
 ### What implementation of SHA2 and HMAC is the PassThePeas using?
 
 Jeff Mott's `crypto-js` library [[5](#citations)].  I tested
