@@ -33,6 +33,18 @@ primitives, so you'll be secure.
 
 Still not convinced?  Read on to our FAQ-style introduction.
 
+General FAQ
+===========
+
+### What is the `generation` field for?
+
+Some sites make you change your password periodically. Or, some sites might get
+hacked. When they do, you can increment this field, and you'll get a different
+password. My hope is that you can use `1` for almost all sites. Eventually I
+hope to build server-side support for remembering users' generation numbers,
+but this will obviously kill disconnected operation, and will make auditing my
+work more challenging.
+
 Technical FAQ
 =============
 
@@ -138,14 +150,6 @@ need `node` installed with the `uglifyjs` package, but you can skip
 this dependency by replacing the `JSFILT` variable in `Makefile`
 with `cat`.  This same technique also works well for debugging.
 
-### What is the `generation` field for?
-
-Some sites make you change your password periodically. Or, some sites might get
-hacked. When they do, you can increment this field, and you'll get a different
-password. My hope is that you can use `1` for almost all sites. Eventually I
-hope to build server-side support for remembering users' generation numbers,
-but this will obviously kill disconnected operation, and will make auditing my
-work more challenging.
 
 Author
 ======
