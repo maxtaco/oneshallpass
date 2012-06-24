@@ -20,6 +20,9 @@ index.html : index-in.html lib-min.js make.py main.css ui-min.js crypto-min.js
 test: test/hmac-sha512-reference.js crypto-min.js
 	node $<
 
+install:
+	(cd gae && appcfg.py update one-shall-pass)
+
 clean:
 	rm -f index.html *-min.js crypt/*-min.js
 

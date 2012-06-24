@@ -25,16 +25,32 @@ function fnDeSelect() {
 
 function fnSelect(obj) {
     fnDeSelect();
+    var range;
     if (document.selection) {
-        var range = document.body.createTextRange();
+        range = document.body.createTextRange();
         range.moveToElementText(obj);
         range.select();
     } else if (window.getSelection) {
-        var range = document.createRange();
+        range = document.createRange();
         range.selectNode(obj);
         window.getSelection().addRange(range);
     }
 }
+
+function get_url_params() {
+    var urlParams = {};
+    var match,
+        pl     = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+        query  = window.location.search.substring(1);
+
+    while ((match = search.exec(query))) {
+       urlParams[decode(match[1])] = decode(match[2]);
+    }
+    return urlParams;
+}
+
 
 function select_pw (event) {
     var e = document.getElementById("generated_pw").firstChild;
@@ -131,11 +147,25 @@ function swizzle (event) {
     return 0;
 }
 
+function ungray(element) {
+    element.className += " input-black";
+}
+
 function acceptFocus (event) { 
     var se = event.srcElement;
     if (!se.className.match("input-black")) {
-        event.srcElement.className += " input-black";
+        ungray(event.srcElement);
         event.srcElement.value = "";
+    }
+}
+
+function prepopulate() {
+    var p = get_url_params();
+    if (typeof(p.email) != "undefined" && p.email.length > 0) {
+        var e = document.getElementById("email");
+        ungray(e);
+        e.value = p.email;
+        inputs.email = 1;
     }
 }
 
