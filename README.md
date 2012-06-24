@@ -84,6 +84,23 @@ require passwords with uppercase, lowercase, and numerical characters,
 we also require those to be present in the first 8 bytes of the password.
 In practice, these practical conditions are usual met the first time through.
 
+### What implementation of SHA2 and HMAC is the PassThePeas using?
+
+Jeff Mott's `crypto-js` library [[5](#citations)].  I tested
+it with test-vectors from RFC-4231 and RFC-4868.  To make sure it 
+works for yourself, try `make test`; you'll need the `node`
+binary in your path.
+
+### How can I build PassThePeas?
+
+I've checked in a self-contained `index.html` that should have
+everything you need to run PassThePeas, including the necessary
+crypto libraries, the CSS, and the JS for the UI.  You can build
+it yourself using `make` in the top-level directory. By default, you'll
+need `node` installed with the `uglifyjs` package, but you can skip
+this dependency by replacing the `JSFILT` variable in `Makefile`
+with `cat`.  This same technique also works well for debugging.
+
 Author
 ======
 Maxwell Krohn 
@@ -98,3 +115,5 @@ Citations
 \[3\]: http://www.hashcash.org
 
 \[4\]: http://www.bitcoin.org
+
+\[5\]: Jeff Mott, `crypto-js`.  http://code.google.com/p/crypto-js.
