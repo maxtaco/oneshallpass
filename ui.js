@@ -125,7 +125,7 @@ function swizzle (event) {
         inputs[se.id] = 1;
     }
 
-    if (inputs.passphrase && inputs.domain && inputs.email && inputs.generation) {
+    if (inputs.passphrase && inputs.domain && inputs.email) {
         var data = {};
         var fields = [ "passphrase", "domain", "email", "generation", "secbits" ];
         var i;
