@@ -98,7 +98,7 @@ function pwgen (obj, iters, context) {
     var i;
     for (i = 0; i < iters && !obj.generated_pw && obj.key == context.key; i++) {
 
-        var arr = [ "PassThePeas v1.0", obj.email, obj.domain, 
+        var arr = [ "OneShallPass v1.0", obj.email, obj.domain, 
                     obj.generation, obj.iter ];
         var text = arr.join ("; ");
         var hash = CryptoJS.HmacSHA512(text, obj.passphrase);

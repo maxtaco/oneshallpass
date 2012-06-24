@@ -1,4 +1,4 @@
-PassThePeas
+One Shall Pass
 ===========
 
 When it comes to choosing passwords for Websites, most people fall into one of four
@@ -20,16 +20,16 @@ the third camp, you're doing what cryptography should be doing for you
 automatically.  And if you're in the fourth, you're out several
 beans a month and can't audit the code that your security depends upon.
 
-This app — “PassThePeas” — is an attempt to get you the best of all
-worlds.  The ideas is that you remember one passphrase (which should be a
-quality password!), and PassThePeas will generate for you as many site-specific
-passwords as you need.  It runs on any browser, like that of your laptop, your
-smartphone, or an Internet kiosk.  It's self-contained, so it will run when
-you are disconnected, and you can check for yourself that no sensitive information
-is being shipped over the Internet.  It's free to use, and open-source,
-so you can modify it and audit it to your heart's content, and you need not
-fear being locked into another expensively monthly service.  And it's based
-on strong cryptographic primitives, so you'll be secure. 
+This app — “One Shall Pass” — gives you the best of all worlds.  The ideas is
+that you remember one passphrase (which should be a quality password!), and One
+Shall Pass (1SP) will generate for you as many site-specific passwords as you
+need.  It runs on any browser, like that of your laptop, your smartphone, or an
+Internet kiosk.  It's self-contained, so it will run when you are disconnected,
+and you can check for yourself that no sensitive information is being shipped
+over the Internet.  It's free to use, and open-source, so you can modify it and
+audit it to your heart's content, and you need not fear being locked into
+another expensively monthly service.  And it's based on strong cryptographic
+primitives, so you'll be secure. 
 
 Still not convinced?  Read on to our FAQ-style introduction.
 
@@ -37,11 +37,11 @@ Still not convinced?  Read on to our FAQ-style introduction.
 FAQ
 =======
 
-### What is the crypto behind PassThePeas?
+### What is the crypto behind One Shall Pass?
 
 In a nuthsell, HMAC-SHA512 [[1](#citations),[2](#citations)], with some slight tweaks.
 
-The PassThePeas input form takes as input five key pieces of information:
+The 1SP input form takes as input five key pieces of information:
 
 * _p_, the passphrase
 * _e_, the email address
@@ -51,9 +51,9 @@ The PassThePeas input form takes as input five key pieces of information:
 
 It then generates a sequence of passwords of the form
 
-  HMAC-SHA512(_p_, [ "PassThePeas v1.0", _e_, _d_, _g_, _i_ ])
+  HMAC-SHA512(_p_, [ "OneShallPass v1.0", _e_, _d_, _g_, _i_ ])
 
-for a sequence of integers _i_ that vary from 1 to infinity.  PassThePeas
+for a sequence of integers _i_ that vary from 1 to infinity.  1SP
 will terminate on a given _i_ once the following three conditions are met:
 
 1. The rightmight 2^_s_ bits of the output are 0s.
@@ -87,17 +87,17 @@ In practice, these practical conditions are usual met the first time through.
 ### Why not `bcrypt`?
 
 
-### What implementation of SHA2 and HMAC is the PassThePeas using?
+### What implementation of SHA2 and HMAC is 1SP using?
 
 Jeff Mott's `crypto-js` library [[5](#citations)].  I tested
 it with test-vectors from RFC-4231 and RFC-4868.  To make sure it 
 works for yourself, try `make test`; you'll need the `node`
 binary in your path.
 
-### How can I build PassThePeas?
+### How can I build 1SP?
 
 I've checked in a self-contained `index.html` that should have
-everything you need to run PassThePeas, including the necessary
+everything you need to run 1SP, including the necessary
 crypto libraries, the CSS, and the JS for the UI.  You can build
 it yourself using `make` in the top-level directory. By default, you'll
 need `node` installed with the `uglifyjs` package, but you can skip
