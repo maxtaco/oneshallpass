@@ -9,10 +9,17 @@ function make_wa_from_byte(byte, n) {
     var v = [];
     var i;
     var word = (byte << 24) | (byte << 16) | (byte << 8) | byte;
-    for (i = 0; i < n/4; i++) {
-        v[i] = word;
+    for (i = 0; i < (n >> 2); i++) {
+        v.push(word);
     }
     var ret = CryptoJS.lib.WordArray.create(v);
+    if (n % 4 !== 0) {
+        word = 0;
+        for (i = 0; i < n % 4; i++) {
+            word |= (byte << (8*(3 - i)));
+        }
+        ret.concat(CryptoJS.lib.WordArray.create([word], n%4));
+    }
     return ret;
 }
 
