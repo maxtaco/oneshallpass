@@ -86,10 +86,29 @@ In practice, these practical conditions are usual met the first time through.
 
 ### Why not `bcrypt`?
 
+`bcrypt` does not offer the security properties we need for 1SP.
+`bcrypt` and their ilk are useful for hashing passwords on the server-side;
+they erect obstacles to attackers who have compromised a host's password
+file and are attempting to "crack" it by guessing which passwords
+the users of the site enter when they log in.  We seek different
+properties.  In particular, we assume that an attacker has acceess
+to some of your passwords stored on servers that he broke into (and whose
+programmers failed to secure with any sort of hashing mechanism). And
+he's smart enough to know that you're using 1SP.  Thus, for each
+site he's broken into, he has a pair (t,m), where t is the input
+text to the 1SP function above, and m is the output.  His goal is 
+now to log-in as you to a different site, that he hasn't compromised.
+In other words, he seeks a new pair (t',m'), that he hasn't seen
+before, where m' is the output of the 1SP function for some new text
+t', referring to a new site.
+
+In turns out this is exactly the property HMAC provably provides under 
+certain assumptions [[5](#citations),[6](#citations)].  That is,
+they resist "existential forgery" under "known plaintext attacks".
 
 ### What implementation of SHA2 and HMAC is 1SP using?
 
-Jeff Mott's `crypto-js` library [[5](#citations)].  I tested
+Jeff Mott's `crypto-js` library [[7](#citations)].  I tested
 it with test-vectors from RFC-4231 and RFC-4868.  To make sure it 
 works for yourself, try `make test`; you'll need the `node`
 binary in your path.
@@ -128,4 +147,8 @@ Citations
 
 \[4\]: http://www.bitcoin.org
 
-\[5\]: Jeff Mott, `crypto-js`.  http://code.google.com/p/crypto-js.
+\[5\]: M. Bellare, R. Canetti, and H. Krawczyk. Keying hash functions for message authentication. CRYPTO 1996. http://cseweb.ucsd.edu/~mihir/papers/kmd5.pdf
+
+\[6\]: M. Bellare. New Proofs for NMAC and HMAC: Security without Collision-Resistance. CRYPTO 2006. http://www.iacr.org/cryptodb/archive/2006/CRYPTO/1887/1887.pdf
+
+\[7\]: Jeff Mott, `crypto-js`.  http://code.google.com/p/crypto-js.
