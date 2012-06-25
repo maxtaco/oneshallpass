@@ -1,6 +1,6 @@
 
+all: index.html README.md
 default: index.html
-all: index.html
 
 JSFILT=uglifyjs
 
@@ -29,6 +29,6 @@ doc: README.md
 	python footnoter.py < $< > $@
 
 clean:
-	rm -f index.html *-min.js crypt/*-min.js
+	rm -f index.html *-min.js crypt/*-min.js README.md
 
 .PHONY: clean test doc
