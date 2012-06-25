@@ -14,7 +14,10 @@ class Ref:
         self._citation = c
 
     def output (self, h):
-        h.write("[%d](#citations)" % self._citaiton.get_number())
+        h.write("[%d](#citations)" % self._citation.get_number())
+
+    def label (self):
+        return self._label
 
 class Text:
     def __init__ (self, txt):
@@ -30,7 +33,7 @@ class Citation:
         self._number = None
 
     def label(self):
-        return _label
+        return self._label
 
     def get_number(self):
         return self._number
@@ -43,7 +46,7 @@ class Citation:
             return True
 
     def output(self, h):
-        h.write("\\[%d\\]: %s\n\n", self._number, self._body)
+        h.write("\\[%d\\]: %s\n\n" % (self._number, self._body))
 
 
 class Table:
@@ -52,6 +55,7 @@ class Table:
         self._counter = 1
 
     def insert (self, c):
+        print "Insert %s" % c.label()
         if self._tab.get(c.label()):
             raise CitationException, "citation double-defined: %s" % c.label()
         else:
@@ -67,7 +71,7 @@ class Table:
         c = self.lookup(r)
         r.resolve_to(c)
         if c.set_number(self._counter):
-            self._counter++
+            self._counter += 1
 
 def process (inh, outh):
     rxx =  re.compile('\{#(\!(.*?):)?(.*?)#\}')
@@ -77,22 +81,26 @@ def process (inh, outh):
     refs = []
     tab = Table()
 
-    while (l = len(raw_tokens)):
-
+    go = True
+    while go:
+        l = len(raw_tokens)
         n = 0
-        if l == 1:
+        if l == 0:
+            go = False
+        elif l == 1:
             n = 1
             nodes.append (Text(raw_tokens[0]))
-        else if l < 4:
+        elif l < 4:
             raise CitationException, "weird number of tokens"
         else:
             nodes.append (Text(raw_tokens[0]))
             if not raw_tokens[1]:
                 r = Ref(raw_tokens[3])
-                refs.append (r)
+                refs.append(r)
+                nodes.append(r)
             else:
                 cite = Citation(raw_tokens[2], raw_tokens[3])
-                table.insert (cite)
+                tab.insert(cite)
                 nodes.append(cite)
             n = 4
 

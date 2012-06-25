@@ -168,6 +168,6 @@ Citations
 
 {#!bellare1: M. Bellare, R. Canetti, and H. Krawczyk. Keying hash functions for message authentication. CRYPTO 1996. http://cseweb.ucsd.edu/~mihir/papers/kmd5.pdf #}
 
-{#!bellare2: M. Bellare. New Proofs for NMAC and HMAC: Security without Collision-Resistance. CRYPTO 2006. http://www.iacr.org/cryptodb/archive/2006/CRYPTO/1887/1887.pdf }
+{#!bellare2: M. Bellare. New Proofs for NMAC and HMAC: Security without Collision-Resistance. CRYPTO 2006. http://www.iacr.org/cryptodb/archive/2006/CRYPTO/1887/1887.pdf #}
 
 {#!cryptojs: Jeff Mott, `crypto-js`.  http://code.google.com/p/crypto-js #}

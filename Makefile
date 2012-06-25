@@ -23,7 +23,12 @@ test: test/hmac-sha512-reference.js crypto-min.js
 install:
 	(cd gae && appcfg.py update one-shall-pass)
 
+doc: README.md
+
+%.md: %.md.in
+	python footnoter.py < $< > $@
+
 clean:
 	rm -f index.html *-min.js crypt/*-min.js
 
-.PHONY: clean test
+.PHONY: clean test doc
