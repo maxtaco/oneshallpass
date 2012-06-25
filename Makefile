@@ -1,6 +1,6 @@
 
-all: index.html README.md
-default: index.html
+all: www/index.html README.md
+default: www/index.html
 
 JSFILT=uglifyjs
 
@@ -14,8 +14,8 @@ crypto-min.js: crypto/core.js \
 	crypto/enc-base64.js
 	cat $^ | $(JSFILT) > $@
 
-index.html : index-in.html lib-min.js make.py main.css ui-min.js crypto-min.js 
-	python make.py < $< > $@
+www/index.html : index-in.html lib-min.js build/make.py main.css ui-min.js crypto-min.js 
+	python build/make.py < $< > $@
 
 test: test/hmac-sha512-reference.js crypto-min.js
 	node $<
@@ -26,9 +26,9 @@ install:
 doc: README.md
 
 %.md: %.md.in
-	python footnoter.py < $< > $@
+	python build/footnoter.py < $< > $@
 
 clean:
-	rm -f index.html *-min.js crypt/*-min.js README.md
+	rm -f www/index.html *-min.js crypt/*-min.js README.md
 
 .PHONY: clean test doc
