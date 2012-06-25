@@ -2,7 +2,7 @@
 
 var fs = require ('fs');
 
-var lib = fs.readFileSync("./crypto-min.js");
+var lib = fs.readFileSync("./js-min/crypto-min.js");
 eval(lib.toString());
 
 function make_wa_from_byte(byte, n) {
