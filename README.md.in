@@ -70,7 +70,7 @@ log into site _h_" with the private signing key _p_.
     
 1SP will terminate on a given _i_ once the following three conditions are met:
 
-1. The rightmight 2^_s_ bits of the output are 0s.
+1. The rightmost 2^_s_ bits of the output are 0s.
 1. When the hash is base64-encoded, the leftmost 8 characters contain 
 at least 1 uppercase, 1 lowercase, and 1 digit, and no more than 5 
 uppercase, lowercase or digit characters.
