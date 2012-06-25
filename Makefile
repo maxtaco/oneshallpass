@@ -20,8 +20,11 @@ www/index.html : index-in.html js-min/lib-min.js build/make.py main.css js-min/u
 test: test/hmac-sha512-reference.js js-min/crypto-min.js
 	node $<
 
-install:
+google-install:
 	(cd gae && appcfg.py update one-shall-pass)
+
+install:
+	ssh -A max@ws0.oneshallpass.com '( cd oneshallpass && git pull )'
 
 doc: README.md
 
