@@ -51,6 +51,13 @@ body {
     bottom: auto;
     top: auto;
 }
+
+.expand {
+    font-size: 22px;
+    border: 1px black solid;
+}
+
+
 .input-black {
     color: black;
 }
@@ -156,4 +163,15 @@ body {
     margin-top: 14px;
     text-align: center;
     font-size: 18px;
+}
+
+#expand-advanced {
+    position: relative;
+}
+
+#advanced {
+    visibility: hidden;
+    position: absolute;
+    height: 171px;
+    width: 512px;
 }

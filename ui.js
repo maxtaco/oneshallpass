@@ -173,3 +173,7 @@ function prepopulate() {
     }
 }
 
+function expand_advanced(event) {
+    document.getElementById('advanced').style.visibility = "visible";
+}
+
