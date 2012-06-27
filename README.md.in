@@ -1,10 +1,3 @@
-Insert hmac
-Insert sha2
-Insert hashcash
-Insert bitcoin
-Insert bellare1
-Insert bellare2
-Insert cryptojs
 One Shall Pass
 ===========
 
@@ -57,7 +50,7 @@ Technical FAQ
 
 ### What is the crypto behind One Shall Pass?
 
-In a nuthsell, HMAC-SHA512 \[[1](#citations),[2](#citations)\], with some slight tweaks.
+In a nuthsell, HMAC-SHA512 \[{#hmac#},{#sha2#}\], with some slight tweaks.
 
 The 1SP input form takes as input five key pieces of information:
 
@@ -93,7 +86,7 @@ checking to see if the output of the above function is what he stole from the
 database.  But he'll have to run the above function on average 2^s times per
 guess.  It won't make guessing your password impossible, just a nice constant
 factor harder.  This is the same proof-of-work idea as in
-HashCash \[[3](#citations)\], BitCoin \[[4](#citations)\], and many others.  The key
+HashCash \[{#hashcash#}\], BitCoin \[{#bitcoin#}\], and many others.  The key
 idea is that there is no know way to do the work better than
 the obvious (intended) way.
 
@@ -123,7 +116,7 @@ site, that he hasn't compromised.  In other words, he seeks a new pair (t',m'),
 that he hasn't seen before, where m' is the output of the 1SP function for some
 new text t', referring to a new site.
 
-This is exactly the property HMAC provides \[[5](#citations),[6](#citations)\].
+This is exactly the property HMAC provides \[{#bellare1#},{#bellare2#}\].
 It resists "existential forgery" under "known plaintext attacks".
 
 ### What about salt?
@@ -142,7 +135,7 @@ password "dog" will have to be cracked independently.
 
 ### What implementation of SHA2 and HMAC is 1SP using?
 
-Jeff Mott's `crypto-js` library \[[7](#citations)\].  I tested
+Jeff Mott's `crypto-js` library \[{#cryptojs#}\].  I tested
 it with test-vectors from RFC-4231 and RFC-4868.  To make sure it 
 works for yourself, try `make test`; you'll need the `node`
 binary in your path.
@@ -165,30 +158,16 @@ Maxwell Krohn
 Citations
 =========
 
-\[1\]:  HMAC: Keyed-Hashing for Message Authentication. http://www.ietf.org/rfc/rfc2104.txt 
+{#!hmac: HMAC: Keyed-Hashing for Message Authentication. http://www.ietf.org/rfc/rfc2104.txt #}
 
+{#!sha2: Secure Hash Standard, March 2012. http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf #}
 
+{#!hashcash: http://www.hashcash.org #}
 
-\[2\]:  Secure Hash Standard, March 2012. http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf 
+{#!bitcoin: http://www.bitcoin.org #}
 
+{#!bellare1: M. Bellare, R. Canetti, and H. Krawczyk. Keying hash functions for message authentication. CRYPTO 1996. http://cseweb.ucsd.edu/~mihir/papers/kmd5.pdf #}
 
+{#!bellare2: M. Bellare. New Proofs for NMAC and HMAC: Security without Collision-Resistance. CRYPTO 2006. http://www.iacr.org/cryptodb/archive/2006/CRYPTO/1887/1887.pdf #}
 
-\[3\]:  http://www.hashcash.org 
-
-
-
-\[4\]:  http://www.bitcoin.org 
-
-
-
-\[5\]:  M. Bellare, R. Canetti, and H. Krawczyk. Keying hash functions for message authentication. CRYPTO 1996. http://cseweb.ucsd.edu/~mihir/papers/kmd5.pdf 
-
-
-
-\[6\]:  M. Bellare. New Proofs for NMAC and HMAC: Security without Collision-Resistance. CRYPTO 2006. http://www.iacr.org/cryptodb/archive/2006/CRYPTO/1887/1887.pdf 
-
-
-
-\[7\]:  Jeff Mott, `crypto-js`.  http://code.google.com/p/crypto-js 
-
-
+{#!cryptojs: Jeff Mott, `crypto-js`.  http://code.google.com/p/crypto-js #}
