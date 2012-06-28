@@ -55,7 +55,6 @@ class Table:
         self._counter = 1
 
     def insert (self, c):
-        print "Insert %s" % c.label()
         if self._tab.get(c.label()):
             raise CitationException, "citation double-defined: %s" % c.label()
         else:

@@ -1,10 +1,3 @@
-Insert hmac
-Insert sha2
-Insert hashcash
-Insert bitcoin
-Insert bellare1
-Insert bellare2
-Insert cryptojs
 One Shall Pass
 ===========
 
