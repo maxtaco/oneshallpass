@@ -46,6 +46,16 @@
        </div>
       </div>
 
+      <div id="expander">
+       <div class="full-row">
+       <label for="generation" class="biglabel"> advanced </label>
+        <div class="input-row">
+         <input id="expand" type="button" value="expand" onclick="doExpand(event)" /> 
+        </div>
+       </div>
+      </div>
+
+      <div id="advanced">
       <div class="full-row">
        <label for="generation" class="biglabel"> generation </label>
        <div class="input-row">
@@ -125,9 +135,10 @@
          <option>15</option>
          <option>16</option>
         </select>
+        <input id="collapse" type="button" value="collapse" onclick="doCollapse(event)" />
        </div>
       </div>
-
+      </div>
 
     </form>
 
@@ -145,13 +156,13 @@
         <span>...waiting for input...</span>
        </div>
       </div>
-      <input type="submit" name="select" value="select" id="select" onclick="select_pw(event)" />
+      <input type="button" name="select" value="select" id="select" onclick="select_pw(event)" />
      </div>
     </div>
 
     <div id="info">
      <span>
-     See the <a href="https://github.com/maxtaco/oneshallpass">GitHub repository</a> to learn more, audit, and fork.
+     See the <a href="https://github.com/maxtaco/oneshallpass#readme">GitHub repository</a> to learn more, audit, and fork.
      </span>
     </div>
    </div>

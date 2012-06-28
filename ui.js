@@ -15,18 +15,20 @@ function key_data (data) {
     data.key = key;
 }
 
+function $(n) { return document.getElementById(n); }
+
 function toggle_computing() {
-    document.getElementById('result-need-input').style.visibility = "hidden";
-    document.getElementById('result-computing').style.visibility = "visible";
-    document.getElementById('result-computed').style.visibility = "hidden";
-    document.getElementById('select').style.visibility = "hidden";
+    $('result-need-input').style.visibility = "hidden";
+    $('result-computing').style.visibility = "visible";
+    $('result-computed').style.visibility = "hidden";
+    $('select').style.visibility = "hidden";
 }
 
 function toggle_computed () {
-    document.getElementById('result-need-input').style.visibility = "hidden";
-    document.getElementById('result-computed').style.visibility = "visible";
-    document.getElementById('select').style.visibility = "visible";
-    document.getElementById('result-computing').style.visibility = "hidden";
+    $('result-need-input').style.visibility = "hidden";
+    $('result-computed').style.visibility = "visible";
+    $('select').style.visibility = "visible";
+    $('result-computing').style.visibility = "hidden";
 }
 
 
@@ -68,7 +70,7 @@ function get_url_params() {
 
 
 function select_pw (event) {
-    var e = document.getElementById("generated_pw").firstChild;
+    var e = $("generated_pw").firstChild;
     fnSelect(e); 
 }
 
@@ -82,12 +84,12 @@ function finish_compute (obj) {
     obj.computing = false;
     context.key = null;
     toggle_computed();
-    var e = document.getElementById("generated_pw").firstChild;
+    var e = $("generated_pw").firstChild;
     e.nodeValue = format_pw (obj.generated_pw);
 }
 
 function display_computing (val) {
-    var e = document.getElementById("computing").firstChild;
+    var e = $("computing").firstChild;
     e.nodeValue = "computing.... " + val;
 }
 
@@ -137,11 +139,11 @@ function swizzle (event) {
         var i, f, v;
         for (i = 0; i < fields.length; i++) {
             f = fields[i];
-            v = document.getElementById(f).value;
+            v = $(f).value;
             data[f] = v;
         }
-        display_prefs.length = document.getElementById("length").value;
-        display_prefs.nsym = document.getElementById("nsym").value;
+        display_prefs.length = $("length").value;
+        display_prefs.nsym = $("nsym").value;
 
         // Key the data, so that we can look it up in a hash-table.
         key_data (data);
@@ -166,10 +168,19 @@ function acceptFocus (event) {
 function prepopulate() {
     var p = get_url_params();
     if (typeof(p.email) != "undefined" && p.email.length > 0) {
-        var e = document.getElementById("email");
+        var e = $("email");
         ungray(e);
         e.value = p.email;
         inputs.email = 1;
     }
 }
 
+function doExpand(event) {
+	$('expander').style.display = "none";
+	$('advanced').style.display = "inline";
+}
+
+function doCollapse(event) {
+	$('expander').style.display = "inline";
+ 	$('advanced').style.display = "none";
+}

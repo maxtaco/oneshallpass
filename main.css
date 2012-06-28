@@ -145,6 +145,11 @@ body {
     font-weight: bold;
 }
 
+#expand {
+    font-size: 22px;
+    border: 1px black solid;
+}
+
 #select {
     float: right;
     font-size: 22px;
@@ -152,8 +157,22 @@ body {
     border: 1px black solid;
 }
 
+#collapse {
+   margin-left: 125px;
+   font-size: 22px;
+   border: 1px black solid;
+}
+
 #info {
     margin-top: 14px;
     text-align: center;
     font-size: 18px;
+}
+
+#advanced {
+   display: none;
+}
+
+#expander {
+   display: inline;
 }
