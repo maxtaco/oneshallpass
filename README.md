@@ -45,6 +45,10 @@ hope to build server-side support for remembering users' generation numbers,
 but this will obviously kill disconnected operation, and will make auditing my
 work more challenging.
 
+### I'm tired of typing my email address everytime, what can I do?
+
+You can bookmark the URL https://oneshallpass.com/?email=you@email.com
+
 Technical FAQ
 =============
 
