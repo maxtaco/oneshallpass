@@ -45,6 +45,17 @@ hope to build server-side support for remembering users' generation numbers,
 but this will obviously kill disconnected operation, and will make auditing my
 work more challenging.
 
+### I'm tired of typing my email address everytime, what can I do?
+ 
+You can bookmark the URL https://oneshallpass.com/?email=you@email.com
+
+### "One Shall Pass", is that a reference to Lord of the Rings?
+
+No. Gandalf says "you cannot pass" to the Balrog on the Bridge of 
+Khazad-dûm.  "One Shall Pass" is a reference to 
+<a href="http://www.youtube.com/watch?v=dhRUe-gz690">this scene</a>
+from Monty Python's Holy Grail.
+
 Technical FAQ
 =============
 
