@@ -2,7 +2,7 @@
 all: www/index.html README.md
 default: www/index.html
 
-JSFILT=uglifyjs
+JSFILT=cat # uglifyjs
 
 js-min/%-min.js : %.js
 	$(JSFILT) < $< > $@

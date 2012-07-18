@@ -47,6 +47,8 @@ function fnSelect(obj) {
         range = document.body.createTextRange();
         range.moveToElementText(obj);
         range.select();
+		range.selectionStart = 0;
+		range.selectionEnd = range.value.length;
     } else if (window.getSelection) {
         range = document.createRange();
         range.selectNode(obj);
