@@ -17,7 +17,7 @@ code.google.com/p/crypto-js/wiki/License
     display: inline-block;
     vertical-align: top;
     margin-right: 14px;
-    width: 180px;
+    width: 140px;
     height: 34px;
     line-height: 34px;
     text-align: right;
@@ -59,7 +59,7 @@ body {
 .input-field {
     color: gray;
     border-width: 2px;
-    width: 300px;
+    width: 280px;
     padding: 2px;
     height: 36px;
     font-size: 100%;
@@ -74,7 +74,7 @@ body {
     margin: 20px auto;
     position: relative;
     border-radius: 0 0 10px 10px;
-    width: 558px;
+    width: 480px;
 }
 
 #secbits {
@@ -109,11 +109,22 @@ body {
 .title h2 {
     font-weight: normal;
     font-family: helvetica, arial, verdana, sans;
+    font-size: 24px;
+    height: 28px;
+    margin: 6px;
+    position: relative;
+    text-align: center;
+}
+
+.title h3 {
+    font-weight: normal;
+    font-family: helvetica, arial, verdana, sans;
     font-size: 20px;
     height: 20px;
     margin: 6px;
     position: relative;
     text-align: center;
+    font-weight: bold;
 }
 
 #result-wrapper {
@@ -127,7 +138,7 @@ body {
 }
 
 .result-slot {
-    width: 220px;
+    width: 210px;
     padding: 4px;
     margin: 0px;
     height: 26px;
@@ -171,10 +182,11 @@ body {
     font-size: 22px;
     visibility: hidden;
     border: 1px black solid;
+    margin-right: -12px;
 }
 
 #collapse {
-   margin-left: 125px;
+   margin-left: 112px;
    font-size: 22px;
    border: 1px black solid;
 }
@@ -201,7 +213,8 @@ body {
 
     <div class="title">
      <h1>One Shall Pass</h1>
-     <h2>Site-Specific PWs &mdash; Secure, Open, Free and Easy!</h2>
+     <h2>Site-Specific PWs</h2>
+     <h3>Secure, Open, Local, Free and Easy!</h3>
     </div>
 
     <form action="#" class="search-form" id="search-main">
@@ -219,8 +232,6 @@ body {
         <input id="email" name="email" type="text" class="input-field" value="myname@gmail.com" onfocus="acceptFocus(event);" onkeyup="swizzle(event);" autocapitalize="off"/>
        </div>
       </div>
-
-      <div class="spacer"> </div>
 
       <div class="full-row">
        <label for="host" class="biglabel">service name</label>
@@ -293,7 +304,7 @@ body {
       </div>
 
       <div class="full-row">
-       <label for="nsym" class="biglabel">symbs needed</label>
+       <label for="nsym" class="biglabel">symbols</label>
        <div class="input-row">
         <select id="nsym" name="nsym" class="input-field input-black" onChange="swizzle(event);">
          <option>0</option>

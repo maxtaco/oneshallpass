@@ -2,7 +2,7 @@
     display: inline-block;
     vertical-align: top;
     margin-right: 14px;
-    width: 180px;
+    width: 140px;
     height: 34px;
     line-height: 34px;
     text-align: right;
@@ -44,7 +44,7 @@ body {
 .input-field {
     color: gray;
     border-width: 2px;
-    width: 300px;
+    width: 280px;
     padding: 2px;
     height: 36px;
     font-size: 100%;
@@ -59,7 +59,7 @@ body {
     margin: 20px auto;
     position: relative;
     border-radius: 0 0 10px 10px;
-    width: 558px;
+    width: 480px;
 }
 
 #secbits {
@@ -94,11 +94,22 @@ body {
 .title h2 {
     font-weight: normal;
     font-family: helvetica, arial, verdana, sans;
+    font-size: 24px;
+    height: 28px;
+    margin: 6px;
+    position: relative;
+    text-align: center;
+}
+
+.title h3 {
+    font-weight: normal;
+    font-family: helvetica, arial, verdana, sans;
     font-size: 20px;
     height: 20px;
     margin: 6px;
     position: relative;
     text-align: center;
+    font-weight: bold;
 }
 
 #result-wrapper {
@@ -112,7 +123,7 @@ body {
 }
 
 .result-slot {
-    width: 220px;
+    width: 210px;
     padding: 4px;
     margin: 0px;
     height: 26px;
@@ -156,10 +167,11 @@ body {
     font-size: 22px;
     visibility: hidden;
     border: 1px black solid;
+    margin-right: -12px;
 }
 
 #collapse {
-   margin-left: 125px;
+   margin-left: 112px;
    font-size: 22px;
    border: 1px black solid;
 }
