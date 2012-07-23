@@ -210,11 +210,16 @@ function prepopulate() {
 }
 
 function domobiles() {
-	var mobile =(/iphone|ipad|ipod|android|blackberry/i.test(navigator.userAgent.toLowerCase()));
-	if (!mobile) {
-		$('frontbox').style.width =  "558px";
-	}
-
+    
+    var mobsafari = (/iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase()));
+    var mobile =(/android|blackberry/i.test(navigator.userAgent.toLowerCase()));
+    if (!mobile && !mobsafari) {
+	$('frontbox').style.width =  "558px";
+    }
+    if (mobsafari) {
+	$('email').type = "email";
+    }
+    
 }
 
 function doExpand(event) {
