@@ -126,6 +126,28 @@ function do_compute (data) {
     }
 }
 
+function trim (w) {
+    var rxx = /^(\s*)(.*?)(\s*)$/; 
+    var m = w.match (rxx);
+    return m[2];
+}
+
+function clean_host (h) {
+    return trim(h).toLowerCase();
+}
+
+function clean_email (em) {
+    return trim(em).toLowerCase();
+}
+
+function clean_passphrase (pp) {
+    var tmp = trim(pp);
+    // Replace any interior whitespace with just a single
+    // plain space, but otherwise, interior whitespaces
+    // count as part of the password.
+    return tmp.replace(/\s+/g, " ");
+}
+
 function swizzle (event) { 
 
     var se = event.srcElement;
@@ -133,9 +155,21 @@ function swizzle (event) {
         inputs[se.id] = 1;
     }
 
+    var email, passphrase, host;
+
     if (inputs.passphrase && inputs.host && inputs.email) {
-        var data = {};
-        var fields = [ "passphrase", "host", "email", "generation", "secbits" ];
+	email = clean_email ( $("email").value )
+	passphrase = clean_passphrase ( $("passphrase").value )
+	host = clean_host ( $("host").value );
+    }
+
+    if (passphrase && passphrase.length && host && host.length && email && email.length) {
+        var data = {
+	    "email" : email,
+	    "host" : host,
+	    "passphrase" : passphrase };
+
+        var fields = [ "generation", "secbits" ];
         var i, f, v;
         for (i = 0; i < fields.length; i++) {
             f = fields[i];
