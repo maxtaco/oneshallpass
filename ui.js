@@ -1,6 +1,7 @@
 
 var inputs = {};
 var cache = {};
+var browser = {};
 
 var context = {
     running : 0,
@@ -43,7 +44,10 @@ function fnDeSelect() {
 function fnSelect(obj) {
     fnDeSelect();
     var range;
-    if (document.selection) {
+    if (browser.mobsafari) {
+	obj.focus();
+	obj.setSelectionRange(0,16);
+    } else if (document.selection) {
         range = document.body.createTextRange();
         range.moveToElementText(obj);
         range.select();
@@ -51,7 +55,7 @@ function fnSelect(obj) {
         range = document.createRange();
         range.selectNode(obj);
         window.getSelection().addRange(range);
-    }
+    } 
 }
 
 function get_url_params() {
@@ -214,6 +218,7 @@ function domobiles() {
     var mobsafari = (/iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase()));
     var mobile =(/android|blackberry/i.test(navigator.userAgent.toLowerCase()));
     if (mobsafari) {
+	browser.mobsafari = true;
 	$('email').type = "email";
     }
     
