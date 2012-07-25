@@ -198,8 +198,8 @@ function ungray(element) {
 function acceptFocus (event) { 
     var se = event.srcElement;
     if (!se.className.match("input-black")) {
-        ungray(event.srcElement);
-        event.srcElement.value = "";
+        ungray(se);
+        se.value = "";
     }
 }
 

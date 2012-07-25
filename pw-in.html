@@ -1,0 +1,41 @@
+<html>
+ <head>
+  <title>
+  One Shall Pass --- Generate a Password
+  </title>
+  <script>
+  {% include js-min/crypto-min.js %}
+  {% include js-min/dict-min.js %}
+  {% include js-min/pw-min.js %}
+  </script>
+  <style type="text/css">
+  {% include pw.css %}
+  </style>
+  <meta name="viewport" content="width = device-width" />
+ </head>
+ <body>
+
+   <div id="mainbox">
+
+    <div id="title">
+     <h1>Passphrase Generator</h1>
+    </div>
+
+    <div id="junk-wrapper">
+     <textarea id="junk" onkeyup="gotInput(event)" onfocus="acceptFocus(event)">...please supply sufficient gibberish in this text area....</textarea>
+    </div>
+
+    <div id="pw-wrapper">
+
+     <p id="pw-status">
+     ...waiting for input....
+     </p>
+     <p id="pw-0" class="pw" style="display: none">&nbsp;</p>
+     <p id="pw-1" class="pw" style="display: none">&nbsp;</p>
+     <p id="pw-2" class="pw" style="display: none">&nbsp;</p>
+     <p id="pw-3" class="pw" style="display: none">&nbsp;</p>
+     <p id="pw-4" class="pw" style="display: none">&nbsp;</p>
+   <div>
+  </div>
+ </body>
+</html>
