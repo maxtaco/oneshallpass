@@ -54,6 +54,30 @@ You can bookmark the URL https://oneshallpass.com/?email=you@email.com
 Try <a href="https://oneshallpass.com/pw.html">this</a> handy tool,
 also distributed as part of this project.
 
+### How secure is this?
+
+If you use the <a href="https://oneshallpass.com/pw.html">suggested passphrase
+generation tool</a>, and the default security setting, your password will
+require in expectation 2^(58+7-1) = 2^64 calls to SHA-512 to crack. 
+
+We can use Bitcoin economics to convert hash calls to dollars.  This is a
+conservative estimate since SHA-512 is more expensive than SHA-1 to
+compute. As of 25 July 2012, the Bitcoin difficulty rate is
+1866391.3050032, meaning it takes 2^31*1866391.3 hashes on average to
+to get a Bitcoin unit, which is 50 Bitcoins, each of which is worth
+about $8.52 dollars.  So a conservative estimate is that a call to
+SHA1 costs about 50*8.52/(2^31*1866391.3) dollars, or roughly 2^(-43) dollars.
+So your password will require 2^(64-43) = 2^21 or roughly $2 million
+to crack.
+
+If you want better security, you can choose a 5-word-long passphrase,
+which will conservatively take about $50 billion to crack.
+
+### Why shouldn't I dial up the security parameter to 10 or 16?
+
+You might want to use 1SP on your phone, and it's way slower at 
+computing passwords than your desktop is.
+
 ### "One Shall Pass", is that a reference to Lord of the Rings?
 
 No. Gandalf says "you cannot pass" to the Balrog on the Bridge of 
