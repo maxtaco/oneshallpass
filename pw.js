@@ -104,7 +104,7 @@ function generate_pw() {
 }
 
 function generate() {
-    var n = 5;
+    var n = 1;
     var pws = [];
     $("pw-status").style.display = "none";
     for (var i = 0; i < n; i++) {

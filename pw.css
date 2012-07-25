@@ -1,0 +1,58 @@
+body {
+    font-family: helvetica, arial, verdana, sans;
+}
+
+#mainbox {
+    position: relative;
+    float: center;
+    margin: 20px auto;
+    width: 440px;
+    border-radius: 0 0 10px 10px;
+}
+
+#title h1 {
+    font-weight: normal;
+    font-size: 36px;
+    height: 40px;
+    margin: 6px;
+    text-align: center;
+}
+
+#junk-wrapper {
+    width: 400px;
+    position: relative;
+    float: center;
+    margin: 20px;
+}
+
+#pw-wrapper {
+    width: 400px;
+    position: relative;
+    float: center;
+    margin: 20px;
+    border: 1px black solid;
+}
+
+#pw-status {
+    position: relative;
+    float: center;
+    text-align: center;
+    width: 400px;
+    margin: 0px;
+}
+
+.pw {
+    position: relative;
+    float: center;
+    text-align: center;
+    width: 400px;
+    margin: 2px;
+    font-weight: bold;
+    font-family: monospace;
+}
+
+#junk {
+    width: 400px;
+    height: 70px;
+    margin: 0px;
+}
