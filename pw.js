@@ -6,7 +6,8 @@ var state = {
     randshorts : [],
     prev : [],
     security_param : 58,
-    showing_res : false
+    showing_res : false,
+    first_gen : null
 };
 
 function log2(x) {
@@ -56,7 +57,6 @@ function gen1(hi) {
     return res;
 }
 
-
 function generate_pw() {
     var n = Math.ceil(state.security_param / log2(dict.words.length));
     var w = [];
@@ -67,18 +67,37 @@ function generate_pw() {
     return w.join(" ");
 }
 
-function generate() {
+function show_results() {
     $("pw-status").style.display = "none";
-	var el = $("pw-0");
-	el.style.display = "inline-block";
-	el.firstChild.nodeValue = generate_pw();
+	$("pw-0").style.display = "inline-block";
     state.showing_res = true;
+}
+
+function generate() {
+	$("pw-0").firstChild.nodeValue = generate_pw();
+    show_results();
 }
 
 function hide_results() {
     $("pw-status").style.display = "inline-block";
     $("pw-0").style.display = "none";
     state.showing_res = false;
+}
+
+// Wait 3 seconds or so between the first generation
+// and any subsequent generations
+function maybe_generate_2() {
+    var go = false;
+    var now = (new Date()).getTime();
+    if (!state.first_gen) {
+        state.first_gen = now;
+        go = true;
+    } else if (now - state.first_gen > 3000) {
+        go = true;
+    }
+    if (go) {
+        generate();
+    }
 }
 
 function maybe_generate() {
@@ -88,7 +107,7 @@ function maybe_generate() {
            var txt;
            if (l > state.security_param) {
             txt = "...computing...";
-            generate();
+            maybe_generate_2();
         } else {
             if (state.showing_res) {
                 hide_results();
