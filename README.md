@@ -49,6 +49,11 @@ work more challenging.
  
 You can bookmark the URL https://oneshallpass.com/?email=you@email.com
 
+### How do I make a passphrase that's legit?
+
+Try <a href="https://oneshallpass.com/pw.html">this</a> handy tool,
+also distributed as part of this project.
+
 ### "One Shall Pass", is that a reference to Lord of the Rings?
 
 No. Gandalf says "you cannot pass" to the Balrog on the Bridge of 
