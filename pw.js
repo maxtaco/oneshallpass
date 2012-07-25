@@ -4,11 +4,9 @@ var state = {
     last_n : [],
     getFocus : false,
     randshorts : [],
-    prev : []
-}
-
-// The number of bits of entropy in the password
-var security_param = 58;
+    prev : [],
+    security_param : 58
+};
 
 function $(n) { return document.getElementById(n); }
 
@@ -19,13 +17,57 @@ function acceptFocus(event) {
 	state.gotFocus = true;
     }
 }
+
+function entropyChanged(event) {
+    state.security_param = event.srcElement.value;
+    maybe_generate();
+}
+
+function generate_pw() {
+    var n = Math.ceil(state.security_param / log2(dict.words.length));
+    var w = [];
+    var i;
+    for (i = 0; i < n; i++) {
+	w.push (dict.words[gen1(dict.words.length)]);
+    }
+    return w.join(" ");
+}
+
+function generate() {
+    var n = 1;
+    var pws = [];
+    var i;
+    $("pw-status").style.display = "none";
+    for (i = 0; i < n; i++) {
+	var el = $("pw-" + i);
+	el.style.display = "inline-block";
+	el.firstChild.nodeValue = generate_pw();
+    }
+}
+
+function maybe_generate() {
+    
+	var l = state.seed.length / 2;
+    if (l > 0) {
+	    var txt;
+	    if (l > state.security_param) {
+            txt = "...computing...";
+            generate();
+        } else {
+            txt = "Collected " + l + " of " + state.security_param + "; need MORE!";
+        }
+        $("pw-status").firstChild.nodeValue = txt;
+    }
+}
+
+
 function gotInput (event) {
     var se = event.srcElement;
 
     var kc = event.keyCode;
 
     var found = false;
-    var n = 10;
+    var n = 5;
     for (i = 0; i < n && !found; i++) {
 	if (state.last_n[i] == kc) {
 	    found = true;
@@ -33,29 +75,23 @@ function gotInput (event) {
     }
 
     if (!found) {
-	var v = state.last_n.slice(1);
+	var v = state.last_n;
+    if (v.length == n) {
+        v = v.slice(1);
+    }
 	v.push(kc);
 	state.last_n = v;
-		 
 	state.seed.push(new Date().getTime() % 100);
 	state.seed.push(event.keyCode);
-    
-	var l = state.seed.length / 2;
-	var txt;
-	if (l > security_param) {
-	    txt = "...computing...";
-	    generate();
-	} else {
-	    txt = "I got " + l + " pieces of junk but I need MORE!"
-	}
-	$("pw-status").firstChild.nodeValue = txt;
+    maybe_generate();
     }
 }
 
 function sha_to_shorts (input) {
     var digest = CryptoJS.SHA512(input);
     var out = [];
-    for (var i = 0; i < digest.words.length; i++) {
+    var i;
+    for (i = 0; i < digest.words.length; i++) {
 	word = digest.words[i];
 	out.push(word & 0xffff);
 	out.push((word >> 16) + 0x7fff);
@@ -65,13 +101,13 @@ function sha_to_shorts (input) {
 }
 
 function _gen1 () {
-    if (state.randshorts.length == 0) {
+    if (state.randshorts.length === 0) {
 	var input = state.seed.concat(state.lasthash);
 	var v = sha_to_shorts(input.toString());
 	state.lasthash = v.slice(0);
 	state.randshorts = v;
     }
-    var x = state.randshorts.pop()
+    var x = state.randshorts.pop();
     console.log ("_gen1() -> " + x);
     return x;
 }
@@ -94,23 +130,4 @@ function gen1(hi) {
     return res;
 }
 
-function generate_pw() {
-    var n = Math.ceil(security_param / log2(dict.words.length));
-    var w = [];
-    for (var i = 0; i < n; i++) {
-	w.push (dict.words[gen1(dict.words.length)]);
-    }
-    return w.join(" ");
-}
-
-function generate() {
-    var n = 1;
-    var pws = [];
-    $("pw-status").style.display = "none";
-    for (var i = 0; i < n; i++) {
-	var el = $("pw-" + i);
-	el.style.display = "inline-block";
-	el.firstChild.nodeValue = generate_pw();
-    }
-}
     

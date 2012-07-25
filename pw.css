@@ -14,23 +14,36 @@ body {
     font-weight: normal;
     font-size: 36px;
     height: 40px;
-    margin: 6px;
+    margin: 10px;
     text-align: center;
+}
+
+#title {
+    margin: 20px;
 }
 
 #junk-wrapper {
     width: 400px;
     position: relative;
     float: center;
-    margin: 20px;
+    margin: 14px;
 }
 
 #pw-wrapper {
     width: 400px;
     position: relative;
     float: center;
-    margin: 20px;
+    margin: 14px;
     border: 1px black solid;
+}
+
+#entropy-wrapper {
+    width: 400px;
+    margin: 14px;
+    position: relative;
+    float: center;
+    font-size: 14px;
+    text-align: center;
 }
 
 #pw-status {

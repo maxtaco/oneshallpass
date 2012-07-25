@@ -25,6 +25,18 @@
      <textarea id="junk" onkeyup="gotInput(event)" onfocus="acceptFocus(event)">...please supply sufficient gibberish in this text area....</textarea>
     </div>
 
+    <div id="entropy-wrapper">
+     Bits of entropy requested:
+     <select type="text" id="entropy" name="entropy" onchange="entropyChanged(event)">
+
+      <option>29</option>
+      <option>43</option>
+      <option selected="selected">58</option>
+      <option>72</option>
+      <option>87</option>
+     </select>
+    </div>
+
     <div id="pw-wrapper">
 
      <p id="pw-status">
