@@ -69,12 +69,12 @@ function generate_pw() {
 
 function show_results() {
     $("pw-status").style.display = "none";
-	$("pw-0").style.display = "inline-block";
+    $("pw-0").style.display = "inline-block";
     state.showing_res = true;
 }
 
 function generate() {
-	$("pw-0").firstChild.nodeValue = generate_pw();
+    $("pw-0").firstChild.nodeValue = generate_pw();
     show_results();
 }
 
@@ -101,18 +101,19 @@ function maybe_generate_2() {
 }
 
 function maybe_generate() {
-
+    
     var l = state.seed.length / 2;
     if (l > 0) {
-           var txt;
-           if (l > state.security_param) {
+        var txt;
+        if (l > state.security_param) {
             txt = "...computing...";
             maybe_generate_2();
         } else {
             if (state.showing_res) {
                 hide_results();
             }
-            txt = "Collected " + l + " of " + state.security_param + "; need MORE";
+            txt = "Collected " + l + " of " + 
+		state.security_param + "; need MORE";
         }
         $("pw-status").firstChild.nodeValue = txt;
     }
@@ -120,7 +121,7 @@ function maybe_generate() {
 
 function gotInput (event) {
     var se = event.srcElement;
-
+    
     var kc = event.keyCode;
 
     var found = false;
@@ -130,17 +131,17 @@ function gotInput (event) {
 	    found = true;
 	}
     }
-
+    
     if (!found) {
 	var v = state.last_n;
-    if (v.length == n) {
-        v = v.slice(1);
-    }
+	if (v.length == n) {
+            v = v.slice(1);
+	}
 	v.push(kc);
 	state.last_n = v;
 	state.seed.push(new Date().getTime() % 100);
 	state.seed.push(event.keyCode);
-    maybe_generate();
+	maybe_generate();
     }
 }
 
