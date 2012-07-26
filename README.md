@@ -47,7 +47,7 @@ work more challenging.
 
 ### I'm tired of typing my email address everytime, what can I do?
  
-You can bookmark the URL https://oneshallpass.com/?email=you@email.com
+You can bookmark the URL https://oneshallpass.com/#email=you@email.com
 
 ### How do I make a passphrase that's legit?
 
