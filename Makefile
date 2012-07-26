@@ -4,7 +4,7 @@ default: www/index.html
 
 JSFILT=uglifyjs
 
-js-min/%-min.js : %.js
+js-min/%-min.js : js/%.js
 	$(JSFILT) < $< > $@
 
 js-min/crypto-min.js: crypto/core.js \
