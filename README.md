@@ -21,7 +21,7 @@ automatically.  And if you're in the fourth, you're out several
 beans a month and can't audit the code that your security depends upon.
 
 This app — “One Shall Pass” — gives you the best of all worlds.  The ideas is
-that you remember one passphrase (which should be a quality password!), and One
+that you remember one passphrase (which should be a <a href="https://oneshallpass.com/pp.html">quality password!</a>), and One
 Shall Pass (1SP) will generate for you as many site-specific passwords as you
 need.  It runs on any browser, like that of your laptop, your smartphone, or an
 Internet kiosk.  It's self-contained, so it will run when you are disconnected,
@@ -51,12 +51,12 @@ You can bookmark the URL https://oneshallpass.com/?email=you@email.com
 
 ### How do I make a passphrase that's legit?
 
-Try <a href="https://oneshallpass.com/pw.html">this</a> handy tool,
+Try <a href="https://oneshallpass.com/pp.html">this</a> handy tool,
 also distributed as part of this project.
 
 ### How secure is this?
 
-If you use the <a href="https://oneshallpass.com/pw.html">suggested passphrase
+If you use the <a href="https://oneshallpass.com/pp.html">suggested passphrase
 generation tool</a>, and the default security setting, your password will
 require in expectation 2^(58+7-1) = 2^64 calls to HMAC-SHA512 to crack.
 Recall each call to HMAC-SHA512 takes two calls to SHA-512, meaning

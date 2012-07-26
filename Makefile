@@ -1,5 +1,5 @@
 
-all: www/index.html README.md www/pw.html
+all: www/index.html README.md www/pp.html
 default: www/index.html
 
 JSFILT=uglifyjs
@@ -17,7 +17,7 @@ js-min/crypto-min.js: crypto/core.js \
 www/index.html: html/index-in.html js-min/lib-min.js build/make.py css/main.css js-min/ui-min.js js-min/crypto-min.js 
 	python build/make.py < $< > $@
 
-www/pw.html: html/pw-in.html js-min/crypto-min.js css/pw.css js-min/pw-min.js js-min/dict-min.js
+www/pp.html: html/pp-in.html js-min/crypto-min.js css/pp.css js-min/pp-min.js js-min/dict-min.js
 	python build/make.py < $< > $@
 
 test: test/hmac-sha512-reference.js js-min/crypto-min.js

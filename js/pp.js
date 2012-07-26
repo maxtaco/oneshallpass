@@ -57,7 +57,7 @@ function gen1(hi) {
     return res;
 }
 
-function generate_pw() {
+function generate_pp() {
     var n = Math.ceil(state.security_param / log2(dict.words.length));
     var w = [];
     var i;
@@ -68,19 +68,19 @@ function generate_pw() {
 }
 
 function show_results() {
-    $("pw-status").style.display = "none";
-    $("pw-0").style.display = "inline-block";
+    $("pp-status").style.display = "none";
+    $("pp-0").style.display = "inline-block";
     state.showing_res = true;
 }
 
 function generate() {
-    $("pw-0").firstChild.nodeValue = generate_pw();
+    $("pp-0").firstChild.nodeValue = generate_pp();
     show_results();
 }
 
 function hide_results() {
-    $("pw-status").style.display = "inline-block";
-    $("pw-0").style.display = "none";
+    $("pp-status").style.display = "inline-block";
+    $("pp-0").style.display = "none";
     state.showing_res = false;
 }
 
@@ -115,7 +115,7 @@ function maybe_generate() {
             txt = "Collected " + l + " of " + 
 		state.security_param + "; need MORE";
         }
-        $("pw-status").firstChild.nodeValue = txt;
+        $("pp-status").firstChild.nodeValue = txt;
     }
 }
 
