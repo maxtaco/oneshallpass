@@ -69,7 +69,7 @@ compute. As of 25 July 2012, the Bitcoin difficulty rate is
 to get a Bitcoin unit, which is 50 Bitcoins, each of which is worth
 about $8.52 dollars.  So a conservative estimate is that a call to
 SHA1 costs about 50*8.52/(2^31*1866391.3) dollars, or roughly 2^(-43) dollars.
-So your password will require 2^(65-43) = 2^21 or roughly $4 million
+So your password will require 2^(65-43) = 2^22 or roughly $4 million
 to crack.
 
 If you want better security, you can choose a 5-word passphrase,
