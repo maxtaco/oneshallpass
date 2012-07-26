@@ -14,10 +14,10 @@ js-min/crypto-min.js: crypto/core.js \
 	crypto/enc-base64.js
 	cat $^ | $(JSFILT) > $@
 
-www/index.html : index-in.html js-min/lib-min.js build/make.py css/main.css js-min/ui-min.js js-min/crypto-min.js 
+www/index.html: html/index-in.html js-min/lib-min.js build/make.py css/main.css js-min/ui-min.js js-min/crypto-min.js 
 	python build/make.py < $< > $@
 
-www/pw.html: pw-in.html js-min/crypto-min.js css/pw.css js-min/pw-min.js js-min/dict-min.js
+www/pw.html: html/pw-in.html js-min/crypto-min.js css/pw.css js-min/pw-min.js js-min/dict-min.js
 	python build/make.py < $< > $@
 
 test: test/hmac-sha512-reference.js js-min/crypto-min.js
