@@ -21,7 +21,7 @@ automatically.  And if you're in the fourth, you're out several
 beans a month and can't audit the code that your security depends upon.
 
 This app — “One Shall Pass” — gives you the best of all worlds.  The ideas is
-that you remember one passphrase (which should be a <a href="https://oneshallpass.com/pp.html">quality password!</a>), and One
+that you remember one passphrase (which should be a <a href="https://oneshallpass.com/pp.html">quality passphrase!</a>), and One
 Shall Pass (1SP) will generate for you as many site-specific passwords as you
 need.  It runs on any browser, like that of your laptop, your smartphone, or an
 Internet kiosk.  It's self-contained, so it will run when you are disconnected,
