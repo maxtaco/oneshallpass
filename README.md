@@ -48,7 +48,7 @@ hope to build server-side support for remembering users' generation numbers,
 but this will obviously kill disconnected operation, and will make auditing my
 work more challenging.
 
-### I'm tired of typing my email address everytime, what can I do?
+### I'm tired of typing my email address every time, what can I do?
  
 You can bookmark the URL https://oneshallpass.com/#email=you@email.com
 
@@ -156,14 +156,15 @@ which conservatively costs about $100 billion to crack.
 
 ### Why not `bcrypt`?
 
-`bcrypt` does not offer the security properties we need for 1SP.
-`bcrypt` and their ilk are useful for hashing passwords on the server-side.
-They make guesses expensive for adversaries trying to "crack" a compromised
-password file, in which the adversary's goal is to recover as many
-as passwords possible in the shortest amount of time.
+Standard `bcrypt` has not, to my knowledge, been analyzed to offer the
+security properties we need for 1SP.  `bcrypt` and their ilk are
+useful for hashing passwords on the server-side.  They make guesses
+expensive for adversaries trying to "crack" a compromised password
+file, in which the adversary's goal is to recover as many as passwords
+possible in the shortest amount of time.
 
 We seek different properties.  In particular, we assume that an attacker has
-acceess to some of your passwords stored on servers that he broke into (and
+access to some of your passwords stored on servers that he broke into (and
 whose programmers failed to secure with any sort of hashing mechanism). And
 he's smart enough to know that you're using 1SP.  Thus, for each site he's
 broken into, he has a pair (t,m), where t is the input text to the 1SP function
