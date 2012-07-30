@@ -6,30 +6,33 @@ different camps:
 
 1. They reuse the same password for multiple sites.
 2. They choose different passwords for each site, and need to write them down
-   in some sort of document.
-3. They choose and try to remember different passwords for each site, following
-   some sort of ad-hoc encoding system.
+   somewhere (either offline or online). 
+3. They try to remember different passwords for each site, following
+   ad-hoc manually-computable encoding system.
 4. They use a commercial product, like 1password.
 
 If you're in the first camp, the constant security debacles at major
-Websites like Zappos and LinkedIn mean that your accounts on other sites
-are in danger of being compromised.   If you're in the second camp,
-you might run into issues if you're away from your cheatsheet, maybe
-because you're on a mobile device or using a friend's computer.  If you're in
-the third camp, you're doing what cryptography should be doing for you
-automatically.  And if you're in the fourth, you're out several
-beans a month and can't audit the code that your security depends upon.
+Websites like Zappos and LinkedIn mean that your accounts on other
+sites are in danger of being compromised.  If you're in the second
+camp, you are out of luck if you're without your cheatsheet, maybe
+because you're on a mobile device or using a friend's computer.  If
+you're in the third camp, you're doing what cryptography should be
+doing for you automatically.  And if you're in the fourth, you are
+paying a substantial monthly fee and worse, cannot audit the code that
+your security depends upon.
 
-This app — “One Shall Pass” — gives you the best of all worlds.  The ideas is
-that you remember one passphrase (which should be a <a href="https://oneshallpass.com/pp.html">quality passphrase!</a>), and One
-Shall Pass (1SP) will generate for you as many site-specific passwords as you
-need.  It runs on any browser, like that of your laptop, your smartphone, or an
-Internet kiosk.  It's self-contained, so it will run when you are disconnected,
-and you can check for yourself that no sensitive information is being shipped
-over the Internet.  It's free to use, and open-source, so you can modify it and
-audit it to your heart's content, and you need not fear being locked into
-another expensively monthly service.  And it's based on strong cryptographic
-primitives, so you'll be secure. 
+This app — “One Shall Pass” — gives you the best of all worlds.  The
+idea is that you remember one passphrase (which should be a <a
+href="https://oneshallpass.com/pp.html">quality passphrase!</a>), and
+One Shall Pass (1SP) will generate for you as many site-specific
+passwords as you need.  It runs on any browser, like the one on your
+laptop, your smartphone, or your friend's matchine.  It's
+self-contained, so it will run when you are disconnected, and you can
+check for yourself that no sensitive information is being shipped over
+the Internet.  It's free to use, and open-source, so you can modify it
+and audit it as you please, and you need not fear being locked into
+another expensive monthly service.  And it's based on strong
+cryptographic primitives, so you'll be secure.
 
 Still not convinced?  Read on to our FAQ-style introduction.
 
@@ -49,42 +52,10 @@ work more challenging.
  
 You can bookmark the URL https://oneshallpass.com/#email=you@email.com
 
-### How do I make a passphrase that's legit?
+### How do I make a good passphrase?
 
 Try <a href="https://oneshallpass.com/pp.html">this</a> handy tool,
 also distributed as part of this project.
-
-### How secure is this?
-
-If you use the <a href="https://oneshallpass.com/pp.html">suggested
-passphrase generation tool</a>, and the default security setting, your
-password will require in expectation 2^(58+7-1) = 2^64 calls to
-HMAC-SHA512 to crack. That is, the passphrase generator gives 58 bits
-of entropy, 1SP's iterative hashing scheme requires 2^7 calls to
-HMAC-SHA512 to test a passphrase, but on average, a cracker only needs
-to exhaust half of the search space to find your passphase (hence the
-2^-1 factor).  Further, recall each invocation of HMAC-SHA512 requires
-two invocations of SHA-512, meaning an expected 2^65 calls to SHA-512
-are required to crack your password.
-
-The Bitcon system [\{#bitcoin#\}] can help us put a monetary value on
-the cost of computing a hash.  After all, an adversary can either
-spend cycles mining bitcoins or cracking your passphrase.  So cracking
-your passphrase has a real, quantifiable opportunity cost.  Also, the
-Bitcoin system uses SHA-1 rather than SHA-512; the latter is more
-expensive to compute, so the estimates that follow are conservative
-understatements.
-
-As of 25 July 2012, the Bitcoin difficulty rate is
-1866391.3050032, meaning it takes 2^31*1866391.3 hashes on average to
-get a Bitcoin unit, which is 50 Bitcoins, each of which is worth
-about $8.52 dollars.  So a conservative estimate is that a call to
-SHA1 costs about 50*8.52/(2^31*1866391.3) dollars, or roughly 2^(-43) dollars.
-So your password will require 2^(65-43) = 2^22 or roughly $4 million
-to crack.
-
-If you want better security, you can choose a 5-word passphrase,
-which will conservatively cost about $100 billion to crack.
 
 ### Why shouldn't I dial up the security parameter to 10 or 16?
 
@@ -150,6 +121,38 @@ contain them without sacrificing entropy.  Moreover, since some sites
 require passwords with uppercase, lowercase, and numerical characters,
 we also require those to be present in the first 8 bytes of the password.
 In practice, these practical conditions are usual met the first time through.
+
+### How secure is this?
+
+If you use the <a href="https://oneshallpass.com/pp.html">suggested
+passphrase generation tool</a>, and the default security setting, your
+password will require in expectation 2^(58+7-1) = 2^64 calls to
+HMAC-SHA512 to crack. That is, the passphrase generator gives 58 bits
+of entropy, 1SP's iterative hashing scheme requires 2^7 calls to
+HMAC-SHA512 to test a passphrase, but on average, a cracker only needs
+to exhaust half of the search space to find your passphase (hence the
+2^(-1) factor).  Further, recall each invocation of HMAC-SHA512 requires
+two invocations of SHA-512, meaning an expected 2^65 calls to SHA-512
+are required to crack your password.
+
+The Bitcon system [\{#bitcoin#\}] can help us put a monetary value on
+the cost of computing a hash.  After all, an adversary can either
+spend cycles mining bitcoins or cracking your passphrase.  So cracking
+your passphrase has a real, quantifiable opportunity cost.  Also, the
+Bitcoin system uses SHA-1 rather than SHA-512; the latter is more
+expensive to compute, so the estimates that follow are conservative
+understatements.
+
+As of 25 July 2012, the Bitcoin difficulty rate is
+1866391.3050032, meaning it takes 2^31*1866391.3 hashes on average to
+get a Bitcoin unit, which is 50 Bitcoins, each of which is worth
+about $8.52 dollars.  So a conservative estimate is that a call to
+SHA1 costs about 50*8.52/(2^31*1866391.3) dollars, or roughly 2^(-43) dollars.
+So your password will require 2^(65-43) = 2^22 or roughly $4 million
+to crack.
+
+If you want better security, you can choose a 5-word passphrase,
+which conservatively costs about $100 billion to crack.
 
 ### Why not `bcrypt`?
 
