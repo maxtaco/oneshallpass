@@ -133,7 +133,7 @@ HMAC-SHA512 to test a passphrase, but on average, a cracker only needs
 to exhaust half of the search space to find your passphase (hence the
 2^(-1) factor).  The obvious way to compute HMAC-SHA512 requires
 two invocations of SHA2, but I have not seen a proof that two are
-required.  So conservatively, assume that an invocation of HMAC-SHA512
+required.  So conservatively, assume that one invocation of HMAC-SHA512
 is equivalent to one call to SHA2.
 
 The Bitcon system [\{#bitcoin#\}] can help us put a monetary value on
@@ -142,15 +142,15 @@ spend cycles mining bitcoins or cracking your passphrase.  So cracking
 your passphrase has a quantifiable opportunity cost. 
 
 As of 25 July 2012, the Bitcoin difficulty rate is
-1866391.3050032, meaning it takes 2^31*1866391.3 hashes on average to
+1866391.3050032, meaning it takes 2^32*1866391.3 hashes on average to
 get a Bitcoin unit, which is 50 Bitcoins, each of which is worth
 about $8.52 dollars.  So a conservative estimate is that a call to
-SHA2 costs about 50*8.52/(2^31*1866391.3) dollars, or roughly 2^(-43) dollars.
-So your password will require 2^(64-43) = 2^21 or roughly $2 million
+SHA2 costs about 50*8.52/(2^32*1866391.3) dollars, or roughly 2^(-44) dollars.
+So your password will require 2^(64-44) = 2^20 or roughly $1 million
 to crack.
 
 If you want better security, you can choose a 5-word passphrase,
-which conservatively costs about $50 billion to crack.
+which conservatively costs about $25 billion to crack.
 
 ### Why not `bcrypt`?
 
