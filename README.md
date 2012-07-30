@@ -56,24 +56,35 @@ also distributed as part of this project.
 
 ### How secure is this?
 
-If you use the <a href="https://oneshallpass.com/pp.html">suggested passphrase
-generation tool</a>, and the default security setting, your password will
-require in expectation 2^(58+7-1) = 2^64 calls to HMAC-SHA512 to crack.
-Recall each call to HMAC-SHA512 takes two calls to SHA-512, meaning
-an expected 2^65 calls to SHA-512 are required to crack your password.
+If you use the <a href="https://oneshallpass.com/pp.html">suggested
+passphrase generation tool</a>, and the default security setting, your
+password will require in expectation 2^(58+7-1) = 2^64 calls to
+HMAC-SHA512 to crack. That is, the passphrase generator gives 58 bits
+of entropy, 1SP's iterative hashing scheme requires 2^7 calls to
+HMAC-SHA512 to test a passphrase, but on average, a cracker only needs
+to exhaust half of the search space to find your passphase (hence the
+2^-1 factor).  Further, recall each invocation of HMAC-SHA512 requires
+two invocations of SHA-512, meaning an expected 2^65 calls to SHA-512
+are required to crack your password.
 
-We can use Bitcoin economics to convert hash calls to dollars.  This is a
-conservative estimate since SHA-512 is more expensive than SHA-1 to
-compute. As of 25 July 2012, the Bitcoin difficulty rate is
+The Bitcon system [\{#bitcoin#\}] can help us put a monetary value on
+the cost of computing a hash.  After all, an adversary can either
+spend cycles mining bitcoins or cracking your passphrase.  So cracking
+your passphrase has a real, quantifiable opportunity cost.  Also, the
+Bitcoin system uses SHA-1 rather than SHA-512; the latter is more
+expensive to compute, so the estimates that follow are conservative
+understatements.
+
+As of 25 July 2012, the Bitcoin difficulty rate is
 1866391.3050032, meaning it takes 2^31*1866391.3 hashes on average to
-to get a Bitcoin unit, which is 50 Bitcoins, each of which is worth
+get a Bitcoin unit, which is 50 Bitcoins, each of which is worth
 about $8.52 dollars.  So a conservative estimate is that a call to
 SHA1 costs about 50*8.52/(2^31*1866391.3) dollars, or roughly 2^(-43) dollars.
 So your password will require 2^(65-43) = 2^22 or roughly $4 million
 to crack.
 
 If you want better security, you can choose a 5-word passphrase,
-which will conservatively take about $100 billion to crack.
+which will conservatively cost about $100 billion to crack.
 
 ### Why shouldn't I dial up the security parameter to 10 or 16?
 
