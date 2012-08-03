@@ -8,6 +8,17 @@ var context = {
     key : null
 };
 
+var pp_timer = {
+    set : false,
+    set_at : 0,
+    wiggle_room : 30, // don't sweat about 30 s in either direction
+    timeout : 60*5    // timeout a PW in 5 minutes
+}
+
+function unix_time () {
+    return Math.floor ((new Date ()).getTime() / 1000);
+}
+
 var display_prefs = {};
 
 function key_data (data) {
@@ -148,8 +159,32 @@ function clean_passphrase (pp) {
     var tmp = trim(pp);
     // Replace any interior whitespace with just a single
     // plain space, but otherwise, interior whitespaces
-    // count as part of the password.
+    // count as part of the passphrase.
     return tmp.replace(/\s+/g, " ");
+}
+
+function pp_set_timer () {
+    var now = unix_time();
+    if (!pp_timer.set || (now - pp_timer.set_at) > pp_timer.wiggle_room) {
+	pp_timer.set = true;
+	pp_timer.set_at = now;
+	setTimeout(pp_timer_event, pp_timer.timeout*1000);
+    }
+}
+
+function pp_timer_event () {
+    var now = unix_time();
+    if (pp_timer.set && (now - pp_timer.set_at) >= pp_timer.timeout) {
+	$("passphrase").value = "";
+	cache = {};
+	pp_timer.set = false;
+	pp_timer.set_at = 0;
+    }
+}
+
+function pp_input (event) {
+    pp_set_timer();
+    swizzle(event);
 }
 
 function swizzle (event) { 
