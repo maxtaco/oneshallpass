@@ -26,7 +26,7 @@ idea is that you remember one passphrase (which should be a <a
 href="https://oneshallpass.com/pp.html">quality passphrase!</a>), and
 One Shall Pass (1SP) will generate for you as many site-specific
 passwords as you need.  It runs on any browser, like the one on your
-laptop, your smartphone, or your friend's matchine.  It's
+laptop, your smartphone, or your friend's machine.  It's
 self-contained, so it will run when you are disconnected, and you can
 check for yourself that no sensitive information is being shipped over
 the Internet.  It's free to use, and open-source, so you can modify it
@@ -204,6 +204,11 @@ it yourself using `make` in the top-level directory. By default, you'll
 need `node` installed with the `uglifyjs` package, but you can skip
 this dependency by replacing the `JSFILT` variable in `Makefile`
 with `cat`.  This same technique also works well for debugging.
+
+### What does the future hold?
+
+I am currently toying with a few ideas as seen in the Github issue list.  
+Feel free to comment there on what you think.
 
 
 Author
