@@ -136,7 +136,7 @@ two invocations of SHA2, but I have not seen a proof that two are
 required.  So conservatively, assume that one invocation of HMAC-SHA512
 is equivalent to one call to SHA2.
 
-The Bitcon system [\{#bitcoin#\}] can help us put a monetary value on
+The Bitcon system \[{#bitcoin#}\] can help us put a monetary value on
 the cost of computing a hash.  After all, an adversary can either
 spend cycles mining bitcoins or cracking your passphrase.  So cracking
 your passphrase has a quantifiable opportunity cost. 
