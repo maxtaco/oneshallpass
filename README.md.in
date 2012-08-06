@@ -207,8 +207,7 @@ with `cat`.  This same technique also works well for debugging.
 
 ### What does the future hold?
 
-I am currently toying with a few ideas as seen in the Github issue list.  
-Feel free to comment there on what you think.
+I am currently toying with a few ideas as seen in the Github issue list. Comments are welcome.
 
 
 Author
