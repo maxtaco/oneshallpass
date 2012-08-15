@@ -9,6 +9,9 @@
     font-weight: bold;
     border: 1px solid transparent;
     float: left;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 body {
     font-family: helvetica, arial, verdana, sans;
@@ -121,7 +124,13 @@ body {
     padding-right: 20px;
     padding-left: 20px;
 }
-
+#result-wrapper .full-row {
+    height:100%;
+    width:100%;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+    -ms-user-select: text;
+}
 .result-slot {
     width: 210px;
     padding: 4px;
