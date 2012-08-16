@@ -33,41 +33,19 @@ function toggle_computing() {
     $('result-need-input').style.visibility = "hidden";
     $('result-computing').style.visibility = "visible";
     $('result-computed').style.visibility = "hidden";
-    $('select').style.visibility = "hidden";
+}
+
+function selectText(e) {
+    e.srcElement.focus();
+    e.srcElement.select();
 }
 
 function toggle_computed () {
     $('result-need-input').style.visibility = "hidden";
     $('result-computed').style.visibility = "visible";
-    $('select').style.visibility = "visible";
     $('result-computing').style.visibility = "hidden";
 }
 
-
-function fnDeSelect() {
-    if (document.selection) { 
-        document.selection.empty(); 
-    } else if (window.getSelection) { 
-        window.getSelection().removeAllRanges(); 
-    }
-}
-
-function fnSelect(obj) {
-    fnDeSelect();
-    var range;
-    if (browser.mobsafari) {
-	obj.focus();
-	obj.setSelectionRange(0,16);
-    } else if (document.selection) {
-        range = document.body.createTextRange();
-        range.moveToElementText(obj);
-        range.select();
-    } else if (window.getSelection) {
-        range = document.createRange();
-        range.selectNode(obj);
-        window.getSelection().addRange(range);
-    } 
-}
 
 function get_url_params() {
     var urlParams = {};
@@ -83,12 +61,6 @@ function get_url_params() {
     return urlParams;
 }
 
-
-function select_pw (event) {
-    var e = $("generated_pw").firstChild;
-    fnSelect(e); 
-}
-
 function format_pw (input) {
     var ret = input.slice(0, display_prefs.length);
     ret = add_syms (ret, display_prefs.nsym);
@@ -99,8 +71,7 @@ function finish_compute (obj) {
     obj.computing = false;
     context.key = null;
     toggle_computed();
-    var e = $("generated_pw").firstChild;
-    e.nodeValue = format_pw (obj.generated_pw);
+    $("generated_pw").value = format_pw (obj.generated_pw);
 }
 
 function display_computing (val) {

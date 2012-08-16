@@ -157,26 +157,21 @@ body {
 }
 
 #result-computed {
-    color: #f33;
-    border: 1px #f33 solid;
-    font-family: monospace;
-    font-size: 22px;
+    margin: 0px;
+    padding: 0px;
     position: absolute;
     visibility: hidden;
-    font-weight: bold;
+}
+
+#generated_pw {
+    font-size: 22px;
+    width: 200px;
+    font-family: monospace;
 }
 
 #expand {
     font-size: 22px;
     border: 1px black solid;
-}
-
-#select {
-    float: right;
-    font-size: 22px;
-    visibility: hidden;
-    border: 1px black solid;
-    margin-right: -12px;
 }
 
 #collapse {
