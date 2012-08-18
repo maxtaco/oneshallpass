@@ -12,8 +12,18 @@ var pp_timer = {
     set : false,
     set_at : 0,
     wiggle_room : 30, // don't sweat about 30 s in either direction
-    timeout : 60*5    // timeout a PW in 5 minutes
-}
+    timeout : 60*5,   // timeout a PW in 5 minutes
+    timer_event : function () { $("passphrase").value = ""; }
+};
+
+var cache_timer = {
+    set : false,
+    set_at : 0,
+    wiggle_room : 30,
+    timeout : 60*30, // timeout the cache in 30 minutes
+    timer_event : function () { cache = {}; }
+};
+
 
 function unix_time () {
     return Math.floor ((new Date ()).getTime() / 1000);
@@ -134,27 +144,32 @@ function clean_passphrase (pp) {
     return tmp.replace(/\s+/g, " ");
 }
 
-function pp_set_timer () {
+function set_timer (tmobj) {
     var now = unix_time();
-    if (!pp_timer.set || (now - pp_timer.set_at) > pp_timer.wiggle_room) {
-	pp_timer.set = true;
-	pp_timer.set_at = now;
-	setTimeout(pp_timer_event, pp_timer.timeout*1000);
+    if (!tmobj.set || (now - tmobj.set_at) > tmobj.wiggle_room) {
+	tmobj.set = true;
+	tmobj.set_at = now;
+	setTimeout(function () { timer_event(tmobj); }, 
+		   tmobj.timeout*1000);
     }
 }
 
-function pp_timer_event () {
+function timer_event (tmobj) {
     var now = unix_time();
-    if (pp_timer.set && (now - pp_timer.set_at) >= pp_timer.timeout) {
-	$("passphrase").value = "";
-	cache = {};
-	pp_timer.set = false;
-	pp_timer.set_at = 0;
+    if (tmobj.set && (now - tmobj.set_at) >= tmobj.timeout) {
+	tmobj.set = false;
+	tmobj.set_at = 0;
+	tmobj.timer_event();
     }
+}
+
+function set_all_timers () {
+    set_timer(pp_timer);
+    set_timer(cache_timer);
 }
 
 function pp_input (event) {
-    pp_set_timer();
+    set_all_timers();
     swizzle(event);
 }
 
