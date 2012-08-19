@@ -81,7 +81,7 @@ Technical FAQ
 
 ### What is the crypto behind One Shall Pass?
 
-## Version 2
+#### Version 2
 
 In a nuthsell, HMAC-SHA512 \[[1](#citations),[2](#citations)\],
 and PBKDF-2 \[[3](#citations)\] with some slight tweaks.
@@ -133,7 +133,7 @@ of the input passphrase) needs to happen only once per session,
 and not once per site.  The adversary still has to do the same amount 
 of work in either case.
 
-## Version 1
+#### Version 1
 
 In a nuthsell, HMAC-SHA512 \[[1](#citations),[2](#citations)\], with some slight tweaks.
 
@@ -185,7 +185,7 @@ In practice, these practical conditions are usual met the first time through.
 
 ### How secure is this?
 
-# Version 2
+#### Version 2
 
 If you use the <a href="https://oneshallpass.com/pp.html">suggested
 passphrase generation tool</a>, and the default security setting, your

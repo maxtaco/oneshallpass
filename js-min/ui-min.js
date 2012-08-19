@@ -281,7 +281,6 @@ function prepopulate() {
     var i;
     for (i in params) {
 	curr = params[i];
-	console.log ("XXX " + curr + " -> " + p[curr]);
 	if (typeof(p[curr]) != "undefined" && p[curr].length > 0) {
             var e = $(curr);
             ungray(e);
