@@ -29,16 +29,32 @@ function unix_time () {
     return Math.floor ((new Date ()).getTime() / 1000);
 }
 
+function version_switch (version, d) {
+    var val = d[Number(version)];
+    if (!val) {
+	throw "Bad version given: " + version;
+    } else {
+	return val();
+    }
+}
+
 var display_prefs = {};
 
 function key_data (data) {
     var tmp = [ data.version ];
-    if (data.version == 1) {
-	tmp = tmp.concat([data.email, data.passphrase, 
-			  data.host, data.generation, data.secbits ]);
-    } else {
-	tmp = tmp.concat([data.email, data.passphrase, data.secbits ]);
-    }
+
+    fields = version_switch(data.version,
+			    { 1 : function() {
+				return [ data.email, 
+					 data.passphrase, 
+					 data.host, 
+					 data.generation, 
+					 data.secbits ]; },
+			      2 : function() {
+				  return [ data.email, 
+					   data.passphrase, 
+					   data.secbits ]; } });
+    tmp = tmp.concat(fields);
     var key = tmp.join(";");
     data.key = key;
 }
@@ -89,11 +105,9 @@ function finish_compute (obj) {
 
     // v1 is done, but V2 has to run one last HMAC to
     // sign for this particular site.
-    if (obj.version == 2) {
-	pw = v2_finish_compute (obj);
-    } else if (obj.version == 1) {
-	pw = obj.generated_pw;
-    }
+    pw = version_switch(obj.version,
+			{ 2 : function() { return v2_finish_compute (obj); },
+			  1 : function() { return pw = obj.generated_pw; }});
 
     toggle_computed();
     $("generated_pw").value = format_pw(pw);
@@ -106,11 +120,11 @@ function display_computing (val) {
 
 function versioned_pwgen(obj, iters, context) {
     var r = false;
-    if (obj.version == 1) {
-	r = v1_pwgen(obj,iters,context);
-    } else if (obj.version == 2) {
-	r = v2_pwgen(obj,iters,context);
-    }
+    r = version_switch(obj.version,
+		       { 1 : function() { 
+			   return v1_pwgen(obj,iters,context); },
+			 2 : function() { 
+			     return v2_pwgen(obj,iters,context); }});
     return r;
 }
 
@@ -130,12 +144,9 @@ function do_compute_loop (key, obj) {
 
 function make_compute_obj_from_cache (data, co) {
     var ret = {};
-    if (data.version == 1) {
-	ret = co;
-    } else if (data.version == 2) {
-	data.DK = co.DK;
-	ret = data;
-    }
+    ret = version_switch(data.version,
+			 { 1 : function() { return co; },
+			   2 : function () { data.DK = co.DK; return data; }});
     return ret;
 }
 
