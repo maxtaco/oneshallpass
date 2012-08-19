@@ -9,9 +9,2348 @@ CryptoJS v3.0.2
 code.google.com/p/crypto-js
 (c) 2009-2012 by Jeff Mott. All rights reserved.
 code.google.com/p/crypto-js/wiki/License
-*//**
+*/
+/**
  * CryptoJS core components.
- */var CryptoJS=CryptoJS||function(e,t){var n={},r=n.lib={},i=r.Base=function(){function e(){}return{extend:function(t){e.prototype=this;var n=new e;return t&&n.mixIn(t),n.$super=this,n},create:function(){var e=this.extend();return e.init.apply(e,arguments),e},init:function(){},mixIn:function(e){for(var t in e)e.hasOwnProperty(t)&&(this[t]=e[t]);e.hasOwnProperty("toString")&&(this.toString=e.toString)},clone:function(){return this.$super.extend(this)}}}(),s=r.WordArray=i.extend({init:function(e,n){e=this.words=e||[],n!=t?this.sigBytes=n:this.sigBytes=e.length*4},toString:function(e){return(e||u).stringify(this)},concat:function(e){var t=this.words,n=e.words,r=this.sigBytes,i=e.sigBytes;this.clamp();if(r%4)for(var s=0;s<i;s++){var o=n[s>>>2]>>>24-s%4*8&255;t[r+s>>>2]|=o<<24-(r+s)%4*8}else if(n.length>65535)for(var s=0;s<i;s+=4)t[r+s>>>2]=n[s>>>2];else t.push.apply(t,n);return this.sigBytes+=i,this},clamp:function(){var t=this.words,n=this.sigBytes;t[n>>>2]&=4294967295<<32-n%4*8,t.length=e.ceil(n/4)},clone:function(){var e=i.clone.call(this);return e.words=this.words.slice(0),e},random:function(t){var n=[];for(var r=0;r<t;r+=4)n.push(e.random()*4294967296|0);return s.create(n,t)}}),o=n.enc={},u=o.Hex={stringify:function(e){var t=e.words,n=e.sigBytes,r=[];for(var i=0;i<n;i++){var s=t[i>>>2]>>>24-i%4*8&255;r.push((s>>>4).toString(16)),r.push((s&15).toString(16))}return r.join("")},parse:function(e){var t=e.length,n=[];for(var r=0;r<t;r+=2)n[r>>>3]|=parseInt(e.substr(r,2),16)<<24-r%8*4;return s.create(n,t/2)}},a=o.Latin1={stringify:function(e){var t=e.words,n=e.sigBytes,r=[];for(var i=0;i<n;i++){var s=t[i>>>2]>>>24-i%4*8&255;r.push(String.fromCharCode(s))}return r.join("")},parse:function(e){var t=e.length,n=[];for(var r=0;r<t;r++)n[r>>>2]|=(e.charCodeAt(r)&255)<<24-r%4*8;return s.create(n,t)}},f=o.Utf8={stringify:function(e){try{return decodeURIComponent(escape(a.stringify(e)))}catch(t){throw new Error("Malformed UTF-8 data")}},parse:function(e){return a.parse(unescape(encodeURIComponent(e)))}},l=r.BufferedBlockAlgorithm=i.extend({reset:function(){this._data=s.create(),this._nDataBytes=0},_append:function(e){typeof e=="string"&&(e=f.parse(e)),this._data.concat(e),this._nDataBytes+=e.sigBytes},_process:function(t){var n=this._data,r=n.words,i=n.sigBytes,o=this.blockSize,u=o*4,a=i/u;t?a=e.ceil(a):a=e.max((a|0)-this._minBufferSize,0);var f=a*o,l=e.min(f*4,i);if(f){for(var c=0;c<f;c+=o)this._doProcessBlock(r,c);var h=r.splice(0,f);n.sigBytes-=l}return s.create(h,l)},clone:function(){var e=i.clone.call(this);return e._data=this._data.clone(),e},_minBufferSize:0}),c=r.Hasher=l.extend({init:function(e){this.reset()},reset:function(){l.reset.call(this),this._doReset()},update:function(e){return this._append(e),this._process(),this},finalize:function(e){return e&&this._append(e),this._doFinalize(),this._hash},clone:function(){var e=l.clone.call(this);return e._hash=this._hash.clone(),e},blockSize:16,_createHelper:function(e){return function(t,n){return e.create(n).finalize(t)}},_createHmacHelper:function(e){return function(t,n){return h.HMAC.create(e,n).finalize(t)}}}),h=n.algo={};return n}(Math);(function(e){var t=CryptoJS,n=t.lib,r=n.Base,i=n.WordArray,s=t.x64={},o=s.Word=r.extend({init:function(e,t){this.high=e,this.low=t}}),u=s.WordArray=r.extend({init:function(t,n){t=this.words=t||[],n!=e?this.sigBytes=n:this.sigBytes=t.length*8},toX32:function(){var e=this.words,t=e.length,n=[];for(var r=0;r<t;r++){var s=e[r];n.push(s.high),n.push(s.low)}return i.create(n,this.sigBytes)},clone:function(){var e=r.clone.call(this),t=e.words=this.words.slice(0),n=t.length;for(var i=0;i<n;i++)t[i]=t[i].clone();return e}})})(),function(){var e=CryptoJS,t=e.lib,n=t.Base,r=e.enc,i=r.Utf8,s=e.algo,o=s.HMAC=n.extend({init:function(e,t){e=this._hasher=e.create(),typeof t=="string"&&(t=i.parse(t));var n=e.blockSize,r=n*4;t.sigBytes>r&&(t=e.finalize(t));var s=this._oKey=t.clone(),o=this._iKey=t.clone(),u=s.words,a=o.words;for(var f=0;f<n;f++)u[f]^=1549556828,a[f]^=909522486;s.sigBytes=o.sigBytes=r,this.reset()},reset:function(){var e=this._hasher;e.reset(),e.update(this._iKey)},update:function(e){return this._hasher.update(e),this},finalize:function(e){var t=this._hasher,n=t.finalize(e);t.reset();var r=t.finalize(this._oKey.clone().concat(n));return r}})}(),function(){var e=CryptoJS,t=e.lib,n=t.WordArray,r=t.Hasher,i=e.algo,s=[],o=i.SHA1=r.extend({_doReset:function(){this._hash=n.create([1732584193,4023233417,2562383102,271733878,3285377520])},_doProcessBlock:function(e,t){var n=this._hash.words,r=n[0],i=n[1],o=n[2],u=n[3],a=n[4];for(var f=0;f<80;f++){if(f<16)s[f]=e[t+f]|0;else{var l=s[f-3]^s[f-8]^s[f-14]^s[f-16];s[f]=l<<1|l>>>31}var c=(r<<5|r>>>27)+a+s[f];f<20?c+=(i&o|~i&u)+1518500249:f<40?c+=(i^o^u)+1859775393:f<60?c+=(i&o|i&u|o&u)-1894007588:c+=(i^o^u)-899497514,a=u,u=o,o=i<<30|i>>>2,i=r,r=c}n[0]=n[0]+r|0,n[1]=n[1]+i|0,n[2]=n[2]+o|0,n[3]=n[3]+u|0,n[4]=n[4]+a|0},_doFinalize:function(){var e=this._data,t=e.words,n=this._nDataBytes*8,r=e.sigBytes*8;t[r>>>5]|=128<<24-r%32,t[(r+64>>>9<<4)+15]=n,e.sigBytes=t.length*4,this._process()}});e.SHA1=r._createHelper(o),e.HmacSHA1=r._createHmacHelper(o)}(),function(){function u(){return i.create.apply(i,arguments)}var e=CryptoJS,t=e.lib,n=t.Hasher,r=e.x64,i=r.Word,s=r.WordArray,o=e.algo,a=[u(1116352408,3609767458),u(1899447441,602891725),u(3049323471,3964484399),u(3921009573,2173295548),u(961987163,4081628472),u(1508970993,3053834265),u(2453635748,2937671579),u(2870763221,3664609560),u(3624381080,2734883394),u(310598401,1164996542),u(607225278,1323610764),u(1426881987,3590304994),u(1925078388,4068182383),u(2162078206,991336113),u(2614888103,633803317),u(3248222580,3479774868),u(3835390401,2666613458),u(4022224774,944711139),u(264347078,2341262773),u(604807628,2007800933),u(770255983,1495990901),u(1249150122,1856431235),u(1555081692,3175218132),u(1996064986,2198950837),u(2554220882,3999719339),u(2821834349,766784016),u(2952996808,2566594879),u(3210313671,3203337956),u(3336571891,1034457026),u(3584528711,2466948901),u(113926993,3758326383),u(338241895,168717936),u(666307205,1188179964),u(773529912,1546045734),u(1294757372,1522805485),u(1396182291,2643833823),u(1695183700,2343527390),u(1986661051,1014477480),u(2177026350,1206759142),u(2456956037,344077627),u(2730485921,1290863460),u(2820302411,3158454273),u(3259730800,3505952657),u(3345764771,106217008),u(3516065817,3606008344),u(3600352804,1432725776),u(4094571909,1467031594),u(275423344,851169720),u(430227734,3100823752),u(506948616,1363258195),u(659060556,3750685593),u(883997877,3785050280),u(958139571,3318307427),u(1322822218,3812723403),u(1537002063,2003034995),u(1747873779,3602036899),u(1955562222,1575990012),u(2024104815,1125592928),u(2227730452,2716904306),u(2361852424,442776044),u(2428436474,593698344),u(2756734187,3733110249),u(3204031479,2999351573),u(3329325298,3815920427),u(3391569614,3928383900),u(3515267271,566280711),u(3940187606,3454069534),u(4118630271,4000239992),u(116418474,1914138554),u(174292421,2731055270),u(289380356,3203993006),u(460393269,320620315),u(685471733,587496836),u(852142971,1086792851),u(1017036298,365543100),u(1126000580,2618297676),u(1288033470,3409855158),u(1501505948,4234509866),u(1607167915,987167468),u(1816402316,1246189591)],f=[];(function(){for(var e=0;e<80;e++)f[e]=u()})();var l=o.SHA512=n.extend({_doReset:function(){this._hash=s.create([u(1779033703,4089235720),u(3144134277,2227873595),u(1013904242,4271175723),u(2773480762,1595750129),u(1359893119,2917565137),u(2600822924,725511199),u(528734635,4215389547),u(1541459225,327033209)])},_doProcessBlock:function(e,t){var n=this._hash.words,r=n[0],i=n[1],s=n[2],o=n[3],u=n[4],l=n[5],c=n[6],h=n[7],p=r.high,d=r.low,v=i.high,m=i.low,g=s.high,y=s.low,b=o.high,w=o.low,E=u.high,S=u.low,x=l.high,T=l.low,N=c.high,C=c.low,k=h.high,L=h.low,A=p,O=d,M=v,_=m,D=g,P=y,H=b,B=w,j=E,F=S,I=x,q=T,R=N,U=C,z=k,X=L;for(var V=0;V<80;V++){var $=f[V];if(V<16)var J=$.high=e[t+V*2]|0,Q=$.low=e[t+V*2+1]|0;else{var G=f[V-15],Y=G.high,Z=G.low,et=(Z<<31|Y>>>1)^(Z<<24|Y>>>8)^Y>>>7,tt=(Y<<31|Z>>>1)^(Y<<24|Z>>>8)^(Y<<25|Z>>>7),nt=f[V-2],rt=nt.high,it=nt.low,st=(it<<13|rt>>>19)^(rt<<3|it>>>29)^rt>>>6,ot=(rt<<13|it>>>19)^(it<<3|rt>>>29)^(rt<<26|it>>>6),ut=f[V-7],at=ut.high,ft=ut.low,lt=f[V-16],ct=lt.high,ht=lt.low,Q=tt+ft,J=et+at+(Q>>>0<tt>>>0?1:0),Q=Q+ot,J=J+st+(Q>>>0<ot>>>0?1:0),Q=Q+ht,J=J+ct+(Q>>>0<ht>>>0?1:0);$.high=J,$.low=Q}var pt=j&I^~j&R,dt=F&q^~F&U,vt=A&M^A&D^M&D,mt=O&_^O&P^_&P,gt=(O<<4|A>>>28)^(A<<30|O>>>2)^(A<<25|O>>>7),yt=(A<<4|O>>>28)^(O<<30|A>>>2)^(O<<25|A>>>7),bt=(F<<18|j>>>14)^(F<<14|j>>>18)^(j<<23|F>>>9),wt=(j<<18|F>>>14)^(j<<14|F>>>18)^(F<<23|j>>>9),Et=a[V],St=Et.high,xt=Et.low,Tt=X+wt,Nt=z+bt+(Tt>>>0<X>>>0?1:0),Tt=Tt+dt,Nt=Nt+pt+(Tt>>>0<dt>>>0?1:0),Tt=Tt+xt,Nt=Nt+St+(Tt>>>0<xt>>>0?1:0),Tt=Tt+Q,Nt=Nt+J+(Tt>>>0<Q>>>0?1:0),Ct=yt+mt,kt=gt+vt+(Ct>>>0<yt>>>0?1:0);z=R,X=U,R=I,U=q,I=j,q=F,F=B+Tt|0,j=H+Nt+(F>>>0<B>>>0?1:0)|0,H=D,B=P,D=M,P=_,M=A,_=O,O=Tt+Ct|0,A=Nt+kt+(O>>>0<Tt>>>0?1:0)|0}d=r.low=d+O|0,r.high=p+A+(d>>>0<O>>>0?1:0)|0,m=i.low=m+_|0,i.high=v+M+(m>>>0<_>>>0?1:0)|0,y=s.low=y+P|0,s.high=g+D+(y>>>0<P>>>0?1:0)|0,w=o.low=w+B|0,o.high=b+H+(w>>>0<B>>>0?1:0)|0,S=u.low=S+F|0,u.high=E+j+(S>>>0<F>>>0?1:0)|0,T=l.low=T+q|0,l.high=x+I+(T>>>0<q>>>0?1:0)|0,C=c.low=C+U|0,c.high=N+R+(C>>>0<U>>>0?1:0)|0,L=h.low=L+X|0,h.high=k+z+(L>>>0<X>>>0?1:0)|0},_doFinalize:function(){var e=this._data,t=e.words,n=this._nDataBytes*8,r=e.sigBytes*8;t[r>>>5]|=128<<24-r%32,t[(r+128>>>10<<5)+31]=n,e.sigBytes=t.length*4,this._process(),this._hash=this._hash.toX32()},blockSize:32});e.SHA512=n._createHelper(l),e.HmacSHA512=n._createHmacHelper(l)}(),function(){var e=CryptoJS,t=e.lib,n=t.WordArray,r=e.enc,i=r.Base64={stringify:function(e){var t=e.words,n=e.sigBytes,r=this._map;e.clamp();var i=[];for(var s=0;s<n;s+=3){var o=t[s>>>2]>>>24-s%4*8&255,u=t[s+1>>>2]>>>24-(s+1)%4*8&255,a=t[s+2>>>2]>>>24-(s+2)%4*8&255,f=o<<16|u<<8|a;for(var l=0;l<4&&s+l*.75<n;l++)i.push(r.charAt(f>>>6*(3-l)&63))}var c=r.charAt(64);if(c)while(i.length%4)i.push(c);return i.join("")},parse:function(e){e=e.replace(/\s/g,"");var t=e.length,r=this._map,i=r.charAt(64);if(i){var s=e.indexOf(i);s!=-1&&(t=s)}var o=[],u=0;for(var a=0;a<t;a++)if(a%4){var f=r.indexOf(e.charAt(a-1))<<a%4*2,l=r.indexOf(e.charAt(a))>>>6-a%4*2;o[u>>>2]|=(f|l)<<24-u%4*8,u++}return n.create(o,u)},_map:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="}}(),function(){var e=CryptoJS,t=e.lib,n=t.Base,r=t.WordArray,i=e.algo,s=i.SHA1,o=i.HMAC,u=i.PBKDF2=n.extend({cfg:n.extend({keySize:4,hasher:s,iterations:1}),init:function(e){this.cfg=this.cfg.extend(e)},compute:function(e,t){var n=this.cfg,i=o.create(n.hasher,e),s=r.create(),u=r.create([1]),a=s.words,f=u.words,l=n.keySize,c=n.iterations;while(a.length<l){var h=i.update(t).finalize(u);i.reset();var p=h.words,d=p.length,v=h;for(var m=1;m<c;m++){v=i.finalize(v),i.reset();var g=v.words;for(var y=0;y<d;y++)p[y]^=g[y]}s.concat(h),f[0]++}return s.sigBytes=l*4,s}});e.PBKDF2=function(e,t,n){return u.create(n).compute(e,t)}}();  function isUpper(e){return"A".charCodeAt(0)<=e&&e<="Z".charCodeAt(0)}function isLower(e){return"a".charCodeAt(0)<=e&&e<="z".charCodeAt(0)}function isDigit(e){return"0".charCodeAt(0)<=e&&e<="9".charCodeAt(0)}function is_ok_pw(e){var t=0,n=0,r=0,i=0,s=0,o=0,u;for(n=0;n<min_size;n++){u=e.charCodeAt(n);if(isDigit(u))s++;else if(isUpper(u))r++;else{if(!isLower(u))return!1;i++}}if(s===0||i===0||r===0||s>5||i>5||r>5)return!1;for(;n<max_size;n++){u=e.charCodeAt(n);if(!isDigit(u)&&!isUpper(u)&&!isLower(u))return!1}return!0}function find_class_to_sub(e){var t=e.length,n,r=0,i=0,s=0,o=0,u;for(n=0;n<min_size;n++)u=e.charCodeAt(n),isDigit(u)?s++:isUpper(u)?r++:isLower(u)&&i++;return i>=r&&i>=s?isLower:s>i&&s>=r?isDigit:isUpper}function pwgen(e,t,n){e.generated_pw=null;var r=1<<parseInt(e.secbits,10),i;for(i=0;i<t&&!e.generated_pw&&e.key==n.key;i++){var s=["OneShallPass v1.0",e.email,e.host,e.generation,e.iter],o=s.join("; "),u=CryptoJS.HmacSHA512(o,e.passphrase),a=u.toString(),f=u.toString(CryptoJS.enc.Base64),l=parseInt(a.slice(a.length-8,a.length),16);l%r===0&&is_ok_pw(f)?e.generated_pw=f:e.iter++}var c=!!e.generated_pw;return c}function translate_at_indices(e,t,n){var r=0,i=[],s;for(s=0;s<t.length;s++){var o=t[s];i.push(e.slice(r,o));var u=e.charAt(o),a=CryptoJS.enc.Base64._map.indexOf(u);u=n.charAt(a%n.length),i.push(u),r=o+1}return i.push(e.slice(r,e.length)),i.join("")}function add_syms_at_indices(e,t){var n="`~!@#$%^&*()-_+={}[]|;:,<>.?/";return translate_at_indices(e,t,n)}function add_syms(e,t){if(t<=0)return e;var n=find_class_to_sub(e),r,i=[];for(r=0;t>0&&r<min_size;r++){var s=e.charCodeAt(r);n(s)&&(t--,i.push(r))}return add_syms_at_indices(e,i)}var min_size=8,max_size=16;typeof exports!="undefined"&&(exports.add_syms=add_syms,exports.add_syms_at_indices=add_syms_at_indices,exports.pwgen=pwgen);  function unix_time(){return Math.floor((new Date).getTime()/1e3)}function key_data(e){var t=[e.email,e.passphrase,e.host,e.generation,e.secbits],n=t.join(";");e.key=n}function $(e){return document.getElementById(e)}function toggle_computing(){$("result-need-input").style.visibility="hidden",$("result-computing").style.visibility="visible",$("result-computed").style.visibility="hidden"}function selectText(e){e.srcElement.focus(),e.srcElement.select()}function toggle_computed(){$("result-need-input").style.visibility="hidden",$("result-computed").style.visibility="visible",$("result-computing").style.visibility="hidden"}function get_url_params(){var e={},t,n=/\+/g,r=/([^&=]+)=?([^&]*)/g,i=function(e){return decodeURIComponent(e.replace(n," "))},s=window.location.hash.substring(1);while(t=r.exec(s))e[i(t[1])]=i(t[2]);return e}function format_pw(e){var t=e.slice(0,display_prefs.length);return t=add_syms(t,display_prefs.nsym),t}function finish_compute(e){e.computing=!1,context.key=null,toggle_computed(),$("generated_pw").value=format_pw(e.generated_pw)}function display_computing(e){var t=$("computing").firstChild;t.nodeValue="computing.... "+e}function do_compute_loop(e,t){var n=t,r=10;e==context.key&&(pwgen(t,r,context)?finish_compute(t):(display_computing(t.iter),setTimeout(function(){do_compute_loop(e,n)},0)))}function do_compute(e){toggle_computing();var t=e.key,n=cache[t];n||(cache[t]=e,n=e),n.generated_pw?finish_compute(n):n.computing||(context.key=t,n.computing=!0,n.iter=0,display_computing(""),setTimeout(function(){do_compute_loop(t,n)},500))}function trim(e){var t=/^(\s*)(.*?)(\s*)$/,n=e.match(t);return n[2]}function clean_host(e){return trim(e).toLowerCase()}function clean_email(e){return trim(e).toLowerCase()}function clean_passphrase(e){var t=trim(e);return t.replace(/\s+/g," ")}function pp_set_timer(){var e=unix_time();if(!pp_timer.set||e-pp_timer.set_at>pp_timer.wiggle_room)pp_timer.set=!0,pp_timer.set_at=e,setTimeout(pp_timer_event,pp_timer.timeout*1e3)}function pp_timer_event(){var e=unix_time();pp_timer.set&&e-pp_timer.set_at>=pp_timer.timeout&&($("passphrase").value="",cache={},pp_timer.set=!1,pp_timer.set_at=0)}function pp_input(e){pp_set_timer(),swizzle(e)}function swizzle(e){var t=e.srcElement;t.value.length>0&&(inputs[t.id]=1);var n,r,i;inputs.passphrase&&inputs.host&&inputs.email&&(n=clean_email($("email").value),r=clean_passphrase($("passphrase").value),i=clean_host($("host").value));if(r&&r.length&&i&&i.length&&n&&n.length){var s={email:n,host:i,passphrase:r},o=["generation","secbits"],u,a,f;for(u=0;u<o.length;u++)a=o[u],f=$(a).value,s[a]=f;display_prefs.length=$("length").value,display_prefs.nsym=$("nsym").value,key_data(s),do_compute(s)}return 0}function ungray(e){e.className+=" input-black"}function acceptFocus(e){var t=e.srcElement;t.className.match("input-black")||(ungray(t),t.value="")}function prepopulate(){var e=get_url_params();if(typeof e.email!="undefined"&&e.email.length>0){var t=$("email");ungray(t),t.value=e.email,inputs.email=1}}function domobiles(){var e=/iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase()),t=/android|blackberry/i.test(navigator.userAgent.toLowerCase());e&&(browser.mobsafari=!0,$("email").type="email")}function doExpand(e){$("expander").style.display="none",$("advanced").style.display="inline"}function doCollapse(e){$("expander").style.display="inline",$("advanced").style.display="none"}var inputs={},cache={},browser={},context={running:0,key:null},pp_timer={set:!1,set_at:0,wiggle_room:30,timeout:300},display_prefs={};  </script>
+ */
+var CryptoJS = CryptoJS || (function (Math, undefined) {
+    /**
+     * CryptoJS namespace.
+     */
+    var C = {};
+
+    /**
+     * Library namespace.
+     */
+    var C_lib = C.lib = {};
+
+    /**
+     * Base object for prototypal inheritance.
+     */
+    var Base = C_lib.Base = (function () {
+        function F() {}
+
+        return {
+            /**
+             * Creates a new object that inherits from this object.
+             *
+             * @param {Object} overrides Properties to copy into the new object.
+             *
+             * @return {Object} The new object.
+             *
+             * @static
+             *
+             * @example
+             *
+             *     var MyType = CryptoJS.lib.Base.extend({
+             *         field: 'value',
+             *
+             *         method: function () {
+             *         }
+             *     });
+             */
+            extend: function (overrides) {
+                // Spawn
+                F.prototype = this;
+                var subtype = new F();
+
+                // Augment
+                if (overrides) {
+                    subtype.mixIn(overrides);
+                }
+
+                // Reference supertype
+                subtype.$super = this;
+
+                return subtype;
+            },
+
+            /**
+             * Extends this object and runs the init method.
+             * Arguments to create() will be passed to init().
+             *
+             * @return {Object} The new object.
+             *
+             * @static
+             *
+             * @example
+             *
+             *     var instance = MyType.create();
+             */
+            create: function () {
+                var instance = this.extend();
+                instance.init.apply(instance, arguments);
+
+                return instance;
+            },
+
+            /**
+             * Initializes a newly created object.
+             * Override this method to add some logic when your objects are created.
+             *
+             * @example
+             *
+             *     var MyType = CryptoJS.lib.Base.extend({
+             *         init: function () {
+             *             // ...
+             *         }
+             *     });
+             */
+            init: function () {
+            },
+
+            /**
+             * Copies properties into this object.
+             *
+             * @param {Object} properties The properties to mix in.
+             *
+             * @example
+             *
+             *     MyType.mixIn({
+             *         field: 'value'
+             *     });
+             */
+            mixIn: function (properties) {
+                for (var propertyName in properties) {
+                    if (properties.hasOwnProperty(propertyName)) {
+                        this[propertyName] = properties[propertyName];
+                    }
+                }
+
+                // IE won't copy toString using the loop above
+                // Other non-enumerable properties are:
+                //   hasOwnProperty, isPrototypeOf, propertyIsEnumerable,
+                //   toLocaleString, valueOf
+                if (properties.hasOwnProperty('toString')) {
+                    this.toString = properties.toString;
+                }
+            },
+
+            /**
+             * Creates a copy of this object.
+             *
+             * @return {Object} The clone.
+             *
+             * @example
+             *
+             *     var clone = instance.clone();
+             */
+            clone: function () {
+                return this.$super.extend(this);
+            }
+        };
+    }());
+
+    /**
+     * An array of 32-bit words.
+     *
+     * @property {Array} words The array of 32-bit words.
+     * @property {number} sigBytes The number of significant bytes in this word array.
+     */
+    var WordArray = C_lib.WordArray = Base.extend({
+        /**
+         * Initializes a newly created word array.
+         *
+         * @param {Array} words (Optional) An array of 32-bit words.
+         * @param {number} sigBytes (Optional) The number of significant bytes in the words.
+         *
+         * @example
+         *
+         *     var wordArray = CryptoJS.lib.WordArray.create();
+         *     var wordArray = CryptoJS.lib.WordArray.create([0x00010203, 0x04050607]);
+         *     var wordArray = CryptoJS.lib.WordArray.create([0x00010203, 0x04050607], 6);
+         */
+        init: function (words, sigBytes) {
+            words = this.words = words || [];
+
+            if (sigBytes != undefined) {
+                this.sigBytes = sigBytes;
+            } else {
+                this.sigBytes = words.length * 4;
+            }
+        },
+
+        /**
+         * Converts this word array to a string.
+         *
+         * @param {Encoder} encoder (Optional) The encoding strategy to use. Default: CryptoJS.enc.Hex
+         *
+         * @return {string} The stringified word array.
+         *
+         * @example
+         *
+         *     var string = wordArray + '';
+         *     var string = wordArray.toString();
+         *     var string = wordArray.toString(CryptoJS.enc.Utf8);
+         */
+        toString: function (encoder) {
+            return (encoder || Hex).stringify(this);
+        },
+
+        /**
+         * Concatenates a word array to this word array.
+         *
+         * @param {WordArray} wordArray The word array to append.
+         *
+         * @return {WordArray} This word array.
+         *
+         * @example
+         *
+         *     wordArray1.concat(wordArray2);
+         */
+        concat: function (wordArray) {
+            // Shortcuts
+            var thisWords = this.words;
+            var thatWords = wordArray.words;
+            var thisSigBytes = this.sigBytes;
+            var thatSigBytes = wordArray.sigBytes;
+
+            // Clamp excess bits
+            this.clamp();
+
+            // Concat
+            if (thisSigBytes % 4) {
+                // Copy one byte at a time
+                for (var i = 0; i < thatSigBytes; i++) {
+                    var thatByte = (thatWords[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+                    thisWords[(thisSigBytes + i) >>> 2] |= thatByte << (24 - ((thisSigBytes + i) % 4) * 8);
+                }
+            } else if (thatWords.length > 0xffff) {
+                // Copy one word at a time
+                for (var i = 0; i < thatSigBytes; i += 4) {
+                    thisWords[(thisSigBytes + i) >>> 2] = thatWords[i >>> 2];
+                }
+            } else {
+                // Copy all words at once
+                thisWords.push.apply(thisWords, thatWords);
+            }
+            this.sigBytes += thatSigBytes;
+
+            // Chainable
+            return this;
+        },
+
+        /**
+         * Removes insignificant bits.
+         *
+         * @example
+         *
+         *     wordArray.clamp();
+         */
+        clamp: function () {
+            // Shortcuts
+            var words = this.words;
+            var sigBytes = this.sigBytes;
+
+            // Clamp
+            words[sigBytes >>> 2] &= 0xffffffff << (32 - (sigBytes % 4) * 8);
+            words.length = Math.ceil(sigBytes / 4);
+        },
+
+        /**
+         * Creates a copy of this word array.
+         *
+         * @return {WordArray} The clone.
+         *
+         * @example
+         *
+         *     var clone = wordArray.clone();
+         */
+        clone: function () {
+            var clone = Base.clone.call(this);
+            clone.words = this.words.slice(0);
+
+            return clone;
+        },
+
+        /**
+         * Creates a word array filled with random bytes.
+         *
+         * @param {number} nBytes The number of random bytes to generate.
+         *
+         * @return {WordArray} The random word array.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var wordArray = CryptoJS.lib.WordArray.random(16);
+         */
+        random: function (nBytes) {
+            var words = [];
+            for (var i = 0; i < nBytes; i += 4) {
+                words.push((Math.random() * 0x100000000) | 0);
+            }
+
+            return WordArray.create(words, nBytes);
+        }
+    });
+
+    /**
+     * Encoder namespace.
+     */
+    var C_enc = C.enc = {};
+
+    /**
+     * Hex encoding strategy.
+     */
+    var Hex = C_enc.Hex = {
+        /**
+         * Converts a word array to a hex string.
+         *
+         * @param {WordArray} wordArray The word array.
+         *
+         * @return {string} The hex string.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var hexString = CryptoJS.enc.Hex.stringify(wordArray);
+         */
+        stringify: function (wordArray) {
+            // Shortcuts
+            var words = wordArray.words;
+            var sigBytes = wordArray.sigBytes;
+
+            // Convert
+            var hexChars = [];
+            for (var i = 0; i < sigBytes; i++) {
+                var bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+                hexChars.push((bite >>> 4).toString(16));
+                hexChars.push((bite & 0x0f).toString(16));
+            }
+
+            return hexChars.join('');
+        },
+
+        /**
+         * Converts a hex string to a word array.
+         *
+         * @param {string} hexStr The hex string.
+         *
+         * @return {WordArray} The word array.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var wordArray = CryptoJS.enc.Hex.parse(hexString);
+         */
+        parse: function (hexStr) {
+            // Shortcut
+            var hexStrLength = hexStr.length;
+
+            // Convert
+            var words = [];
+            for (var i = 0; i < hexStrLength; i += 2) {
+                words[i >>> 3] |= parseInt(hexStr.substr(i, 2), 16) << (24 - (i % 8) * 4);
+            }
+
+            return WordArray.create(words, hexStrLength / 2);
+        }
+    };
+
+    /**
+     * Latin1 encoding strategy.
+     */
+    var Latin1 = C_enc.Latin1 = {
+        /**
+         * Converts a word array to a Latin1 string.
+         *
+         * @param {WordArray} wordArray The word array.
+         *
+         * @return {string} The Latin1 string.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var latin1String = CryptoJS.enc.Latin1.stringify(wordArray);
+         */
+        stringify: function (wordArray) {
+            // Shortcuts
+            var words = wordArray.words;
+            var sigBytes = wordArray.sigBytes;
+
+            // Convert
+            var latin1Chars = [];
+            for (var i = 0; i < sigBytes; i++) {
+                var bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+                latin1Chars.push(String.fromCharCode(bite));
+            }
+
+            return latin1Chars.join('');
+        },
+
+        /**
+         * Converts a Latin1 string to a word array.
+         *
+         * @param {string} latin1Str The Latin1 string.
+         *
+         * @return {WordArray} The word array.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var wordArray = CryptoJS.enc.Latin1.parse(latin1String);
+         */
+        parse: function (latin1Str) {
+            // Shortcut
+            var latin1StrLength = latin1Str.length;
+
+            // Convert
+            var words = [];
+            for (var i = 0; i < latin1StrLength; i++) {
+                words[i >>> 2] |= (latin1Str.charCodeAt(i) & 0xff) << (24 - (i % 4) * 8);
+            }
+
+            return WordArray.create(words, latin1StrLength);
+        }
+    };
+
+    /**
+     * UTF-8 encoding strategy.
+     */
+    var Utf8 = C_enc.Utf8 = {
+        /**
+         * Converts a word array to a UTF-8 string.
+         *
+         * @param {WordArray} wordArray The word array.
+         *
+         * @return {string} The UTF-8 string.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var utf8String = CryptoJS.enc.Utf8.stringify(wordArray);
+         */
+        stringify: function (wordArray) {
+            try {
+                return decodeURIComponent(escape(Latin1.stringify(wordArray)));
+            } catch (e) {
+                throw new Error('Malformed UTF-8 data');
+            }
+        },
+
+        /**
+         * Converts a UTF-8 string to a word array.
+         *
+         * @param {string} utf8Str The UTF-8 string.
+         *
+         * @return {WordArray} The word array.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var wordArray = CryptoJS.enc.Utf8.parse(utf8String);
+         */
+        parse: function (utf8Str) {
+            return Latin1.parse(unescape(encodeURIComponent(utf8Str)));
+        }
+    };
+
+    /**
+     * Abstract buffered block algorithm template.
+     * The property blockSize must be implemented in a concrete subtype.
+     *
+     * @property {number} _minBufferSize The number of blocks that should be kept unprocessed in the buffer. Default: 0
+     */
+    var BufferedBlockAlgorithm = C_lib.BufferedBlockAlgorithm = Base.extend({
+        /**
+         * Resets this block algorithm's data buffer to its initial state.
+         *
+         * @example
+         *
+         *     bufferedBlockAlgorithm.reset();
+         */
+        reset: function () {
+            // Initial values
+            this._data = WordArray.create();
+            this._nDataBytes = 0;
+        },
+
+        /**
+         * Adds new data to this block algorithm's buffer.
+         *
+         * @param {WordArray|string} data The data to append. Strings are converted to a WordArray using UTF-8.
+         *
+         * @example
+         *
+         *     bufferedBlockAlgorithm._append('data');
+         *     bufferedBlockAlgorithm._append(wordArray);
+         */
+        _append: function (data) {
+            // Convert string to WordArray, else assume WordArray already
+            if (typeof data == 'string') {
+                data = Utf8.parse(data);
+            }
+
+            // Append
+            this._data.concat(data);
+            this._nDataBytes += data.sigBytes;
+        },
+
+        /**
+         * Processes available data blocks.
+         * This method invokes _doProcessBlock(dataWords, offset), which must be implemented by a concrete subtype.
+         *
+         * @param {boolean} flush Whether all blocks and partial blocks should be processed.
+         *
+         * @return {WordArray} The data after processing.
+         *
+         * @example
+         *
+         *     var processedData = bufferedBlockAlgorithm._process();
+         *     var processedData = bufferedBlockAlgorithm._process(!!'flush');
+         */
+        _process: function (flush) {
+            // Shortcuts
+            var data = this._data;
+            var dataWords = data.words;
+            var dataSigBytes = data.sigBytes;
+            var blockSize = this.blockSize;
+            var blockSizeBytes = blockSize * 4;
+
+            // Count blocks ready
+            var nBlocksReady = dataSigBytes / blockSizeBytes;
+            if (flush) {
+                // Round up to include partial blocks
+                nBlocksReady = Math.ceil(nBlocksReady);
+            } else {
+                // Round down to include only full blocks,
+                // less the number of blocks that must remain in the buffer
+                nBlocksReady = Math.max((nBlocksReady | 0) - this._minBufferSize, 0);
+            }
+
+            // Count words ready
+            var nWordsReady = nBlocksReady * blockSize;
+
+            // Count bytes ready
+            var nBytesReady = Math.min(nWordsReady * 4, dataSigBytes);
+
+            // Process blocks
+            if (nWordsReady) {
+                for (var offset = 0; offset < nWordsReady; offset += blockSize) {
+                    // Perform concrete-algorithm logic
+                    this._doProcessBlock(dataWords, offset);
+                }
+
+                // Remove processed words
+                var processedWords = dataWords.splice(0, nWordsReady);
+                data.sigBytes -= nBytesReady;
+            }
+
+            // Return processed words
+            return WordArray.create(processedWords, nBytesReady);
+        },
+
+        /**
+         * Creates a copy of this object.
+         *
+         * @return {Object} The clone.
+         *
+         * @example
+         *
+         *     var clone = bufferedBlockAlgorithm.clone();
+         */
+        clone: function () {
+            var clone = Base.clone.call(this);
+            clone._data = this._data.clone();
+
+            return clone;
+        },
+
+        _minBufferSize: 0
+    });
+
+    /**
+     * Abstract hasher template.
+     *
+     * @property {number} blockSize The number of 32-bit words this hasher operates on. Default: 16 (512 bits)
+     */
+    var Hasher = C_lib.Hasher = BufferedBlockAlgorithm.extend({
+        /**
+         * Configuration options.
+         */
+        // cfg: Base.extend(),
+
+        /**
+         * Initializes a newly created hasher.
+         *
+         * @param {Object} cfg (Optional) The configuration options to use for this hash computation.
+         *
+         * @example
+         *
+         *     var hasher = CryptoJS.algo.SHA256.create();
+         */
+        init: function (cfg) {
+            // Apply config defaults
+            // this.cfg = this.cfg.extend(cfg);
+
+            // Set initial values
+            this.reset();
+        },
+
+        /**
+         * Resets this hasher to its initial state.
+         *
+         * @example
+         *
+         *     hasher.reset();
+         */
+        reset: function () {
+            // Reset data buffer
+            BufferedBlockAlgorithm.reset.call(this);
+
+            // Perform concrete-hasher logic
+            this._doReset();
+        },
+
+        /**
+         * Updates this hasher with a message.
+         *
+         * @param {WordArray|string} messageUpdate The message to append.
+         *
+         * @return {Hasher} This hasher.
+         *
+         * @example
+         *
+         *     hasher.update('message');
+         *     hasher.update(wordArray);
+         */
+        update: function (messageUpdate) {
+            // Append
+            this._append(messageUpdate);
+
+            // Update the hash
+            this._process();
+
+            // Chainable
+            return this;
+        },
+
+        /**
+         * Finalizes the hash computation.
+         * Note that the finalize operation is effectively a destructive, read-once operation.
+         *
+         * @param {WordArray|string} messageUpdate (Optional) A final message update.
+         *
+         * @return {WordArray} The hash.
+         *
+         * @example
+         *
+         *     var hash = hasher.finalize();
+         *     var hash = hasher.finalize('message');
+         *     var hash = hasher.finalize(wordArray);
+         */
+        finalize: function (messageUpdate) {
+            // Final message update
+            if (messageUpdate) {
+                this._append(messageUpdate);
+            }
+
+            // Perform concrete-hasher logic
+            this._doFinalize();
+
+            return this._hash;
+        },
+
+        /**
+         * Creates a copy of this object.
+         *
+         * @return {Object} The clone.
+         *
+         * @example
+         *
+         *     var clone = hasher.clone();
+         */
+        clone: function () {
+            var clone = BufferedBlockAlgorithm.clone.call(this);
+            clone._hash = this._hash.clone();
+
+            return clone;
+        },
+
+        blockSize: 512/32,
+
+        /**
+         * Creates a shortcut function to a hasher's object interface.
+         *
+         * @param {Hasher} hasher The hasher to create a helper for.
+         *
+         * @return {Function} The shortcut function.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var SHA256 = CryptoJS.lib.Hasher._createHelper(CryptoJS.algo.SHA256);
+         */
+        _createHelper: function (hasher) {
+            return function (message, cfg) {
+                return hasher.create(cfg).finalize(message);
+            };
+        },
+
+        /**
+         * Creates a shortcut function to the HMAC's object interface.
+         *
+         * @param {Hasher} hasher The hasher to use in this HMAC helper.
+         *
+         * @return {Function} The shortcut function.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var HmacSHA256 = CryptoJS.lib.Hasher._createHmacHelper(CryptoJS.algo.SHA256);
+         */
+        _createHmacHelper: function (hasher) {
+            return function (message, key) {
+                return C_algo.HMAC.create(hasher, key).finalize(message);
+            };
+        }
+    });
+
+    /**
+     * Algorithm namespace.
+     */
+    var C_algo = C.algo = {};
+
+    return C;
+}(Math));
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+(function (undefined) {
+    // Shortcuts
+    var C = CryptoJS;
+    var C_lib = C.lib;
+    var Base = C_lib.Base;
+    var X32WordArray = C_lib.WordArray;
+
+    /**
+     * x64 namespace.
+     */
+    var C_x64 = C.x64 = {};
+
+    /**
+     * A 64-bit word.
+     *
+     * @property {number} high The high 32 bits.
+     * @property {number} low The low 32 bits.
+     */
+    var X64Word = C_x64.Word = Base.extend({
+        /**
+         * Initializes a newly created 64-bit word.
+         *
+         * @param {number} high The high 32 bits.
+         * @param {number} low The low 32 bits.
+         *
+         * @example
+         *
+         *     var x64Word = CryptoJS.x64.Word.create(0x00010203, 0x04050607);
+         */
+        init: function (high, low) {
+            this.high = high;
+            this.low = low;
+        }
+
+        /**
+         * Bitwise NOTs this word.
+         *
+         * @return {X64Word} A new x64-Word object after negating.
+         *
+         * @example
+         *
+         *     var negated = x64Word.not();
+         */
+        // not: function () {
+            // var high = ~this.high;
+            // var low = ~this.low;
+
+            // return X64Word.create(high, low);
+        // },
+
+        /**
+         * Bitwise ANDs this word with the passed word.
+         *
+         * @param {X64Word} word The x64-Word to AND with this word.
+         *
+         * @return {X64Word} A new x64-Word object after ANDing.
+         *
+         * @example
+         *
+         *     var anded = x64Word.and(anotherX64Word);
+         */
+        // and: function (word) {
+            // var high = this.high & word.high;
+            // var low = this.low & word.low;
+
+            // return X64Word.create(high, low);
+        // },
+
+        /**
+         * Bitwise ORs this word with the passed word.
+         *
+         * @param {X64Word} word The x64-Word to OR with this word.
+         *
+         * @return {X64Word} A new x64-Word object after ORing.
+         *
+         * @example
+         *
+         *     var ored = x64Word.or(anotherX64Word);
+         */
+        // or: function (word) {
+            // var high = this.high | word.high;
+            // var low = this.low | word.low;
+
+            // return X64Word.create(high, low);
+        // },
+
+        /**
+         * Bitwise XORs this word with the passed word.
+         *
+         * @param {X64Word} word The x64-Word to XOR with this word.
+         *
+         * @return {X64Word} A new x64-Word object after XORing.
+         *
+         * @example
+         *
+         *     var xored = x64Word.xor(anotherX64Word);
+         */
+        // xor: function (word) {
+            // var high = this.high ^ word.high;
+            // var low = this.low ^ word.low;
+
+            // return X64Word.create(high, low);
+        // },
+
+        /**
+         * Shifts this word n bits to the left.
+         *
+         * @param {number} n The number of bits to shift.
+         *
+         * @return {X64Word} A new x64-Word object after shifting.
+         *
+         * @example
+         *
+         *     var shifted = x64Word.shiftL(25);
+         */
+        // shiftL: function (n) {
+            // if (n < 32) {
+                // var high = (this.high << n) | (this.low >>> (32 - n));
+                // var low = this.low << n;
+            // } else {
+                // var high = this.low << (n - 32);
+                // var low = 0;
+            // }
+
+            // return X64Word.create(high, low);
+        // },
+
+        /**
+         * Shifts this word n bits to the right.
+         *
+         * @param {number} n The number of bits to shift.
+         *
+         * @return {X64Word} A new x64-Word object after shifting.
+         *
+         * @example
+         *
+         *     var shifted = x64Word.shiftR(7);
+         */
+        // shiftR: function (n) {
+            // if (n < 32) {
+                // var low = (this.low >>> n) | (this.high << (32 - n));
+                // var high = this.high >>> n;
+            // } else {
+                // var low = this.high >>> (n - 32);
+                // var high = 0;
+            // }
+
+            // return X64Word.create(high, low);
+        // },
+
+        /**
+         * Rotates this word n bits to the left.
+         *
+         * @param {number} n The number of bits to rotate.
+         *
+         * @return {X64Word} A new x64-Word object after rotating.
+         *
+         * @example
+         *
+         *     var rotated = x64Word.rotL(25);
+         */
+        // rotL: function (n) {
+            // return this.shiftL(n).or(this.shiftR(64 - n));
+        // },
+
+        /**
+         * Rotates this word n bits to the right.
+         *
+         * @param {number} n The number of bits to rotate.
+         *
+         * @return {X64Word} A new x64-Word object after rotating.
+         *
+         * @example
+         *
+         *     var rotated = x64Word.rotR(7);
+         */
+        // rotR: function (n) {
+            // return this.shiftR(n).or(this.shiftL(64 - n));
+        // },
+
+        /**
+         * Adds this word with the passed word.
+         *
+         * @param {X64Word} word The x64-Word to add with this word.
+         *
+         * @return {X64Word} A new x64-Word object after adding.
+         *
+         * @example
+         *
+         *     var added = x64Word.add(anotherX64Word);
+         */
+        // add: function (word) {
+            // var low = (this.low + word.low) | 0;
+            // var carry = (low >>> 0) < (this.low >>> 0) ? 1 : 0;
+            // var high = (this.high + word.high + carry) | 0;
+
+            // return X64Word.create(high, low);
+        // }
+    });
+
+    /**
+     * An array of 64-bit words.
+     *
+     * @property {Array} words The array of CryptoJS.x64.Word objects.
+     * @property {number} sigBytes The number of significant bytes in this word array.
+     */
+    var X64WordArray = C_x64.WordArray = Base.extend({
+        /**
+         * Initializes a newly created word array.
+         *
+         * @param {Array} words (Optional) An array of CryptoJS.x64.Word objects.
+         * @param {number} sigBytes (Optional) The number of significant bytes in the words.
+         *
+         * @example
+         *
+         *     var wordArray = CryptoJS.x64.WordArray.create();
+         *
+         *     var wordArray = CryptoJS.x64.WordArray.create([
+         *         CryptoJS.x64.Word.create(0x00010203, 0x04050607),
+         *         CryptoJS.x64.Word.create(0x18191a1b, 0x1c1d1e1f)
+         *     ]);
+         *
+         *     var wordArray = CryptoJS.x64.WordArray.create([
+         *         CryptoJS.x64.Word.create(0x00010203, 0x04050607),
+         *         CryptoJS.x64.Word.create(0x18191a1b, 0x1c1d1e1f)
+         *     ], 10);
+         */
+        init: function (words, sigBytes) {
+            words = this.words = words || [];
+
+            if (sigBytes != undefined) {
+                this.sigBytes = sigBytes;
+            } else {
+                this.sigBytes = words.length * 8;
+            }
+        },
+
+        /**
+         * Converts this 64-bit word array to a 32-bit word array.
+         *
+         * @return {CryptoJS.lib.WordArray} This word array's data as a 32-bit word array.
+         *
+         * @example
+         *
+         *     var x32WordArray = x64WordArray.toX32();
+         */
+        toX32: function () {
+            // Shortcuts
+            var x64Words = this.words;
+            var x64WordsLength = x64Words.length;
+
+            // Convert
+            var x32Words = [];
+            for (var i = 0; i < x64WordsLength; i++) {
+                var x64Word = x64Words[i];
+                x32Words.push(x64Word.high);
+                x32Words.push(x64Word.low);
+            }
+
+            return X32WordArray.create(x32Words, this.sigBytes);
+        },
+
+        /**
+         * Creates a copy of this word array.
+         *
+         * @return {X64WordArray} The clone.
+         *
+         * @example
+         *
+         *     var clone = x64WordArray.clone();
+         */
+        clone: function () {
+            var clone = Base.clone.call(this);
+
+            // Clone "words" array
+            var words = clone.words = this.words.slice(0);
+
+            // Clone each X64Word object
+            var wordsLength = words.length;
+            for (var i = 0; i < wordsLength; i++) {
+                words[i] = words[i].clone();
+            }
+
+            return clone;
+        }
+    });
+}());
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+(function () {
+    // Shortcuts
+    var C = CryptoJS;
+    var C_lib = C.lib;
+    var Base = C_lib.Base;
+    var C_enc = C.enc;
+    var Utf8 = C_enc.Utf8;
+    var C_algo = C.algo;
+
+    /**
+     * HMAC algorithm.
+     */
+    var HMAC = C_algo.HMAC = Base.extend({
+        /**
+         * Initializes a newly created HMAC.
+         *
+         * @param {Hasher} hasher The hash algorithm to use.
+         * @param {WordArray|string} key The secret key.
+         *
+         * @example
+         *
+         *     var hmacHasher = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, key);
+         */
+        init: function (hasher, key) {
+            // Init hasher
+            hasher = this._hasher = hasher.create();
+
+            // Convert string to WordArray, else assume WordArray already
+            if (typeof key == 'string') {
+                key = Utf8.parse(key);
+            }
+
+            // Shortcuts
+            var hasherBlockSize = hasher.blockSize;
+            var hasherBlockSizeBytes = hasherBlockSize * 4;
+
+            // Allow arbitrary length keys
+            if (key.sigBytes > hasherBlockSizeBytes) {
+                key = hasher.finalize(key);
+            }
+
+            // Clone key for inner and outer pads
+            var oKey = this._oKey = key.clone();
+            var iKey = this._iKey = key.clone();
+
+            // Shortcuts
+            var oKeyWords = oKey.words;
+            var iKeyWords = iKey.words;
+
+            // XOR keys with pad constants
+            for (var i = 0; i < hasherBlockSize; i++) {
+                oKeyWords[i] ^= 0x5c5c5c5c;
+                iKeyWords[i] ^= 0x36363636;
+            }
+            oKey.sigBytes = iKey.sigBytes = hasherBlockSizeBytes;
+
+            // Set initial values
+            this.reset();
+        },
+
+        /**
+         * Resets this HMAC to its initial state.
+         *
+         * @example
+         *
+         *     hmacHasher.reset();
+         */
+        reset: function () {
+            // Shortcut
+            var hasher = this._hasher;
+
+            // Reset
+            hasher.reset();
+            hasher.update(this._iKey);
+        },
+
+        /**
+         * Updates this HMAC with a message.
+         *
+         * @param {WordArray|string} messageUpdate The message to append.
+         *
+         * @return {HMAC} This HMAC instance.
+         *
+         * @example
+         *
+         *     hmacHasher.update('message');
+         *     hmacHasher.update(wordArray);
+         */
+        update: function (messageUpdate) {
+            this._hasher.update(messageUpdate);
+
+            // Chainable
+            return this;
+        },
+
+        /**
+         * Finalizes the HMAC computation.
+         * Note that the finalize operation is effectively a destructive, read-once operation.
+         *
+         * @param {WordArray|string} messageUpdate (Optional) A final message update.
+         *
+         * @return {WordArray} The HMAC.
+         *
+         * @example
+         *
+         *     var hmac = hmacHasher.finalize();
+         *     var hmac = hmacHasher.finalize('message');
+         *     var hmac = hmacHasher.finalize(wordArray);
+         */
+        finalize: function (messageUpdate) {
+            // Shortcut
+            var hasher = this._hasher;
+
+            // Compute HMAC
+            var innerHash = hasher.finalize(messageUpdate);
+            hasher.reset();
+            var hmac = hasher.finalize(this._oKey.clone().concat(innerHash));
+
+            return hmac;
+        }
+    });
+}());
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+(function () {
+    // Shortcuts
+    var C = CryptoJS;
+    var C_lib = C.lib;
+    var WordArray = C_lib.WordArray;
+    var Hasher = C_lib.Hasher;
+    var C_algo = C.algo;
+
+    // Reusable object
+    var W = [];
+
+    /**
+     * SHA-1 hash algorithm.
+     */
+    var SHA1 = C_algo.SHA1 = Hasher.extend({
+        _doReset: function () {
+            this._hash = WordArray.create([0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0]);
+        },
+
+        _doProcessBlock: function (M, offset) {
+            // Shortcut
+            var H = this._hash.words;
+
+            // Working variables
+            var a = H[0];
+            var b = H[1];
+            var c = H[2];
+            var d = H[3];
+            var e = H[4];
+
+            // Computation
+            for (var i = 0; i < 80; i++) {
+                if (i < 16) {
+                    W[i] = M[offset + i] | 0;
+                } else {
+                    var n = W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16];
+                    W[i] = (n << 1) | (n >>> 31);
+                }
+
+                var t = ((a << 5) | (a >>> 27)) + e + W[i];
+                if (i < 20) {
+                    t += ((b & c) | (~b & d)) + 0x5a827999;
+                } else if (i < 40) {
+                    t += (b ^ c ^ d) + 0x6ed9eba1;
+                } else if (i < 60) {
+                    t += ((b & c) | (b & d) | (c & d)) - 0x70e44324;
+                } else /* if (i < 80) */ {
+                    t += (b ^ c ^ d) - 0x359d3e2a;
+                }
+
+                e = d;
+                d = c;
+                c = (b << 30) | (b >>> 2);
+                b = a;
+                a = t;
+            }
+
+            // Intermediate hash value
+            H[0] = (H[0] + a) | 0;
+            H[1] = (H[1] + b) | 0;
+            H[2] = (H[2] + c) | 0;
+            H[3] = (H[3] + d) | 0;
+            H[4] = (H[4] + e) | 0;
+        },
+
+        _doFinalize: function () {
+            // Shortcuts
+            var data = this._data;
+            var dataWords = data.words;
+
+            var nBitsTotal = this._nDataBytes * 8;
+            var nBitsLeft = data.sigBytes * 8;
+
+            // Add padding
+            dataWords[nBitsLeft >>> 5] |= 0x80 << (24 - nBitsLeft % 32);
+            dataWords[(((nBitsLeft + 64) >>> 9) << 4) + 15] = nBitsTotal;
+            data.sigBytes = dataWords.length * 4;
+
+            // Hash final blocks
+            this._process();
+        }
+    });
+
+    /**
+     * Shortcut function to the hasher's object interface.
+     *
+     * @param {WordArray|string} message The message to hash.
+     *
+     * @return {WordArray} The hash.
+     *
+     * @static
+     *
+     * @example
+     *
+     *     var hash = CryptoJS.SHA1('message');
+     *     var hash = CryptoJS.SHA1(wordArray);
+     */
+    C.SHA1 = Hasher._createHelper(SHA1);
+
+    /**
+     * Shortcut function to the HMAC's object interface.
+     *
+     * @param {WordArray|string} message The message to hash.
+     * @param {WordArray|string} key The secret key.
+     *
+     * @return {WordArray} The HMAC.
+     *
+     * @static
+     *
+     * @example
+     *
+     *     var hmac = CryptoJS.HmacSHA1(message, key);
+     */
+    C.HmacSHA1 = Hasher._createHmacHelper(SHA1);
+}());
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+(function () {
+    // Shortcuts
+    var C = CryptoJS;
+    var C_lib = C.lib;
+    var Hasher = C_lib.Hasher;
+    var C_x64 = C.x64;
+    var X64Word = C_x64.Word;
+    var X64WordArray = C_x64.WordArray;
+    var C_algo = C.algo;
+
+    function X64Word_create() {
+        return X64Word.create.apply(X64Word, arguments);
+    }
+
+    // Constants
+    var K = [
+        X64Word_create(0x428a2f98, 0xd728ae22), X64Word_create(0x71374491, 0x23ef65cd),
+        X64Word_create(0xb5c0fbcf, 0xec4d3b2f), X64Word_create(0xe9b5dba5, 0x8189dbbc),
+        X64Word_create(0x3956c25b, 0xf348b538), X64Word_create(0x59f111f1, 0xb605d019),
+        X64Word_create(0x923f82a4, 0xaf194f9b), X64Word_create(0xab1c5ed5, 0xda6d8118),
+        X64Word_create(0xd807aa98, 0xa3030242), X64Word_create(0x12835b01, 0x45706fbe),
+        X64Word_create(0x243185be, 0x4ee4b28c), X64Word_create(0x550c7dc3, 0xd5ffb4e2),
+        X64Word_create(0x72be5d74, 0xf27b896f), X64Word_create(0x80deb1fe, 0x3b1696b1),
+        X64Word_create(0x9bdc06a7, 0x25c71235), X64Word_create(0xc19bf174, 0xcf692694),
+        X64Word_create(0xe49b69c1, 0x9ef14ad2), X64Word_create(0xefbe4786, 0x384f25e3),
+        X64Word_create(0x0fc19dc6, 0x8b8cd5b5), X64Word_create(0x240ca1cc, 0x77ac9c65),
+        X64Word_create(0x2de92c6f, 0x592b0275), X64Word_create(0x4a7484aa, 0x6ea6e483),
+        X64Word_create(0x5cb0a9dc, 0xbd41fbd4), X64Word_create(0x76f988da, 0x831153b5),
+        X64Word_create(0x983e5152, 0xee66dfab), X64Word_create(0xa831c66d, 0x2db43210),
+        X64Word_create(0xb00327c8, 0x98fb213f), X64Word_create(0xbf597fc7, 0xbeef0ee4),
+        X64Word_create(0xc6e00bf3, 0x3da88fc2), X64Word_create(0xd5a79147, 0x930aa725),
+        X64Word_create(0x06ca6351, 0xe003826f), X64Word_create(0x14292967, 0x0a0e6e70),
+        X64Word_create(0x27b70a85, 0x46d22ffc), X64Word_create(0x2e1b2138, 0x5c26c926),
+        X64Word_create(0x4d2c6dfc, 0x5ac42aed), X64Word_create(0x53380d13, 0x9d95b3df),
+        X64Word_create(0x650a7354, 0x8baf63de), X64Word_create(0x766a0abb, 0x3c77b2a8),
+        X64Word_create(0x81c2c92e, 0x47edaee6), X64Word_create(0x92722c85, 0x1482353b),
+        X64Word_create(0xa2bfe8a1, 0x4cf10364), X64Word_create(0xa81a664b, 0xbc423001),
+        X64Word_create(0xc24b8b70, 0xd0f89791), X64Word_create(0xc76c51a3, 0x0654be30),
+        X64Word_create(0xd192e819, 0xd6ef5218), X64Word_create(0xd6990624, 0x5565a910),
+        X64Word_create(0xf40e3585, 0x5771202a), X64Word_create(0x106aa070, 0x32bbd1b8),
+        X64Word_create(0x19a4c116, 0xb8d2d0c8), X64Word_create(0x1e376c08, 0x5141ab53),
+        X64Word_create(0x2748774c, 0xdf8eeb99), X64Word_create(0x34b0bcb5, 0xe19b48a8),
+        X64Word_create(0x391c0cb3, 0xc5c95a63), X64Word_create(0x4ed8aa4a, 0xe3418acb),
+        X64Word_create(0x5b9cca4f, 0x7763e373), X64Word_create(0x682e6ff3, 0xd6b2b8a3),
+        X64Word_create(0x748f82ee, 0x5defb2fc), X64Word_create(0x78a5636f, 0x43172f60),
+        X64Word_create(0x84c87814, 0xa1f0ab72), X64Word_create(0x8cc70208, 0x1a6439ec),
+        X64Word_create(0x90befffa, 0x23631e28), X64Word_create(0xa4506ceb, 0xde82bde9),
+        X64Word_create(0xbef9a3f7, 0xb2c67915), X64Word_create(0xc67178f2, 0xe372532b),
+        X64Word_create(0xca273ece, 0xea26619c), X64Word_create(0xd186b8c7, 0x21c0c207),
+        X64Word_create(0xeada7dd6, 0xcde0eb1e), X64Word_create(0xf57d4f7f, 0xee6ed178),
+        X64Word_create(0x06f067aa, 0x72176fba), X64Word_create(0x0a637dc5, 0xa2c898a6),
+        X64Word_create(0x113f9804, 0xbef90dae), X64Word_create(0x1b710b35, 0x131c471b),
+        X64Word_create(0x28db77f5, 0x23047d84), X64Word_create(0x32caab7b, 0x40c72493),
+        X64Word_create(0x3c9ebe0a, 0x15c9bebc), X64Word_create(0x431d67c4, 0x9c100d4c),
+        X64Word_create(0x4cc5d4be, 0xcb3e42b6), X64Word_create(0x597f299c, 0xfc657e2a),
+        X64Word_create(0x5fcb6fab, 0x3ad6faec), X64Word_create(0x6c44198c, 0x4a475817)
+    ];
+
+    // Reusable objects
+    var W = [];
+    (function () {
+        for (var i = 0; i < 80; i++) {
+            W[i] = X64Word_create();
+        }
+    }());
+
+    /**
+     * SHA-512 hash algorithm.
+     */
+    var SHA512 = C_algo.SHA512 = Hasher.extend({
+        _doReset: function () {
+            this._hash = X64WordArray.create([
+                X64Word_create(0x6a09e667, 0xf3bcc908), X64Word_create(0xbb67ae85, 0x84caa73b),
+                X64Word_create(0x3c6ef372, 0xfe94f82b), X64Word_create(0xa54ff53a, 0x5f1d36f1),
+                X64Word_create(0x510e527f, 0xade682d1), X64Word_create(0x9b05688c, 0x2b3e6c1f),
+                X64Word_create(0x1f83d9ab, 0xfb41bd6b), X64Word_create(0x5be0cd19, 0x137e2179)
+            ]);
+        },
+
+        _doProcessBlock: function (M, offset) {
+            // Shortcuts
+            var H = this._hash.words;
+
+            var H0 = H[0];
+            var H1 = H[1];
+            var H2 = H[2];
+            var H3 = H[3];
+            var H4 = H[4];
+            var H5 = H[5];
+            var H6 = H[6];
+            var H7 = H[7];
+
+            var H0h = H0.high;
+            var H0l = H0.low;
+            var H1h = H1.high;
+            var H1l = H1.low;
+            var H2h = H2.high;
+            var H2l = H2.low;
+            var H3h = H3.high;
+            var H3l = H3.low;
+            var H4h = H4.high;
+            var H4l = H4.low;
+            var H5h = H5.high;
+            var H5l = H5.low;
+            var H6h = H6.high;
+            var H6l = H6.low;
+            var H7h = H7.high;
+            var H7l = H7.low;
+
+            // Working variables
+            var ah = H0h;
+            var al = H0l;
+            var bh = H1h;
+            var bl = H1l;
+            var ch = H2h;
+            var cl = H2l;
+            var dh = H3h;
+            var dl = H3l;
+            var eh = H4h;
+            var el = H4l;
+            var fh = H5h;
+            var fl = H5l;
+            var gh = H6h;
+            var gl = H6l;
+            var hh = H7h;
+            var hl = H7l;
+
+            // Rounds
+            for (var i = 0; i < 80; i++) {
+                // Shortcut
+                var Wi = W[i];
+
+                // Extend message
+                if (i < 16) {
+                    var Wih = Wi.high = M[offset + i * 2]     | 0;
+                    var Wil = Wi.low  = M[offset + i * 2 + 1] | 0;
+                } else {
+                    // Gamma0
+                    var gamma0x  = W[i - 15];
+                    var gamma0xh = gamma0x.high;
+                    var gamma0xl = gamma0x.low;
+                    var gamma0h  = ((gamma0xl << 31) | (gamma0xh >>> 1)) ^ ((gamma0xl << 24) | (gamma0xh >>> 8)) ^ (gamma0xh >>> 7);
+                    var gamma0l  = ((gamma0xh << 31) | (gamma0xl >>> 1)) ^ ((gamma0xh << 24) | (gamma0xl >>> 8)) ^ ((gamma0xh << 25) | (gamma0xl >>> 7));
+
+                    // Gamma1
+                    var gamma1x  = W[i - 2];
+                    var gamma1xh = gamma1x.high;
+                    var gamma1xl = gamma1x.low;
+                    var gamma1h  = ((gamma1xl << 13) | (gamma1xh >>> 19)) ^ ((gamma1xh << 3) | (gamma1xl >>> 29)) ^ (gamma1xh >>> 6);
+                    var gamma1l  = ((gamma1xh << 13) | (gamma1xl >>> 19)) ^ ((gamma1xl << 3) | (gamma1xh >>> 29)) ^ ((gamma1xh << 26) | (gamma1xl >>> 6));
+
+                    // Shortcuts
+                    var Wi7  = W[i - 7];
+                    var Wi7h = Wi7.high;
+                    var Wi7l = Wi7.low;
+
+                    var Wi16  = W[i - 16];
+                    var Wi16h = Wi16.high;
+                    var Wi16l = Wi16.low;
+
+                    // W[i] = gamma0 + W[i - 7] + gamma1 + W[i - 16]
+                    var Wil = gamma0l + Wi7l;
+                    var Wih = gamma0h + Wi7h + ((Wil >>> 0) < (gamma0l >>> 0) ? 1 : 0);
+                    var Wil = Wil + gamma1l;
+                    var Wih = Wih + gamma1h + ((Wil >>> 0) < (gamma1l >>> 0) ? 1 : 0);
+                    var Wil = Wil + Wi16l;
+                    var Wih = Wih + Wi16h + ((Wil >>> 0) < (Wi16l >>> 0) ? 1 : 0);
+
+                    Wi.high = Wih;
+                    Wi.low  = Wil;
+                }
+
+                // Ch
+                var chh  = (eh & fh) ^ (~eh & gh);
+                var chl  = (el & fl) ^ (~el & gl);
+
+                // Maj
+                var majh = (ah & bh) ^ (ah & ch) ^ (bh & ch);
+                var majl = (al & bl) ^ (al & cl) ^ (bl & cl);
+
+                // Sigma0
+                var sigma0h = ((al << 4) | (ah >>> 28)) ^ ((ah << 30) | (al >>> 2)) ^ ((ah << 25) | (al >>> 7));
+                var sigma0l = ((ah << 4) | (al >>> 28)) ^ ((al << 30) | (ah >>> 2)) ^ ((al << 25) | (ah >>> 7));
+
+                // Sigma1
+                var sigma1h = ((el << 18) | (eh >>> 14)) ^ ((el << 14) | (eh >>> 18)) ^ ((eh << 23) | (el >>> 9));
+                var sigma1l = ((eh << 18) | (el >>> 14)) ^ ((eh << 14) | (el >>> 18)) ^ ((el << 23) | (eh >>> 9));
+
+                // Shortcuts
+                var Ki  = K[i];
+                var Kih = Ki.high;
+                var Kil = Ki.low;
+
+                // t1 = h + sigma1 + ch + K[i] + W[i]
+                var t1l = hl + sigma1l;
+                var t1h = hh + sigma1h + ((t1l >>> 0) < (hl >>> 0) ? 1 : 0);
+                var t1l = t1l + chl;
+                var t1h = t1h + chh + ((t1l >>> 0) < (chl >>> 0) ? 1 : 0);
+                var t1l = t1l + Kil;
+                var t1h = t1h + Kih + ((t1l >>> 0) < (Kil >>> 0) ? 1 : 0);
+                var t1l = t1l + Wil;
+                var t1h = t1h + Wih + ((t1l >>> 0) < (Wil >>> 0) ? 1 : 0);
+
+                // t2 = sigma0 + maj
+                var t2l = sigma0l + majl;
+                var t2h = sigma0h + majh + ((t2l >>> 0) < (sigma0l >>> 0) ? 1 : 0);
+
+                // Update working variables
+                hh = gh;
+                hl = gl;
+                gh = fh;
+                gl = fl;
+                fh = eh;
+                fl = el;
+                el = (dl + t1l) | 0;
+                eh = (dh + t1h + ((el >>> 0) < (dl >>> 0) ? 1 : 0)) | 0;
+                dh = ch;
+                dl = cl;
+                ch = bh;
+                cl = bl;
+                bh = ah;
+                bl = al;
+                al = (t1l + t2l) | 0;
+                ah = (t1h + t2h + ((al >>> 0) < (t1l >>> 0) ? 1 : 0)) | 0;
+            }
+
+            // Intermediate hash value
+            H0l = H0.low = (H0l + al) | 0;
+            H0.high = (H0h + ah + ((H0l >>> 0) < (al >>> 0) ? 1 : 0)) | 0;
+            H1l = H1.low = (H1l + bl) | 0;
+            H1.high = (H1h + bh + ((H1l >>> 0) < (bl >>> 0) ? 1 : 0)) | 0;
+            H2l = H2.low = (H2l + cl) | 0;
+            H2.high = (H2h + ch + ((H2l >>> 0) < (cl >>> 0) ? 1 : 0)) | 0;
+            H3l = H3.low = (H3l + dl) | 0;
+            H3.high = (H3h + dh + ((H3l >>> 0) < (dl >>> 0) ? 1 : 0)) | 0;
+            H4l = H4.low = (H4l + el) | 0;
+            H4.high = (H4h + eh + ((H4l >>> 0) < (el >>> 0) ? 1 : 0)) | 0;
+            H5l = H5.low = (H5l + fl) | 0;
+            H5.high = (H5h + fh + ((H5l >>> 0) < (fl >>> 0) ? 1 : 0)) | 0;
+            H6l = H6.low = (H6l + gl) | 0;
+            H6.high = (H6h + gh + ((H6l >>> 0) < (gl >>> 0) ? 1 : 0)) | 0;
+            H7l = H7.low = (H7l + hl) | 0;
+            H7.high = (H7h + hh + ((H7l >>> 0) < (hl >>> 0) ? 1 : 0)) | 0;
+        },
+
+        _doFinalize: function () {
+            // Shortcuts
+            var data = this._data;
+            var dataWords = data.words;
+
+            var nBitsTotal = this._nDataBytes * 8;
+            var nBitsLeft = data.sigBytes * 8;
+
+            // Add padding
+            dataWords[nBitsLeft >>> 5] |= 0x80 << (24 - nBitsLeft % 32);
+            dataWords[(((nBitsLeft + 128) >>> 10) << 5) + 31] = nBitsTotal;
+            data.sigBytes = dataWords.length * 4;
+
+            // Hash final blocks
+            this._process();
+
+            // Convert hash to 32-bit word array before returning
+            this._hash = this._hash.toX32();
+        },
+
+        blockSize: 1024/32
+    });
+
+    /**
+     * Shortcut function to the hasher's object interface.
+     *
+     * @param {WordArray|string} message The message to hash.
+     *
+     * @return {WordArray} The hash.
+     *
+     * @static
+     *
+     * @example
+     *
+     *     var hash = CryptoJS.SHA512('message');
+     *     var hash = CryptoJS.SHA512(wordArray);
+     */
+    C.SHA512 = Hasher._createHelper(SHA512);
+
+    /**
+     * Shortcut function to the HMAC's object interface.
+     *
+     * @param {WordArray|string} message The message to hash.
+     * @param {WordArray|string} key The secret key.
+     *
+     * @return {WordArray} The HMAC.
+     *
+     * @static
+     *
+     * @example
+     *
+     *     var hmac = CryptoJS.HmacSHA512(message, key);
+     */
+    C.HmacSHA512 = Hasher._createHmacHelper(SHA512);
+}());
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+(function () {
+    // Shortcuts
+    var C = CryptoJS;
+    var C_lib = C.lib;
+    var WordArray = C_lib.WordArray;
+    var C_enc = C.enc;
+
+    /**
+     * Base64 encoding strategy.
+     */
+    var Base64 = C_enc.Base64 = {
+        /**
+         * Converts a word array to a Base64 string.
+         *
+         * @param {WordArray} wordArray The word array.
+         *
+         * @return {string} The Base64 string.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var base64String = CryptoJS.enc.Base64.stringify(wordArray);
+         */
+        stringify: function (wordArray) {
+            // Shortcuts
+            var words = wordArray.words;
+            var sigBytes = wordArray.sigBytes;
+            var map = this._map;
+
+            // Clamp excess bits
+            wordArray.clamp();
+
+            // Convert
+            var base64Chars = [];
+            for (var i = 0; i < sigBytes; i += 3) {
+                var byte1 = (words[i >>> 2]       >>> (24 - (i % 4) * 8))       & 0xff;
+                var byte2 = (words[(i + 1) >>> 2] >>> (24 - ((i + 1) % 4) * 8)) & 0xff;
+                var byte3 = (words[(i + 2) >>> 2] >>> (24 - ((i + 2) % 4) * 8)) & 0xff;
+
+                var triplet = (byte1 << 16) | (byte2 << 8) | byte3;
+
+                for (var j = 0; (j < 4) && (i + j * 0.75 < sigBytes); j++) {
+                    base64Chars.push(map.charAt((triplet >>> (6 * (3 - j))) & 0x3f));
+                }
+            }
+
+            // Add padding
+            var paddingChar = map.charAt(64);
+            if (paddingChar) {
+                while (base64Chars.length % 4) {
+                    base64Chars.push(paddingChar);
+                }
+            }
+
+            return base64Chars.join('');
+        },
+
+        /**
+         * Converts a Base64 string to a word array.
+         *
+         * @param {string} base64Str The Base64 string.
+         *
+         * @return {WordArray} The word array.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var wordArray = CryptoJS.enc.Base64.parse(base64String);
+         */
+        parse: function (base64Str) {
+            // Ignore whitespaces
+            base64Str = base64Str.replace(/\s/g, '');
+
+            // Shortcuts
+            var base64StrLength = base64Str.length;
+            var map = this._map;
+
+            // Ignore padding
+            var paddingChar = map.charAt(64);
+            if (paddingChar) {
+                var paddingIndex = base64Str.indexOf(paddingChar);
+                if (paddingIndex != -1) {
+                    base64StrLength = paddingIndex;
+                }
+            }
+
+            // Convert
+            var words = [];
+            var nBytes = 0;
+            for (var i = 0; i < base64StrLength; i++) {
+                if (i % 4) {
+                    var bitsHigh = map.indexOf(base64Str.charAt(i - 1)) << ((i % 4) * 2);
+                    var bitsLow  = map.indexOf(base64Str.charAt(i)) >>> (6 - (i % 4) * 2);
+                    words[nBytes >>> 2] |= (bitsHigh | bitsLow) << (24 - (nBytes % 4) * 8);
+                    nBytes++;
+                }
+            }
+
+            return WordArray.create(words, nBytes);
+        },
+
+        _map: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
+    };
+}());
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+(function () {
+    // Shortcuts
+    var C = CryptoJS;
+    var C_lib = C.lib;
+    var Base = C_lib.Base;
+    var WordArray = C_lib.WordArray;
+    var C_algo = C.algo;
+    var SHA1 = C_algo.SHA1;
+    var HMAC = C_algo.HMAC;
+
+    /**
+     * Password-Based Key Derivation Function 2 algorithm.
+     */
+    var PBKDF2 = C_algo.PBKDF2 = Base.extend({
+        /**
+         * Configuration options.
+         *
+         * @property {number} keySize The key size in words to generate. Default: 4 (128 bits)
+         * @property {Hasher} hasher The hasher to use. Default: CryptoJS.algo.SHA1
+         * @property {number} iterations The number of iterations to perform. Default: 1
+         */
+        cfg: Base.extend({
+            keySize: 128/32,
+            hasher: SHA1,
+            iterations: 1
+        }),
+
+        /**
+         * Initializes a newly created key derivation function.
+         *
+         * @param {Object} cfg (Optional) The configuration options to use for the derivation.
+         *
+         * @example
+         *
+         *     var kdf = CryptoJS.algo.PBKDF2.create();
+         *     var kdf = CryptoJS.algo.PBKDF2.create({ keySize: 8 });
+         *     var kdf = CryptoJS.algo.PBKDF2.create({ keySize: 8, iterations: 1000 });
+         */
+        init: function (cfg) {
+            this.cfg = this.cfg.extend(cfg);
+        },
+
+        /**
+         * Computes the Password-Based Key Derivation Function 2.
+         *
+         * @param {WordArray|string} password The password.
+         * @param {WordArray|string} salt A salt.
+         *
+         * @return {WordArray} The derived key.
+         *
+         * @example
+         *
+         *     var key = kdf.compute(password, salt);
+         */
+        compute: function (password, salt) {
+            // Shortcut
+            var cfg = this.cfg;
+
+            // Init HMAC
+            var hmac = HMAC.create(cfg.hasher, password);
+
+            // Initial values
+            var derivedKey = WordArray.create();
+            var blockIndex = WordArray.create([0x00000001]);
+
+            // Shortcuts
+            var derivedKeyWords = derivedKey.words;
+            var blockIndexWords = blockIndex.words;
+            var keySize = cfg.keySize;
+            var iterations = cfg.iterations;
+
+            // Generate key
+            while (derivedKeyWords.length < keySize) {
+                var block = hmac.update(salt).finalize(blockIndex);
+                hmac.reset();
+
+                // Shortcuts
+                var blockWords = block.words;
+                var blockWordsLength = blockWords.length;
+
+                // Iterations
+                var intermediate = block;
+                for (var i = 1; i < iterations; i++) {
+                    intermediate = hmac.finalize(intermediate);
+                    hmac.reset();
+
+                    // Shortcut
+                    var intermediateWords = intermediate.words;
+
+                    // XOR intermediate with block
+                    for (var j = 0; j < blockWordsLength; j++) {
+                        blockWords[j] ^= intermediateWords[j];
+                    }
+                }
+
+                derivedKey.concat(block);
+                blockIndexWords[0]++;
+            }
+            derivedKey.sigBytes = keySize * 4;
+
+            return derivedKey;
+        }
+    });
+
+    /**
+     * Computes the Password-Based Key Derivation Function 2.
+     *
+     * @param {WordArray|string} password The password.
+     * @param {WordArray|string} salt A salt.
+     * @param {Object} cfg (Optional) The configuration options to use for this computation.
+     *
+     * @return {WordArray} The derived key.
+     *
+     * @static
+     *
+     * @example
+     *
+     *     var key = CryptoJS.PBKDF2(password, salt);
+     *     var key = CryptoJS.PBKDF2(password, salt, { keySize: 8 });
+     *     var key = CryptoJS.PBKDF2(password, salt, { keySize: 8, iterations: 1000 });
+     */
+    C.PBKDF2 = function (password, salt, cfg) {
+        return PBKDF2.create(cfg).compute(password, salt);
+    };
+}());
+  
+var min_size = 8;
+var max_size = 16;
+
+function isUpper(c) {
+    return "A".charCodeAt(0) <= c && c <= "Z".charCodeAt(0);
+}
+
+function isLower(c) {
+    return "a".charCodeAt(0) <= c && c <= "z".charCodeAt(0);
+}
+
+function isDigit (c) {
+    return "0".charCodeAt(0) <= c && c <= "9".charCodeAt(0);
+}
+
+// Rules for 'OK' passwords:
+//    - Within the first 8 characters:
+//       - At least one: uppercase, lowercase, and digit
+//       - No more than 5 of any one character class
+//       - No symbols
+//    - From characters 7 to 16:
+//       - No symbols
+function is_ok_pw (input) {
+    var v = 0;
+    var i = 0;
+
+    var caps = 0;
+    var lowers = 0;
+    var digits = 0;
+    var symbols = 0;
+    var c;
+
+    for (i = 0; i < min_size; i++) {
+        c = input.charCodeAt(i);
+        if (isDigit(c)) {
+            digits++;
+        } else if (isUpper(c)) {
+            caps++;
+        } else if (isLower(c)) {
+            lowers++;
+        } else {
+            return false;
+        }
+    }
+    if (digits === 0 || lowers === 0 || caps === 0 || 
+        digits > 5 || lowers > 5 || caps > 5) {
+        return false;
+    }
+
+    for ( ; i < max_size; i++) {
+        c = input.charCodeAt(i);
+        if (!isDigit(c) && !isUpper(c) && !isLower(c)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Given a PW, find which class to substitute for symbols.
+// The rules are:
+//    - Pick the class that has the most instances in the first
+//      8 characters.
+//    - Tie goes to lowercase first, and to digits second
+// Return a function that will say yes to the chosen type of character.
+function find_class_to_sub(pw) {
+    var n = pw.length;
+    var i;
+    var caps = 0;
+    var lowers = 0;
+    var digits = 0;
+    var symbols = 0;
+    var c;
+
+    for (i = 0; i < min_size; i++) {
+        c = pw.charCodeAt(i);
+        if (isDigit(c)) {
+            digits++;
+        } else if (isUpper(c)) {
+            caps++;
+        } else if (isLower(c)) {
+            lowers++;
+        }
+    }
+    if (lowers >= caps && lowers >= digits) {
+        return isLower;
+    } else if (digits > lowers && digits >= caps) {
+        return isDigit;
+    } else {
+        return isUpper;
+    }
+}
+
+function v2_pwgen (obj, iters, context) {
+    obj.compute_done = false;
+    obj.DK = null;
+
+    var C = CryptoJS;
+    var C_algo = C.algo;
+    var C_lib = C.lib;
+    var C_enc = C.enc;
+
+    var state;
+
+    if (!(state = obj.state)) {
+
+	var hmac = C_algo.HMAC.create(C_algo.SHA512, obj.passphrase);
+	var blockIndex = C_lib.WordArray.create([0x00000001]);
+	var block = hmac.update(obj.email).finalize(blockIndex);
+	hmac.reset();
+
+	// Add 2 because v2 is easier than v1..
+	var exp = parseInt(obj.secbits, 10) + 2;
+
+	// Subtract 1 because we do one interation by default...
+	var limit = (1 << exp) - 1
+
+	obj.state = {
+	    hmac : hmac,
+	    block : block,
+	    intermediate : block,
+	    limit : limit,
+	};
+	obj.iter = 0;
+	state = obj.state;
+    } 
+	
+
+    // Inner loop of PBKDF2, but we're only doing one block len
+    // (512-bits is enough, thanks!) and we're allowed to 
+    // interrupt the computation.
+    for (i = 0; 
+	 i < iters && obj.iter < state.limit && obj.key == context.key; 
+	 i++) {
+
+	state.intermediate = state.hmac.finalize(state.intermediate);
+	state.hmac.reset()
+	
+	for (var j = 0; j < state.block.words.length; j++) {
+	    state.block.words[j] ^= state.intermediate.words[j];
+	}
+	obj.iter++;
+    }
+
+    if (obj.iter >= state.limit) {
+	obj.DK = state.block.toString(C_enc.Base64);
+	obj.compute_done = true;
+	obj.state = {};
+    }
+
+    return obj.compute_done;
+}
+
+function v2_finish_compute (obj, context) {
+    var i;
+    var ret = null;
+    for (i = 0; !ret; i++) {
+        var arr = [ "OneShallPass v2.0", obj.email, obj.host, 
+                    obj.generation, i ];
+        var text = arr.join ("; ");
+        var hash = CryptoJS.HmacSHA512(text, obj.DK);
+        var b64 = hash.toString(CryptoJS.enc.Base64);
+        if (is_ok_pw(b64)) {
+            ret = b64;
+	}
+    }
+    return ret;
+}
+
+function v1_pwgen (obj, iters, context) {
+
+    obj.generated_pw = null;
+    obj.compute_done = false;
+    var d = 1 << parseInt(obj.secbits, 10);
+    var i;
+    for (i = 0; i < iters && !obj.generated_pw && obj.key == context.key; i++) {
+
+        var arr = [ "OneShallPass v1.0", obj.email, obj.host, 
+                    obj.generation, obj.iter ];
+        var text = arr.join ("; ");
+        var hash = CryptoJS.HmacSHA512(text, obj.passphrase);
+        var b16 = hash.toString();
+        var b64 = hash.toString(CryptoJS.enc.Base64);
+
+        var tail = parseInt(b16.slice (b16.length-8, b16.length), 16);
+
+        if (tail % d === 0 && is_ok_pw(b64)) {
+            obj.generated_pw = b64;
+        } else {
+            obj.iter++;
+        }
+    }
+    var ret = !!obj.generated_pw;
+    obj.compute_done = ret;
+    return ret;
+}
+
+function translate_at_indices (input, indices, _map) {
+
+    var last = 0;
+    var arr = [];
+    var j;
+    for (j = 0; j < indices.length; j++) {
+        var index = indices[j];
+        arr.push (input.slice(last, index));
+        var c = input.charAt(index);
+        var i = CryptoJS.enc.Base64._map.indexOf(c);
+        c = _map.charAt(i%_map.length);
+        arr.push (c);
+        last = index+1;
+    }
+    arr.push(input.slice(last, input.length));
+    return arr.join("");
+}
+
+function add_syms_at_indices (input, indices) {
+    var _map = "`~!@#$%^&*()-_+={}[]|;:,<>.?/";
+    return translate_at_indices(input, indices, _map);
+}
+
+function add_syms (input, n) {
+    if (n <= 0) { return input; }
+    var fn = find_class_to_sub(input);
+    var i;
+    var indices = [];
+    for (i = 0; n > 0 && i < min_size; i++) {
+        var c = input.charCodeAt(i);
+        if (fn(c)) {
+            n--;
+            indices.push(i);
+        }
+    }
+    return add_syms_at_indices(input, indices);
+}
+
+if (typeof(exports) != "undefined") {
+    exports.add_syms = add_syms;
+    exports.add_syms_at_indices = add_syms_at_indices;
+    exports.v1_pwgen = v1_pwgen;
+}
+  
+var inputs = {};
+var cache = {};
+var browser = {};
+
+var context = {
+    running : 0,
+    key : null
+};
+
+var pp_timer = {
+    set : false,
+    set_at : 0,
+    wiggle_room : 30, // don't sweat about 30 s in either direction
+    timeout : 60*5,   // timeout a PW in 5 minutes
+    timer_event : function () { $("passphrase").value = ""; }
+};
+
+var cache_timer = {
+    set : false,
+    set_at : 0,
+    wiggle_room : 30,
+    timeout : 60*30, // timeout the cache in 30 minutes
+    timer_event : function () { cache = {}; }
+};
+
+
+function unix_time () {
+    return Math.floor ((new Date ()).getTime() / 1000);
+}
+
+var display_prefs = {};
+
+function key_data (data) {
+    var tmp = [ data.version ];
+    if (data.version == 1) {
+	tmp = tmp.concat([data.email, data.passphrase, 
+			  data.host, data.generation, data.secbits ]);
+    } else {
+	tmp = tmp.concat([data.email, data.passphrase, data.secbits ]);
+    }
+    var key = tmp.join(";");
+    data.key = key;
+}
+
+function $(n) { return document.getElementById(n); }
+
+function toggle_computing() {
+    $('result-need-input').style.visibility = "hidden";
+    $('result-computing').style.visibility = "visible";
+    $('result-computed').style.visibility = "hidden";
+}
+
+function selectText(e) {
+    e.srcElement.focus();
+    e.srcElement.select();
+}
+
+function toggle_computed () {
+    $('result-need-input').style.visibility = "hidden";
+    $('result-computed').style.visibility = "visible";
+    $('result-computing').style.visibility = "hidden";
+}
+
+
+function get_url_params() {
+    var urlParams = {};
+    var match,
+        pl     = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+        query  = window.location.hash.substring(1);
+
+    while ((match = search.exec(query))) {
+       urlParams[decode(match[1])] = decode(match[2]);
+    }
+    return urlParams;
+}
+
+function format_pw (input) {
+    var ret = input.slice(0, display_prefs.length);
+    ret = add_syms (ret, display_prefs.nsym);
+    return ret;
+}
+
+function finish_compute (obj) {
+    obj.computing = false;
+    context.key = null;
+
+    // v1 is done, but V2 has to run one last HMAC to
+    // sign for this particular site.
+    if (obj.version == 2) {
+	pw = v2_finish_compute (obj);
+    } else if (obj.version == 1) {
+	pw = obj.generated_pw;
+    }
+
+    toggle_computed();
+    $("generated_pw").value = format_pw(pw);
+}
+
+function display_computing (val) {
+    var e = $("computing").firstChild;
+    e.nodeValue = "computing.... " + val;
+}
+
+function versioned_pwgen(obj, iters, context) {
+    var r = false;
+    if (obj.version == 1) {
+	r = v1_pwgen(obj,iters,context);
+    } else if (obj.version == 2) {
+	r = v2_pwgen(obj,iters,context);
+    }
+    return r;
+}
+
+function do_compute_loop (key, obj) {
+    var my_obj = obj;
+    var iters = 10;
+    if (key != context.key) {
+        /* bail out, we've changed to a different computation ... */
+    } else if (versioned_pwgen(obj, iters, context)) {
+        finish_compute (obj);
+    } else {
+        display_computing(obj.iter);
+        /* don't block the browser */
+        setTimeout (function () { do_compute_loop (key, my_obj); }, 0); 
+    }
+}
+
+function do_compute (data) {
+    toggle_computing();
+    var key = data.key;
+    var co = cache[key];
+    if (!co) {
+        cache[key] = data;
+        co = data;
+    }
+    if (co.compute_done) {
+        finish_compute (co);
+    } else if (!co.computing) {
+        context.key = key;
+        co.computing = true;
+        co.iter = 0;
+        display_computing("");
+        setTimeout(function() { do_compute_loop (key, co); }, 500);
+    }
+}
+
+function trim (w) {
+    var rxx = /^(\s*)(.*?)(\s*)$/; 
+    var m = w.match (rxx);
+    return m[2];
+}
+
+function clean_host (h) {
+    return trim(h).toLowerCase();
+}
+
+function clean_email (em) {
+    return trim(em).toLowerCase();
+}
+
+function v1_clean_passphrase (pp) {
+    var tmp = trim(pp);
+    // Replace any interior whitespace with just a single
+    // plain space, but otherwise, interior whitespaces
+    // count as part of the passphrase.
+    return tmp.replace(/\s+/g, " ");
+}
+
+function v2_clean_passphrase (pp) {
+    // whitespace doesn't count anywhere
+    return pp.replace(/\s+/g, "");
+}
+
+function clean_passphrase (pp, vv) {
+    if (vv == 1) {
+	return v1_clean_passphrase(pp);
+    } else if (vv == 2) {
+	return v2_clean_passphrase(pp);
+    }
+}
+
+function set_timer (tmobj) {
+    var now = unix_time();
+    if (!tmobj.set || (now - tmobj.set_at) > tmobj.wiggle_room) {
+	tmobj.set = true;
+	tmobj.set_at = now;
+	setTimeout(function () { timer_event(tmobj); }, 
+		   tmobj.timeout*1000);
+    }
+}
+
+function timer_event (tmobj) {
+    var now = unix_time();
+    if (tmobj.set && (now - tmobj.set_at) >= tmobj.timeout) {
+	tmobj.set = false;
+	tmobj.set_at = 0;
+	tmobj.timer_event();
+    }
+}
+
+function set_all_timers () {
+    set_timer(pp_timer);
+    set_timer(cache_timer);
+}
+
+function pp_input (event) {
+    set_all_timers();
+    swizzle(event);
+}
+
+function swizzle (event) { 
+
+    var se = event.srcElement;
+    if (se.value.length > 0) {
+        inputs[se.id] = 1;
+    }
+
+    var email, passphrase, host;
+    var version = $("version").value;
+
+    if (inputs.passphrase && inputs.host && inputs.email) {
+	email = clean_email ( $("email").value )
+	passphrase = clean_passphrase ( $("passphrase").value, version )
+	host = clean_host ( $("host").value );
+    }
+
+    if (passphrase && passphrase.length && host && host.length && email && email.length) {
+        var data = {
+	    "email" : email,
+	    "host" : host,
+	    "passphrase" : passphrase };
+
+        var fields = [ "generation", "secbits" ];
+        var i, f, v;
+        for (i = 0; i < fields.length; i++) {
+            f = fields[i];
+            v = $(f).value;
+            data[f] = v;
+        }
+	data.version = version;
+        display_prefs.length = $("length").value;
+        display_prefs.nsym = $("nsym").value;
+
+        // Key the data, so that we can look it up in a hash-table.
+        key_data (data);
+
+        do_compute(data);
+    }
+    return 0;
+}
+
+function ungray(element) {
+    element.className += " input-black";
+}
+
+function acceptFocus (event) { 
+    var se = event.srcElement;
+    if (!se.className.match("input-black")) {
+        ungray(se);
+        se.value = "";
+    }
+}
+
+function prepopulate() {
+    var p = get_url_params();
+    if (typeof(p.email) != "undefined" && p.email.length > 0) {
+        var e = $("email");
+        ungray(e);
+        e.value = p.email;
+        inputs.email = 1;
+    }
+}
+
+function domobiles() {
+    
+    var mobsafari = (/iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase()));
+    var mobile =(/android|blackberry/i.test(navigator.userAgent.toLowerCase()));
+    if (mobsafari) {
+	browser.mobsafari = true;
+	$('email').type = "email";
+    }
+    
+}
+
+function doExpand(event) {
+	$('expander').style.display = "none";
+	$('advanced').style.display = "inline";
+}
+
+function doCollapse(event) {
+	$('expander').style.display = "inline";
+ 	$('advanced').style.display = "none";
+}
+  </script>
   <style type="text/css">
   .biglabel {
     display: inline-block;
@@ -80,21 +2419,10 @@ body {
     width: 480px;
 }
 
-#secbits {
+.input-selnum {
     width: 90px;
 }
 
-#generation {
-    width: 90px;
-}
-
-#nsym {
-    width: 90px;
-}
-
-#length {
-    width: 90px;
-}
 
 .title {
     margin: 20px;
@@ -172,16 +2500,24 @@ body {
 }
 
 #result-computed {
-    margin: 0px;
-    padding: 0px;
     position: absolute;
     visibility: hidden;
+    padding : 1px;
 }
 
 #generated_pw {
     font-size: 22px;
-    width: 200px;
+    width: 220px;
     font-family: monospace;
+    height: 36px;
+    bottom: auto;
+    top: auto;
+    padding-top : 3px;
+    padding-bottom: 2px;
+    padding-left : 2px;
+    padding-right : 0px;
+    color: red;
+    border: 1px red solid;
 }
 
 #expand {
@@ -257,7 +2593,7 @@ body {
       <div class="full-row">
        <label for="generation" class="biglabel"> generation </label>
        <div class="input-row">
-        <select id="generation" name="generation" class="input-field input-black" onchange="swizzle(event);" />
+        <select id="generation" name="generation" class="input-field input-black input-selnum" onchange="swizzle(event);" />
          <option>1</option>
          <option>2</option>
          <option>3</option>
@@ -285,7 +2621,7 @@ body {
       <div class="full-row">
        <label for="secbits" class="biglabel"> security</label>
        <div class="input-row">
-        <select id="secbits" name="secbits" class="input-field input-black" onChange="swizzle(event);">
+        <select id="secbits" name="secbits" class="input-field input-black input-selnum" onChange="swizzle(event);">
          <option>0</option>
          <option>1</option>
          <option>2</option>
@@ -310,7 +2646,7 @@ body {
       <div class="full-row">
        <label for="nsym" class="biglabel">symbols</label>
        <div class="input-row">
-        <select id="nsym" name="nsym" class="input-field input-black" onChange="swizzle(event);">
+        <select id="nsym" name="nsym" class="input-field input-black input-selnum" onChange="swizzle(event);">
          <option>0</option>
          <option>1</option>
          <option>2</option>
@@ -320,9 +2656,19 @@ body {
       </div>
 
       <div class="full-row">
+       <label for="version" class="biglabel">version</label>
+       <div class="input-row">
+        <select id="version" name="version" class="input-field input-black input-selnum" onChange="swizzle(event);">
+         <option selected="selected">1</option>
+         <option>2</option>
+        </select>
+       </div>
+      </div>
+
+      <div class="full-row">
        <label for="length" class="biglabel"> length </label>
        <div class="input-row">
-        <select id="length" name="length" type="text" class="input-field input-black" onChange="swizzle(event);" />
+        <select id="length" name="length" type="text" class="input-field input-black input-selnum" onChange="swizzle(event);" />
          <option>8</option>
          <option>9</option>
          <option>10</option>

@@ -65,21 +65,10 @@ body {
     width: 480px;
 }
 
-#secbits {
+.input-selnum {
     width: 90px;
 }
 
-#generation {
-    width: 90px;
-}
-
-#nsym {
-    width: 90px;
-}
-
-#length {
-    width: 90px;
-}
 
 .title {
     margin: 20px;
@@ -157,16 +146,24 @@ body {
 }
 
 #result-computed {
-    margin: 0px;
-    padding: 0px;
     position: absolute;
     visibility: hidden;
+    padding : 1px;
 }
 
 #generated_pw {
     font-size: 22px;
-    width: 200px;
+    width: 220px;
     font-family: monospace;
+    height: 36px;
+    bottom: auto;
+    top: auto;
+    padding-top : 3px;
+    padding-bottom: 2px;
+    padding-left : 2px;
+    padding-right : 0px;
+    color: red;
+    border: 1px red solid;
 }
 
 #expand {

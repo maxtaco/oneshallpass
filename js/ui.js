@@ -89,9 +89,9 @@ function finish_compute (obj) {
 
     // v1 is done, but V2 has to run one last HMAC to
     // sign for this particular site.
-    if (obj.data.version == 2) {
+    if (obj.version == 2) {
 	pw = v2_finish_compute (obj);
-    } else if (obj.data.version == 1) {
+    } else if (obj.version == 1) {
 	pw = obj.generated_pw;
     }
 
@@ -105,12 +105,13 @@ function display_computing (val) {
 }
 
 function versioned_pwgen(obj, iters, context) {
-    if (obj.data.version == 1) {
-	v1_pwgen(obj,iters,context);
-    } else if (obj.data.version == 2) {
-	v2_pwgen(obj,iters,context);
+    var r = false;
+    if (obj.version == 1) {
+	r = v1_pwgen(obj,iters,context);
+    } else if (obj.version == 2) {
+	r = v2_pwgen(obj,iters,context);
     }
-
+    return r;
 }
 
 function do_compute_loop (key, obj) {
@@ -160,12 +161,25 @@ function clean_email (em) {
     return trim(em).toLowerCase();
 }
 
-function clean_passphrase (pp) {
+function v1_clean_passphrase (pp) {
     var tmp = trim(pp);
     // Replace any interior whitespace with just a single
     // plain space, but otherwise, interior whitespaces
     // count as part of the passphrase.
     return tmp.replace(/\s+/g, " ");
+}
+
+function v2_clean_passphrase (pp) {
+    // whitespace doesn't count anywhere
+    return pp.replace(/\s+/g, "");
+}
+
+function clean_passphrase (pp, vv) {
+    if (vv == 1) {
+	return v1_clean_passphrase(pp);
+    } else if (vv == 2) {
+	return v2_clean_passphrase(pp);
+    }
 }
 
 function set_timer (tmobj) {
@@ -205,10 +219,11 @@ function swizzle (event) {
     }
 
     var email, passphrase, host;
+    var version = $("version").value;
 
     if (inputs.passphrase && inputs.host && inputs.email) {
 	email = clean_email ( $("email").value )
-	passphrase = clean_passphrase ( $("passphrase").value )
+	passphrase = clean_passphrase ( $("passphrase").value, version )
 	host = clean_host ( $("host").value );
     }
 
@@ -218,13 +233,14 @@ function swizzle (event) {
 	    "host" : host,
 	    "passphrase" : passphrase };
 
-        var fields = [ "generation", "secbits", "version" ];
+        var fields = [ "generation", "secbits" ];
         var i, f, v;
         for (i = 0; i < fields.length; i++) {
             f = fields[i];
             v = $(f).value;
             data[f] = v;
         }
+	data.version = version;
         display_prefs.length = $("length").value;
         display_prefs.nsym = $("nsym").value;
 

@@ -104,18 +104,24 @@ function v2_pwgen (obj, iters, context) {
 
     if (!(state = obj.state)) {
 
-	var hmac = C_algo.HMAC.create(C_algo.HmacSHA512, obj.passphrase),
+	var hmac = C_algo.HMAC.create(C_algo.SHA512, obj.passphrase);
 	var blockIndex = C_lib.WordArray.create([0x00000001]);
-	var block = state.hmac.update(obj.email).finalize(blockIndex);
+	var block = hmac.update(obj.email).finalize(blockIndex);
 	hmac.reset();
+
+	// Add 2 because v2 is easier than v1..
+	var exp = parseInt(obj.secbits, 10) + 2;
+
+	// Subtract 1 because we do one interation by default...
+	var limit = (1 << exp) - 1
 
 	obj.state = {
 	    hmac : hmac,
 	    block : block,
 	    intermediate : block,
-	    limit : 1 << parseInt(obj.secbits, 10),
-	    iter : 1
+	    limit : limit,
 	};
+	obj.iter = 0;
 	state = obj.state;
     } 
 	
@@ -124,7 +130,7 @@ function v2_pwgen (obj, iters, context) {
     // (512-bits is enough, thanks!) and we're allowed to 
     // interrupt the computation.
     for (i = 0; 
-	 i < iters && state.iter < state.limit && obj.key == context.key; 
+	 i < iters && obj.iter < state.limit && obj.key == context.key; 
 	 i++) {
 
 	state.intermediate = state.hmac.finalize(state.intermediate);
@@ -133,10 +139,10 @@ function v2_pwgen (obj, iters, context) {
 	for (var j = 0; j < state.block.words.length; j++) {
 	    state.block.words[j] ^= state.intermediate.words[j];
 	}
-	state.iter++;
+	obj.iter++;
     }
 
-    if (state.iter >= state.limit) {
+    if (obj.iter >= state.limit) {
 	obj.DK = state.block.toString(C_enc.Base64);
 	obj.compute_done = true;
 	obj.state = {};
