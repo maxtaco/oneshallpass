@@ -32,7 +32,13 @@ function unix_time () {
 var display_prefs = {};
 
 function key_data (data) {
-    var tmp = [ data.email, data.passphrase, data.host, data.generation, data.secbits ];
+    var tmp = [ data.version ];
+    if (data.version == 1) {
+	tmp = tmp.concat([data.email, data.passphrase, 
+			  data.host, data.generation, data.secbits ]);
+    } else {
+	tmp = tmp.concat([data.email, data.passphrase, data.secbits ]);
+    }
     var key = tmp.join(";");
     data.key = key;
 }
@@ -80,8 +86,17 @@ function format_pw (input) {
 function finish_compute (obj) {
     obj.computing = false;
     context.key = null;
+
+    // v1 is done, but V2 has to run one last HMAC to
+    // sign for this particular site.
+    if (obj.data.version == 2) {
+	pw = v2_finish_compute (obj);
+    } else if (obj.data.version == 1) {
+	pw = obj.generated_pw;
+    }
+
     toggle_computed();
-    $("generated_pw").value = format_pw (obj.generated_pw);
+    $("generated_pw").value = format_pw(pw);
 }
 
 function display_computing (val) {
@@ -89,12 +104,21 @@ function display_computing (val) {
     e.nodeValue = "computing.... " + val;
 }
 
+function versioned_pwgen(obj, iters, context) {
+    if (obj.data.version == 1) {
+	v1_pwgen(obj,iters,context);
+    } else if (obj.data.version == 2) {
+	v2_pwgen(obj,iters,context);
+    }
+
+}
+
 function do_compute_loop (key, obj) {
     var my_obj = obj;
     var iters = 10;
     if (key != context.key) {
         /* bail out, we've changed to a different computation ... */
-    } else if (pwgen(obj, iters, context)) {
+    } else if (versioned_pwgen(obj, iters, context)) {
         finish_compute (obj);
     } else {
         display_computing(obj.iter);
@@ -111,7 +135,7 @@ function do_compute (data) {
         cache[key] = data;
         co = data;
     }
-    if (co.generated_pw) {
+    if (co.compute_done) {
         finish_compute (co);
     } else if (!co.computing) {
         context.key = key;
@@ -194,7 +218,7 @@ function swizzle (event) {
 	    "host" : host,
 	    "passphrase" : passphrase };
 
-        var fields = [ "generation", "secbits" ];
+        var fields = [ "generation", "secbits", "version" ];
         var i, f, v;
         for (i = 0; i < fields.length; i++) {
             f = fields[i];
