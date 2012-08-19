@@ -48,9 +48,16 @@ hope to build server-side support for remembering users' generation numbers,
 but this will obviously kill disconnected operation, and will make auditing my
 work more challenging.
 
-### I'm tired of typing my email address every time, what can I do?
+### What is the `algo version` field for?
+
+We're rolling out version 2 of the algorithm, which generates
+different results from version 1.  However, version 2 is more
+efficient for honest users, and just as hard to crack as verion 1.
+
+### I'm tired of typing my email address or setting
+the algorithm version every time, what can I do?
  
-You can bookmark the URL https://oneshallpass.com/#email=you@email.com
+You can bookmark the URL https://oneshallpass.com/#email=you@email.com&version=2
 
 ### How do I make a good passphrase?
 
