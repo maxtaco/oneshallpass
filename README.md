@@ -74,6 +74,60 @@ Technical FAQ
 
 ### What is the crypto behind One Shall Pass?
 
+## Version 2
+
+In a nuthsell, HMAC-SHA512 \[[1](#citations),[2](#citations)\],
+and PBKDF-2 \[[3](#citations)\] with some slight tweaks.
+
+The 1SP input form takes as input five key pieces of information:
+
+* _p_, the passphrase
+* _e_, the email address
+* _s_, the security parameter.
+* _h_, the host to generate a password for
+* _g_, the generation number of this password
+
+The first three fields are fed as input to PBKDF-2.
+This has the result of making the input passphrase harder
+to crack. For every guess an adversary makes, he will have 
+to run multiple calls to HMAC-SHA512 to check if his guess 
+is correct.  1SP, version 2, runs the PBKDF-2 algorithm as follows:
+
+* _PRF_, the pseudo-reandom password, is HMAC-SHA512;
+* _P_, the password, is the passphrase _p_ taken from the user-input;
+* _S_, the salt, is _e_, the user's email address;
+* _c_, the iteration count, is 2^(s+1); and
+* _dkLen_, the derived key length, is just 512 bits, the output of the 
+chose _PRF_.  Therefore, only one block is needed from PBKDF-2.
+
+This algorithm outputs _DK_, a 512-bit derived key.  This needs
+to be done only once per session, and the output can be cached 
+for use across multiple sites.  Then, each site's password is
+computed as:
+
+  HMAC-SHA512(_DK_, [ "OneShallPass v2.0", _e_, _h_, _g_, _i_ ])
+
+for an iterator _i_ that starts at 0.  You can think of this
+rought as signing the message "User _e_ wants to log into site _h_"
+with the private signing key derived from _p_.
+
+1SP version 2 will terminate on a given _i_ once the following two
+conditions are met:
+
+1. When the hash is base64-encoded, the leftmost 8 characters contain 
+at least 1 uppercase, 1 lowercase, and 1 digit, and no more than 5 
+uppercase, lowercase or digit characters.
+1. The first 16 characters of the base64-encoding contain no symbols
+(_e.g._, "/", "+" or "=")
+
+The nice part about this version of 1SP (rather than the previous
+version), is that the expensive computation (the iterated hashing
+of the input passphrase) needs to happen only once per session,
+and not once per site.  The adversary still has to do the same amount 
+of work in either case.
+
+## Version 1
+
 In a nuthsell, HMAC-SHA512 \[[1](#citations),[2](#citations)\], with some slight tweaks.
 
 The 1SP input form takes as input five key pieces of information:
@@ -110,7 +164,7 @@ checking to see if the output of the above function is what he stole from the
 database.  But he'll have to run the above function on average 2^s times per
 guess.  It won't make guessing your password impossible, just a nice constant
 factor harder.  This is the same proof-of-work idea as in
-HashCash \[[3](#citations)\], BitCoin \[[4](#citations)\], and many others.  The key
+HashCash \[[4](#citations)\], BitCoin \[[5](#citations)\], and many others.  The key
 idea is that there is no know way to do the work better than
 the obvious (intended) way.
 
@@ -124,19 +178,22 @@ In practice, these practical conditions are usual met the first time through.
 
 ### How secure is this?
 
+# Version 2
+
 If you use the <a href="https://oneshallpass.com/pp.html">suggested
 passphrase generation tool</a>, and the default security setting, your
-password will require in expectation 2^(58+7-1) = 2^64 calls to
+password will require in expectation 2^(58+8-1) = 2^64 calls to
 HMAC-SHA512 to crack. That is, the passphrase generator gives 58 bits
-of entropy, 1SP's iterative hashing scheme requires 2^7 calls to
-HMAC-SHA512 to test a passphrase, but on average, a cracker only needs
+of entropy, 1SP's use of PBKDF-2 consumes 2^(7+1) calls to HMAC-SHA512
+to turn a passphrase into a secret key, 
+but on average, a cracker only needs
 to exhaust half of the search space to find your passphase (hence the
 2^(-1) factor).  The obvious way to compute HMAC-SHA512 requires
 two invocations of SHA2, but I have not seen a proof that two are
 required.  So conservatively, assume that one invocation of HMAC-SHA512
 is equivalent to one call to SHA2.
 
-The Bitcon system \[[4](#citations)\] can help us put a monetary value on
+The Bitcon system \[[5](#citations)\] can help us put a monetary value on
 the cost of computing a hash.  After all, an adversary can either
 spend cycles mining bitcoins or cracking your passphrase.  So cracking
 your passphrase has a quantifiable opportunity cost. 
@@ -146,11 +203,13 @@ As of 25 July 2012, the Bitcoin difficulty rate is
 get a Bitcoin unit, which is 50 Bitcoins, each of which is worth
 about $8.52 dollars.  So a conservative estimate is that a call to
 SHA2 costs about 50*8.52/(2^32*1866391.3) dollars, or roughly 2^(-44) dollars.
-So your password will require 2^(64-44) = 2^20 or roughly $1 million
+So your password will require 2^(65-44) = 2^21 or roughly $2 million
 to crack.
 
 If you want better security, you can choose a 5-word passphrase,
 which conservatively costs about $25 billion to crack.
+
+A similar analysis holds for Version 1 of the algorithm.
 
 ### Why not `bcrypt`?
 
@@ -171,7 +230,7 @@ site, that he hasn't compromised.  In other words, he seeks a new pair (t',m'),
 that he hasn't seen before, where m' is the output of the 1SP function for some
 new text t', referring to a new site.
 
-This is exactly the property HMAC provides \[[5](#citations),[6](#citations)\].
+This is exactly the property HMAC provides \[[6](#citations),[7](#citations)\].
 It resists "existential forgery" under "known plaintext attacks".
 
 ### What about salt?
@@ -190,7 +249,7 @@ password "dog" will have to be cracked independently.
 
 ### What implementation of SHA2 and HMAC is 1SP using?
 
-Jeff Mott's `crypto-js` library \[[7](#citations)\].  I tested
+Jeff Mott's `crypto-js` library \[[8](#citations)\].  I tested
 it with test-vectors from RFC-4231 and RFC-4868.  To make sure it 
 works for yourself, try `make test`; you'll need the `node`
 binary in your path.
@@ -225,22 +284,26 @@ Citations
 
 
 
-\[3\]:  http://www.hashcash.org 
+\[4\]:  http://www.hashcash.org 
 
 
 
-\[4\]:  http://www.bitcoin.org 
+\[5\]:  http://www.bitcoin.org 
 
 
 
-\[5\]:  M. Bellare, R. Canetti, and H. Krawczyk. Keying hash functions for message authentication. CRYPTO 1996. http://cseweb.ucsd.edu/~mihir/papers/kmd5.pdf 
+\[6\]:  M. Bellare, R. Canetti, and H. Krawczyk. Keying hash functions for message authentication. CRYPTO 1996. http://cseweb.ucsd.edu/~mihir/papers/kmd5.pdf 
 
 
 
-\[6\]:  M. Bellare. New Proofs for NMAC and HMAC: Security without Collision-Resistance. CRYPTO 2006. http://www.iacr.org/cryptodb/archive/2006/CRYPTO/1887/1887.pdf 
+\[7\]:  M. Bellare. New Proofs for NMAC and HMAC: Security without Collision-Resistance. CRYPTO 2006. http://www.iacr.org/cryptodb/archive/2006/CRYPTO/1887/1887.pdf 
 
 
 
-\[7\]:  Jeff Mott, `crypto-js`.  http://code.google.com/p/crypto-js 
+\[8\]:  Jeff Mott, `crypto-js`.  http://code.google.com/p/crypto-js 
+
+
+
+\[3\]:  B. Kaliski, RSA Labs. RFC-2898. http://www.ietf.org/rfc/rfc2898.txt  
 
 
