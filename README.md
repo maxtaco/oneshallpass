@@ -94,31 +94,31 @@ The 1SP input form takes as input five key pieces of information:
 * _h_, the host to generate a password for
 * _g_, the generation number of this password
 
-The first three fields are fed as input to PBKDF-2.
-This has the result of making the input passphrase harder
-to crack. For every guess an adversary makes, he will have 
+The first three fields are fed as input to PBKDF-2, which
+makes your passphrase harder to crack.
+For every guess an adversary makes, he will have 
 to run multiple calls to HMAC-SHA512 to check if his guess 
-is correct.  1SP, version 2, runs the PBKDF-2 algorithm as follows:
+is correct.  Version 2 of 1SP the PBKDF-2 algorithm as follows:
 
 * _PRF_, the pseudo-reandom password, is HMAC-SHA512;
-* _P_, the password, is the passphrase _p_ taken from the user-input;
+* _P_, the password, is the passphrase _p_ taken from your input;
 * _S_, the salt, is _e_, the user's email address;
 * _c_, the iteration count, is 2^(s+1); and
-* _dkLen_, the derived key length, is just 512 bits, the output of the 
-chose _PRF_.  Therefore, only one block is needed from PBKDF-2.
+* _dkLen_, the derived key length, is 512 bits, the output of the 
+chosen _PRF_.  Therefore, only one block is needed from PBKDF-2.
 
 This algorithm outputs _DK_, a 512-bit derived key.  This needs
 to be done only once per session, and the output can be cached 
 for use across multiple sites.  Then, each site's password is
 computed as:
 
-  HMAC-SHA512(_DK_, [ "OneShallPass v2.0", _e_, _h_, _g_, _i_ ])
+    HMAC-SHA512(_DK_, [ "OneShallPass v2.0", _e_, _h_, _g_, _i_ ])
 
 for an iterator _i_ that starts at 0.  You can think of this
 rought as signing the message "User _e_ wants to log into site _h_"
 with the private signing key derived from _p_.
 
-1SP version 2 will terminate on a given _i_ once the following two
+1SP version 2 will find the first _i_ for which the following
 conditions are met:
 
 1. When the hash is base64-encoded, the leftmost 8 characters contain 
@@ -189,10 +189,10 @@ In practice, these practical conditions are usual met the first time through.
 
 If you use the <a href="https://oneshallpass.com/pp.html">suggested
 passphrase generation tool</a>, and the default security setting, your
-password will require in expectation 2^(58+8-1) = 2^64 calls to
+password will require in expectation 2^(58+8-1) = 2^65 calls to
 HMAC-SHA512 to crack. That is, the passphrase generator gives 58 bits
 of entropy, 1SP's use of PBKDF-2 consumes 2^(7+1) calls to HMAC-SHA512
-to turn a passphrase into a secret key, 
+to turn a passphrase into a derived key, 
 but on average, a cracker only needs
 to exhaust half of the search space to find your passphase (hence the
 2^(-1) factor).  The obvious way to compute HMAC-SHA512 requires

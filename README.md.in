@@ -189,10 +189,10 @@ In practice, these practical conditions are usual met the first time through.
 
 If you use the <a href="https://oneshallpass.com/pp.html">suggested
 passphrase generation tool</a>, and the default security setting, your
-password will require in expectation 2^(58+8-1) = 2^64 calls to
+password will require in expectation 2^(58+8-1) = 2^65 calls to
 HMAC-SHA512 to crack. That is, the passphrase generator gives 58 bits
 of entropy, 1SP's use of PBKDF-2 consumes 2^(7+1) calls to HMAC-SHA512
-to turn a passphrase into a secret key, 
+to turn a passphrase into a derived key, 
 but on average, a cracker only needs
 to exhaust half of the search space to find your passphase (hence the
 2^(-1) factor).  The obvious way to compute HMAC-SHA512 requires
