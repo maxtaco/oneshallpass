@@ -277,11 +277,17 @@ function acceptFocus (event) {
 
 function prepopulate() {
     var p = get_url_params();
-    if (typeof(p.email) != "undefined" && p.email.length > 0) {
-        var e = $("email");
-        ungray(e);
-        e.value = p.email;
-        inputs.email = 1;
+    var params = [ "email", "version", "length", "secbits", "passphrase" ];
+    var i;
+    for (i in params) {
+	curr = params[i];
+	console.log ("XXX " + curr + " -> " + p[curr]);
+	if (typeof(p[curr]) != "undefined" && p[curr].length > 0) {
+            var e = $(curr);
+            ungray(e);
+            e.value = p[curr];
+            inputs[curr] = 1;
+	}
     }
 }
 
