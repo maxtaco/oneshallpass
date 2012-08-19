@@ -128,6 +128,17 @@ function do_compute_loop (key, obj) {
     }
 }
 
+function make_compute_obj_from_cache (data, co) {
+    var ret = {};
+    if (data.version == 1) {
+	ret = co;
+    } else if (data.version == 2) {
+	data.DK = co.DK;
+	ret = data;
+    }
+    return ret;
+}
+
 function do_compute (data) {
     toggle_computing();
     var key = data.key;
@@ -137,7 +148,7 @@ function do_compute (data) {
         co = data;
     }
     if (co.compute_done) {
-        finish_compute (co);
+        finish_compute (make_compute_obj_from_cache (data, co));
     } else if (!co.computing) {
         context.key = key;
         co.computing = true;
