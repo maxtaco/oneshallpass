@@ -197,11 +197,9 @@ function v2_clean_passphrase (pp) {
 }
 
 function clean_passphrase (pp, vv) {
-    if (vv == 1) {
-	return v1_clean_passphrase(pp);
-    } else if (vv == 2) {
-	return v2_clean_passphrase(pp);
-    }
+    return version_switch(vv,
+			  { 1 : function() { return v1_clean_passphrase(pp); },
+			    2 : function() { return v2_clean_passphrase(pp); }});
 }
 
 function set_timer (tmobj) {
