@@ -115,7 +115,7 @@ computed as:
     HMAC-SHA512(_DK_, [ "OneShallPass v2.0", _e_, _h_, _g_, _i_ ])
 
 for an iterator _i_ that starts at 0.  You can think of this
-rought as signing the message "User _e_ wants to log into site _h_"
+roughly as signing the message "User _e_ wants to log into site _h_"
 with the private signing key derived from _p_.
 
 1SP version 2 will find the first _i_ for which the following
