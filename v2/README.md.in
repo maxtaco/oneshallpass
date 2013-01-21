@@ -287,6 +287,8 @@ Citations
 
 {#!sha2: Secure Hash Standard, March 2012. http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf #}
 
+{#!pbkdf2: B. Kaliski, RSA Labs. RFC-2898. http://www.ietf.org/rfc/rfc2898.txt  #}
+
 {#!hashcash: http://www.hashcash.org #}
 
 {#!bitcoin: http://www.bitcoin.org #}
@@ -297,4 +299,3 @@ Citations
 
 {#!cryptojs: Jeff Mott, `crypto-js`.  http://code.google.com/p/crypto-js #}
 
-{#!pbkdf2: B. Kaliski, RSA Labs. RFC-2898. http://www.ietf.org/rfc/rfc2898.txt  #}
