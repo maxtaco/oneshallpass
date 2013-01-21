@@ -4,13 +4,13 @@
   One Shall Pass 
   </title>
   <script>
-  {% include js/crypto.js %}
-  {% include js/jquery.js %}
-  {% include js/purepack.js %}
-  {% include js/1sp.js %}
+  <!--{% include js/crypto.js %}-->
+  <!--{% include js/jquery.js %}-->
+  <!--{% include js/purepack.js %}-->
+  <!--{% include js/1sp.js %}-->
   </script>
   <style type="text/css">
-  {% include css/main.css %}
+  <!--{# include css/main.css %}-->
   </style>
   <meta name="viewport" content="width = device-width" />
  </head>
@@ -18,5 +18,55 @@
   <h1>One Shall Pass</h1>
   <h2>Site-Specific PWs</h2>
   <h3>Secure, Open, Local, Free and Easy!</h3>
+  <table border=1>
+
+   <!-- First section is the mandatory stuff -->
+   <tbody>
+
+    <tr>
+     <td>passphrase</td>
+     <td><input id="passphrase" name="passphrpase" type="text" autocapitalize="off" value="sailor pigdom cork futile" />
+    </tr>
+
+    <tr>
+     <td>e-mail</td>
+     <td><input id="email" name="email" type="text" value="myname@gmail.com" autocapitalize="off"/>
+    </tr>
+
+    <tr>
+     <td>service name</td>
+     <td><input id="host" name="host" type="text" class="input-field" value="chase.com" autocapitalize="off" /></td>
+    </tr>
+
+   </tbody>
+
+   <!-- Expand to advanced? -->
+   <tbody>
+   </tbody>
+
+   <!-- Advanced fields -->
+   <tbody>
+   </tbody>
+
+   <!-- Enable server syncing? -->
+   <tbody>
+   </tbody>
+
+   <!-- Server syncing -->
+   <tbody>
+   </tbody>
+
+   <!-- Output Section -->
+   <tbody>
+    <tr>
+     <td>your PW</td>
+     <td id="result-computing" style="display: none;">Computing...</td>
+     <td id="result-waiting" >...waiting for input...</td>
+     <td id="result-done" style="display: none;">xXy3931asa</td>
+    </tr>
+   
+   </tbody>
+
+  </table>
  </body>
 </html>
