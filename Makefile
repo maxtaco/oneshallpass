@@ -37,7 +37,7 @@ deps-jquery:
                   git checkout $(JQUERY_VERSION) ) \
 	fi
 
-out/js/crypto.js: \
+build/js/crypto.js: \
 	$(CRYPTO_SRC)/core.js \
 	$(CRYPTO_SRC)/cipher-core.js \
 	$(CRYPTO_SRC)/x64-core.js \
@@ -49,5 +49,6 @@ out/js/crypto.js: \
 	mkdir -p `dirname $@`
 	cat $^ > $@
 
-out/js-min/%-min.js: out/js/%.js
+build/js-min/%-min.js: build/js/%.js
+	mkdir -p `dirname $@`
 	$(JSMIN) < $^ > $@
