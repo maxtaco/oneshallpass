@@ -1,20 +1,23 @@
 
 import sys
 import re
+import os
+import os.path
 
-def process_handle (h):
+def process_handle (inh, outh):
     rxx = re.compile(r'^(.*)\{%\s?include\s+(.*?)%\}(.*)$');
-    for l in h.readlines():
+    for l in inh.readlines():
         m = rxx.match(l)
         if m:
             pre = m.group(1)
-            file = m.group(2).strip()
+            fn = m.group(2).strip()
             post = m.group(3)
             sys.stdout.write(pre)
-            nh = open (file, "r")
+            fn = os.path.join ("out", fn)
+            nh = open (fn, "r")
             process_handle (nh)
-            sys.stdout.write(post)
+            outh.write(post)
         else:
-            sys.stdout.write(l)
+            outh.write(l)
 
-process_handle (sys.stdin)
+process_handle (sys.stdin, sys.stdout)
