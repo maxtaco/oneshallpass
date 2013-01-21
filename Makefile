@@ -1,10 +1,13 @@
 
+JSMIN=uglifyjs
+
 CRYPTO_JS_VERSION=3.1.2
 PUREPACK_VERSION=v0.0.1
 JQUERY_VERSION=2.0.0b1
 
-deps: deps-crypto-js deps-purepack deps-jquery
+CRYPTO_SRC=deps/crypto-js/src
 
+deps: deps-crypto-js deps-purepack deps-jquery
 
 deps-crypto-js:
 	cd deps ; \
@@ -33,3 +36,18 @@ deps-jquery:
                   cd jquery && \
                   git checkout $(JQUERY_VERSION) ) \
 	fi
+
+out/js/crypto.js: \
+	$(CRYPTO_SRC)/core.js \
+	$(CRYPTO_SRC)/cipher-core.js \
+	$(CRYPTO_SRC)/x64-core.js \
+	$(CRYPTO_SRC)/hmac.js \
+	$(CRYPTO_SRC)/sha1.js \
+	$(CRYPTO_SRC)/sha512.js \
+	$(CRYPTO_SRC)/enc-base64.js \
+	$(CRYPTO_SRC)/aes.js 
+	mkdir -p `dirname $@`
+	cat $^ > $@
+
+out/js-min/%-min.js: out/js/%.js
+	$(JSMIN) < $^ > $@
