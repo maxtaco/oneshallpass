@@ -28,7 +28,8 @@ class Base
     lowers = 0
     digits = 0
 
-    for c in pw[0...config.pw.min_size]
+    for i in [0...config.pw.min_size]
+      c = pw.charCodeAt i
       if @is_digit c then digits++
       else if @is_upper c then caps++
       else if @is_lower c then lowers++
@@ -37,9 +38,9 @@ class Base
     bad = (x) -> (x is 0 or x > 5)
     return false if bad(digits) or bad(lowers) or bad(caps)
     
-    for c in pw[config.pw.min_size...] 
-      return false unless @is_valid(c)
-      
+    for i in [config.pw.min_size...config.pw.max_size] 
+      return false unless @is_valid pw.charCodeAt i
+
     true
     
   #-----------------------------------------
@@ -57,7 +58,8 @@ class Base
     lowers = 0
     digits = 0
 
-    for c in pw[0...config.pw.min_size]
+    for i in [0...config.pw.min_size]
+      c = pw.charCodeAt i
       if @is_digit c then digits++
       else if @is_upper c then caps++
       else if @is_lower c then lowers++
@@ -72,7 +74,8 @@ class Base
     return input if n <= 0
     fn = @find_class_to_sub input
     indices = []
-    for c,i in pw[0...config.pw.min_size]
+    for i in [0...config.pw.min_size]
+      c = input.charCodeAt i
       if fn.call @, c
         indices.push i
         n--
@@ -104,11 +107,11 @@ class Base
   run : (compute_hook, cb) ->
     ret = null
     v = "_v#{@version()}"
+
+    slot = @_input[v] = {} unless (slot = @_input[v])?
     
-    if not (slot = @_input[v])? and
-        not (dk = slot._derived_key)? and not slot._running
+    if not (dk = slot._derived_key)? and not slot._running
         
-      slot = input[v] = {} unless slot?
       slot._running = true
       
       await setTimeout defer(), config.derive.initial_delay
@@ -151,21 +154,22 @@ exports.V1 = class V1 extends Base
     ret = null
     d = 1 << @secbits()
     i = 0
-    
     until ret
       await @delay i, defer()
       if compute_hook i
         a = [ "OneShallPass v1.0", @email(), @host(), @generation(), i ]
         txt = a.join '; '
-        hash = C.HmacSHA512 txt, @passphrase()
+        hmac = C.algo.HMAC.create C.algo.SHA512, @passphrase()
+        hash = hmac.update(txt).finalize()
+        hmac = null
         b16 = hash.toString()
-        b64 = hash.toString(C.end.Base64)
+        b64 = hash.toString(C.enc.Base64)
+        hash = null
         tail = parseInt b16[b16.length-8...], 16
         if tail % d is 0 and @is_ok_pw b64 then ret = b64
         else i++
       else
         break
-
     cb ret
     
   ##-----------------------------------------

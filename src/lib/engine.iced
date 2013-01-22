@@ -16,7 +16,7 @@ class Cache
 
   lookup : (sio) ->
     k = sio.unique_id()
-    obj = @_c[k] = si unless (obj = @_c[k])?
+    obj = @_c[k] = sio unless (obj = @_c[k])?
     return obj
 
   start : () ->
@@ -32,7 +32,6 @@ input_trim = (x) ->
 input_clean = (x) ->
   ret = input_trim(x).toLowerCase()
   ret = null if ret.length is 0
-  console.log "input clean #{x} -> #{ret}"
   ret
 
 ##=======================================================================
@@ -41,7 +40,6 @@ class VersionObj
   constructor : (args)->
   
   @make : (v, args) ->
-    console.log "MAKE #{v} #{args?.toString()}"
     switch v
       when 1 then new Version1Obj args
       when 2 then new Version2Obj args
@@ -52,7 +50,6 @@ class VersionObj
 class Version1Obj extends VersionObj
 
   constructor : (@_args) ->
-    console.log "New v1 obj"
   
   clean_passphrase : (pp) ->
     # Replace any interior whitepsace with just a single
@@ -61,13 +58,13 @@ class Version1Obj extends VersionObj
     input_trim(pp).replace /\s+/g, " "
 
   key_fields : -> [ 'email', 'passphrase', 'host', 'generation', 'secbits' ]
+  derive_key : (input, kgh, cb) -> (new derive.V1 input).run kgh, cb
   
 ##-----------------------------------------------------------------------
 
 class Version2Obj extends VersionObj
 
   constructor : (@_args) ->
-    console.log "New v2 obj"
     
   clean_passphrase : (pp) ->
     # strip out all spaces!
@@ -105,7 +102,7 @@ class Input
     # false) and also to report progress to the UI
     compute_hook = (i) =>
       if (ret = @unique_id() is @_main._ri.unique_id())
-        @_main._doc.show_computing i
+        if i % 10 is 0 then @_main._doc.show_computing i
       ret
       
     @get_version_obj().derive_key @, compute_hook, cb
@@ -134,7 +131,6 @@ exports.RawInput = class RawInput extends Input
     ret = if not (p = @_template[k])? then null
     else if not p[0] then parseInt @_main._doc.q(k).value, 10
     else @[k]
-    console.log "GET #{k} -> #{ret}"
     ret
   
   #-----------------------------------------
@@ -144,26 +140,18 @@ exports.RawInput = class RawInput extends Input
   #-----------------------------------------
   
   set : (k, v) ->
-    console.log "SET #{k} -> #{v}"
     @_unique_id = null
     if not (p = @_template[k])? then null
-    else if p[1]
-      console.log "p[1] is #{p[1].toString()}"
-      @[k] = p[1](v)
-    else
-      console.log "fuuuuck #{p.toString()}"
-      (@[k] = v)
+    else if p[1] then @[k] = p[1](v)
+    else (@[k] = v)
     
   #-----------------------------------------
 
   sanitize : () ->
-    console.log "running santize!"
     si = new SanitizedInput @_main
     for k of @_template
       if not (v = @get k)?
-        console.log "failed to get #{k}"
         return null
-      console.log "got #{k} -> #{v}"
       si[k] = v
     si
 
@@ -203,7 +191,6 @@ exports.Engine = class Engine
   ##-----------------------------------------
 
   run : () ->
-    console.log "actually running!"
 
     # If we already had an object for this input, grab that instead.
     # Otherwise, we'll add this one to cache...

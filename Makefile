@@ -1,7 +1,7 @@
 
 JSMIN=uglifyjs
 
-CRYPTO_JS_VERSION=3.1.2
+CRYPTO_JS_VERSION=3.0.2
 PUREPACK_VERSION=v0.0.1
 JQUERY_VERSION=2.0.0b1
 
@@ -15,6 +15,7 @@ clean:
 	rm -rf build
 
 deps-crypto-js:
+	mkdir -p deps
 	cd deps ; \
 	if [ -d crypto-js ] ; then \
 		(cd crypto-js && svn up); \
@@ -23,20 +24,18 @@ deps-crypto-js:
 	fi
 
 deps-purepack:
+	mkdir -p deps
 	cd deps ; \
-	if [ -d purepack ] ; then \
-		(cd purepack && git pull origin $(PUREPACK_VERSION) ) ; \
-	else \
+	if [ ! -d purepack ] ; then \
 		( git clone git://github.com/maxtaco/purepack && \
                   cd purepack && \
                   git checkout $(PUREPACK_VERSION) ) \
 	fi
 
 deps-jquery:
+	mkdir -p deps
 	cd deps ; \
-	if [ -d jquery ]; then \
-		(cd jquery && git pull origin $(JQUERY_VERSION) ); \
-	else \
+	if [ ! -d jquery ]; then \
 		( git clone git://github.com/jquery/jquery && \
                   cd jquery && \
                   git checkout $(JQUERY_VERSION) ) \
