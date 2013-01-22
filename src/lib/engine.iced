@@ -24,11 +24,16 @@ class Cache
   
 ##=======================================================================
 
-input_trim : (x) ->
+input_trim = (x) ->
   rxx = /^(\s*)(.*?)(\s*)$/
   m = x.match rxx
   m[2]
-input_clean : (x) -> input_trim(x).toLowerCase()
+  
+input_clean = (x) ->
+  ret = input_trim(x).toLowerCase()
+  ret = null if ret.length is 0
+  console.log "input clean #{x} -> #{ret}"
+  ret
 
 ##=======================================================================
 
@@ -36,6 +41,7 @@ class VersionObj
   constructor : (args)->
   
   @make : (v, args) ->
+    console.log "MAKE #{v} #{args?.toString()}"
     switch v
       when 1 then new Version1Obj args
       when 2 then new Version2Obj args
@@ -44,6 +50,9 @@ class VersionObj
 ##-----------------------------------------------------------------------
 
 class Version1Obj extends VersionObj
+
+  constructor : (@_args) ->
+    console.log "New v1 obj"
   
   clean_passphrase : (pp) ->
     # Replace any interior whitepsace with just a single
@@ -57,6 +66,9 @@ class Version1Obj extends VersionObj
 
 class Version2Obj extends VersionObj
 
+  constructor : (@_args) ->
+    console.log "New v2 obj"
+    
   clean_passphrase : (pp) ->
     # strip out all spaces!
     pp.replace /\s+/g, ""
@@ -82,7 +94,7 @@ class Input
   # Serialize the input and assigned it a unique ID
   unique_id : () ->
     unless @_unique_id?
-      @_unique_id = (@get f for f in get_version_obj().key_fields()).join ";" 
+      @_unique_id = (@get f for f in @get_version_obj().key_fields()).join ";" 
     @_unique_id
 
   #-----------------------------------------
@@ -107,10 +119,9 @@ exports.RawInput = class RawInput extends Input
     @_key = null
     SELECT = [ false, null ]
     @_template =
-      email :  [ true, @_clean ]
-      passphrase : [ true, @_clean_passphrase ]
-      host : [ true, @_clean ]
-      select : SELECT
+      email :  [ true, (x) -> input_clean x ]
+      passphrase : [ true, (x) => @_clean_passphrase x ]
+      host : [ true, (x) -> input_clean x ]
       version : SELECT
       secbits : SELECT
       nsym : SELECT
@@ -120,29 +131,39 @@ exports.RawInput = class RawInput extends Input
   #-----------------------------------------
 
   get : (k) ->
-    if not (p = @_template[k])? then null
-    else if not p[0] then @_main._doc.q k
+    ret = if not (p = @_template[k])? then null
+    else if not p[0] then parseInt @_main._doc.q(k).value, 10
     else @[k]
+    console.log "GET #{k} -> #{ret}"
+    ret
   
   #-----------------------------------------
 
-  @_clean : (x) -> input_clean x
-  @_clean_passphrase : (pp) -> @get_version_obj().clean_passphrase pp
+  _clean_passphrase : (pp) -> @get_version_obj().clean_passphrase pp
 
   #-----------------------------------------
   
   set : (k, v) ->
+    console.log "SET #{k} -> #{v}"
     @_unique_id = null
     if not (p = @_template[k])? then null
-    else if p[1] then (@[k] = p[1].call @, v)
-    else (@[k] = v)
+    else if p[1]
+      console.log "p[1] is #{p[1].toString()}"
+      @[k] = p[1](v)
+    else
+      console.log "fuuuuck #{p.toString()}"
+      (@[k] = v)
     
   #-----------------------------------------
 
-  santize : () ->
+  sanitize : () ->
+    console.log "running santize!"
     si = new SanitizedInput @_main
     for k of @_template
-      if not (v = @get k)? then return null
+      if not (v = @get k)?
+        console.log "failed to get #{k}"
+        return null
+      console.log "got #{k} -> #{v}"
       si[k] = v
     si
 
@@ -182,7 +203,7 @@ exports.Engine = class Engine
   ##-----------------------------------------
 
   run : () ->
-    key = @_si.key()
+    console.log "actually running!"
 
     # If we already had an object for this input, grab that instead.
     # Otherwise, we'll add this one to cache...

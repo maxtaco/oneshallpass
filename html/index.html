@@ -27,7 +27,7 @@
                                        
     <tr>
      <td class="input-label">passphrase</td>
-     <td><input id="passphrase" name="passphrpase" type="text" autocapitalize="off" value="sailor pigdom cork futile" class="input-field" onfocus="accept_focus(event);" />
+     <td><input id="passphrase" name="passphrpase" type="text" autocapitalize="off" value="sailor pigdom cork futile" class="input-field" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" />
     </tr>
     <tr>
      <td class="input-label minor">hide typing</td>
@@ -36,12 +36,12 @@
 
     <tr>
      <td class="input-label">e-mail</td>
-     <td><input id="email" name="email" type="text" class="input-field" value="myname@gmail.com" autocapitalize="off" onfocus="accept_focus(event);"/>
+     <td><input id="email" name="email" type="text" class="input-field" value="myname@gmail.com" autocapitalize="off" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" />
     </tr>
 
     <tr class="input-label">
      <td>service name</td>
-     <td><input id="host" name="host" type="text" class="input-field" value="chase.com" autocapitalize="off" onfocus="accept_focus(event);" /></td>
+     <td><input id="host" name="host" type="text" class="input-field" value="chase.com" autocapitalize="off" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" /></td>
     </tr>
 
    </tbody>
@@ -125,6 +125,18 @@
     </tr>
 
     <tr>
+     <td class="input-label"># symbols</td>
+     <td>
+      <select id="nsym" name="nsym" >
+       <option>0</option>
+       <option>1</option>
+       <option>2</option>
+       <option>3</option>
+      </select>
+     </td>
+    </tr>
+
+    <tr>
      <td class="input-label">algo version</td>
      <td>
       <select id="version" name="version" >
@@ -161,11 +173,11 @@
     <tr>
      <td class="output-label">your pw</td>
      <td id="result-td-computing" style="display: none;">
-       <input id="result-computing" type="text" readonly="readonly" value="computing"></input>
+      <input id="result-computing" type="text" readonly="readonly" value="computing"></input>
      </td>
      <td id="result-td-waiting" >...waiting for input...</td>
      <td id="result-td-done" style="display: none;">
-       <input id="result-done" type="text" readonly="readonly"></input>
+      <input id="result-done" type="text" readonly="readonly"></input>
      </td>
     </tr>
    

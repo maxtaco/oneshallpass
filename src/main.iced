@@ -18,3 +18,6 @@ accept_focus = (e) ->
   unless se.className.match "input-black"
     ungrey se
     se.value = ""
+
+accept_form_input = (e) ->
+  engine.got_input e
