@@ -1,5 +1,7 @@
 
 util = require './util'
+{config} = require './config'
+derive = require './derive'
 
 ##=======================================================================
 
@@ -12,7 +14,7 @@ class Cache
     @_last_access = util.unix_time()
 
   lookup : (sio) ->
-    k = sio.key()
+    k = sio.unique_id()
     obj = @_c[k] = si unless (obj = @_c[k])?
     return obj
   
@@ -47,6 +49,7 @@ class VersionObj
       when 1 then new Version1Obj args
       when 2 then new Version2Obj args
       else null
+      
 ##-----------------------------------------------------------------------
 
 class Version1Obj extends VersionObj
@@ -62,32 +65,54 @@ class Version1Obj extends VersionObj
 ##-----------------------------------------------------------------------
 
 class Version2Obj extends VersionObj
-  
+
   clean_passphrase : (pp) ->
     # strip out all spaces!
     pp.replace /\s+/g, ""
     
   key_fields : -> [ 'email', 'passphrase', 'secbits' ]
-
+  derive_key : (input, kgh, cb) -> (new derive.V2 input).run kgh, cb
+        
 ##=======================================================================
 
 class Input
-  constructor : -> @_key = null
+  
+  constructor : (@_main) ->
+    @_unique_id = null
+    
+  #-----------------------------------------
+  
   get : (k) -> @[k]
   set : (k,v) -> @[k] = v
   get_version_obj : () -> VersionObj.make @get 'version'
 
-  # "Key" this input so we can see if it's changed while the alg is running
-  key : () ->
-    unless @_key?
-      @_key = (@get f for f in get_version_obj().key_fields()).join ";" 
-    @_key
+  #-----------------------------------------
+  
+  # Serialize the input and assigned it a unique ID
+  unique_id : () ->
+    unless @_unique_id?
+      @_unique_id = (@get f for f in get_version_obj().key_fields()).join ";" 
+    @_unique_id
+
+  #-----------------------------------------
+  
+  derive_key : (cb) ->
+    # the compute hook is called once per iteration in the inner loop
+    # of key derivation.  It can be used to stop the derivation (by returning
+    # false) and also to report progress to the UI
+    compute_hook = (i) =>
+      if (ret = @unique_id() is @_main._ri.unique_id())
+        @_main._doc.show_computing i
+      ret
+      
+    @get_version_obj().derive_key @, compute_hook, cb
 
 ##=======================================================================
 
 class RawInput extends Input
   
-  constructor : (@_main) ->
+  constructor : (main) ->
+    super main
     @_key = null
     SELECT = [ false, null ]
     @_template =
@@ -105,8 +130,8 @@ class RawInput extends Input
 
   get : (k) ->
     if not (p = @_template[k])? then null
-    else if not (v = @[k])? and not p[0] then (@[k] = @_main._doc.getElementById k)
-    else v
+    else if not p[0] then @_main._doc.q k
+    else @[k]
   
   #-----------------------------------------
 
@@ -116,7 +141,7 @@ class RawInput extends Input
   #-----------------------------------------
   
   set : (k, v) ->
-    @_key = null
+    @_unique_id = null
     if not (p = @_template[k])? then null
     else if p[1] then (@[k] = p[1].call @, v)
     else (@[k] = v)
@@ -133,7 +158,8 @@ class RawInput extends Input
 ##=======================================================================
 
 class SanitizedInput extends Input
-  constructor : (@_main) ->
+  constructor : (main) ->
+    super main
 
 ##=======================================================================
 
@@ -173,7 +199,7 @@ class Main
 
     await @_si.derive_key defer dk
 
-    @_doc.set_generated_pw dk
+    @_doc.set_generated_pw dk if dk
     
   ##-----------------------------------------
 
