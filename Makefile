@@ -52,3 +52,14 @@ build/js/crypto.js: \
 build/js-min/%-min.js: build/js/%.js
 	mkdir -p `dirname $@`
 	$(JSMIN) < $^ > $@
+
+build/iced/%.js : src/%.iced
+	mkdir -p `dirname $@`
+	iced --print -I none $^ > $@
+
+build/js/main.js: build/iced/config.js \
+	build/iced/derive.js \
+	build/iced/document.js \
+	build/iced/main.js \
+	build/iced/util.js
+	iced build/stitch.iced build/iced > $@

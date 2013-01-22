@@ -140,7 +140,7 @@ class Base
 
 ##=======================================================================
 
-exports.V1 = class V2 extends Base
+exports.V1 = class V1 extends Base
 
   constructor : (i) -> super i
   version : () -> 1
@@ -167,6 +167,10 @@ exports.V1 = class V2 extends Base
         break
 
     cb ret
+    
+  ##-----------------------------------------
+ 
+  finalize : (dk, cb) -> cb dk
 
 ##=======================================================================
 
