@@ -209,7 +209,7 @@ exports.V2 = class V2 extends Base
       await @delay i, defer()
         
       if compute_hook i 
-        intermediate = hmac.finalize intermediata
+        intermediate = hmac.finalize intermediate
         hmac.reset()
         block[j] ^= w for w,j in intermediate
         i++
