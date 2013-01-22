@@ -5,14 +5,14 @@
   </title>
   <script>
   {% include crypto.js %}
-  <!--{% nclude jquery.js %}-->
-  <!--{% nclude purepack.js %}-->
+  <!--{# include jquery.js %}-->
+  <!--{# include purepack.js %}-->
   {% include coffee-script-iced.js %}
   {% include lib.js %}
   {% include main.js %}
   </script>
   <style type="text/css">
-  <!--{# include css/main.css %}-->
+  {% include css/main.css %}
   </style>
   <meta name="viewport" content="width = device-width" />
  </head>
@@ -20,40 +20,44 @@
   <h1>One Shall Pass</h1>
   <h2>Site-Specific PWs</h2>
   <h3>Secure, Open, Local, Free and Easy!</h3>
-  <table border=1>
 
+  <table border=1>
    <!-- First section is the mandatory stuff -->
    <tbody>
-
+                                       
     <tr>
-     <td>passphrase</td>
-     <td><input id="passphrase" name="passphrpase" type="text" autocapitalize="off" value="sailor pigdom cork futile" />
+     <td class="input-label">passphrase</td>
+     <td><input id="passphrase" name="passphrpase" type="text" autocapitalize="off" value="sailor pigdom cork futile" class="input-field" onfocus="accept_focus(event);" />
     </tr>
     <tr>
-     <td>hide typing</td>
+     <td class="input-label minor">hide typing</td>
      <td><input id="hide-passphrase" name="hide-passphrase" type="checkbox" /></td>
     </tr>
 
     <tr>
-     <td>e-mail</td>
-     <td><input id="email" name="email" type="text" value="myname@gmail.com" autocapitalize="off"/>
+     <td class="input-label">e-mail</td>
+     <td><input id="email" name="email" type="text" class="input-field" value="myname@gmail.com" autocapitalize="off" onfocus="accept_focus(event);"/>
     </tr>
 
-    <tr>
+    <tr class="input-label">
      <td>service name</td>
-     <td><input id="host" name="host" type="text" class="input-field" value="chase.com" autocapitalize="off" /></td>
+     <td><input id="host" name="host" type="text" class="input-field" value="chase.com" autocapitalize="off" onfocus="accept_focus(event);" /></td>
     </tr>
 
    </tbody>
 
    <!-- Expand to advanced? -->
    <tbody>
+    <tr>
+     <td class="input-label">advanced</td>
+     <td><input id="expand" type="button" value="expand"></td>
+    </tr>
    </tbody>
 
    <!-- Advanced fields -->
    <tbody>
     <tr>
-     <td>generation</td>
+     <td class="input-label">generation</td>
      <td>
       <select id="generation" name="generation" />
        <option>1</option>
@@ -81,7 +85,7 @@
     </tr>
 
     <tr>
-     <td>security</td>
+     <td class="input-label">security</td>
      <td>
       <select id="secbits" name="secbits" >
        <option>1</option>
@@ -105,7 +109,7 @@
     </tr>
 
     <tr>
-     <td>length</td>
+     <td class="input-label">length</td>
      <td>
       <select id="length" name="length" >
        <option>8</option>
@@ -121,7 +125,7 @@
     </tr>
 
     <tr>
-     <td>algo version</td>
+     <td class="input-label">algo version</td>
      <td>
       <select id="version" name="version" >
        <option selected="selected">1</option>
@@ -129,20 +133,33 @@
       </select>
      </td>
     </tr>
-   </tbody>
 
-   <!-- Enable server syncing? -->
-   <tbody>
+    <tr>
+     <td class="input-label"></td>
+     <td><input id="collapse" type="button" value="collapse"></td>
+    </tr>
+
    </tbody>
 
    <!-- Server syncing -->
    <tbody>
+
+    <tr>
+     <td class="input-label">server sync</td>
+     <td><input id="sync" name="sync" type="checkbox" /></td>
+    </tr>
+
+    <tr class="input-label" style="display: none;">
+     <td>sync status</td>
+     <td><span>....nothing....</span></td>
+    </tr>
+   
    </tbody>
 
    <!-- Output Section -->
    <tbody>
     <tr>
-     <td>your PW</td>
+     <td class="output-label">your pw</td>
      <td id="result-td-computing" style="display: none;">
        <input id="result-computing" type="text" readonly="readonly" value="computing"></input>
      </td>

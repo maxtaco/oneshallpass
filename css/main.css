@@ -1,0 +1,35 @@
+
+.input-label {
+    text-align: right;
+    font-weight: bold;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.output-label {
+    text-align: right;
+    font-weight: bold;
+}
+
+.minor {
+    font-size: 10px;
+}
+
+body {
+    font-family: helvetica, arial, verdana, sans;
+}
+
+.input-field {
+    color: gray;
+    border-width: 2px;
+    width: 280px;
+    padding: 2px;
+    font-size: 100%;
+    bottom: auto;
+    top: auto;
+}
+
+.input-black {
+    color: black;
+}

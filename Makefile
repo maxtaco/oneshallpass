@@ -92,7 +92,8 @@ build/html/index.html: html/index.html \
 	build/js/lib.js \
 	build/js/coffee-script-iced.js \
 	build/js/crypto.js \
-	build/js/main.js
+	build/js/main.js \
+	css/main.css 
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
 

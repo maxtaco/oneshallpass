@@ -21,8 +21,13 @@ def process_handle (inh, outh):
             fn = m.group(2).strip()
             post = m.group(3)
             sys.stdout.write(pre)
-            jsdir = "js-min" if minify else "js" 
-            fn = os.path.join ("build", jsdir, fn)
+
+            path = os.path.split(fn)
+
+            if path[0] != "css":
+                jsdir = "js-min" if minify else "js" 
+                fn = os.path.join ("build", jsdir, fn)
+
             nh = open (fn, "r")
             process_handle (nh, outh)
             outh.write(post)
