@@ -1,8 +1,16 @@
-
 import sys
 import re
 import os
 import os.path
+import getopt
+
+minify = False
+opts, args = getopt.getopt(sys.argv[1:], 'm')
+for o,a in opts:
+    if o == '-m':
+        print "minify!"
+        minify = True
+
 
 def process_handle (inh, outh):
     rxx = re.compile(r'^(.*)\{%\s?include\s+(.*?)%\}(.*)$');
@@ -13,9 +21,10 @@ def process_handle (inh, outh):
             fn = m.group(2).strip()
             post = m.group(3)
             sys.stdout.write(pre)
-            fn = os.path.join ("out", fn)
+            jsdir = "js-min" if minify else "js" 
+            fn = os.path.join ("build", jsdir, fn)
             nh = open (fn, "r")
-            process_handle (nh)
+            process_handle (nh, outh)
             outh.write(post)
         else:
             outh.write(l)

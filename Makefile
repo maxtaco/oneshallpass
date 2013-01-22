@@ -49,11 +49,14 @@ build/js/crypto.js: \
 	mkdir -p `dirname $@`
 	cat $^ > $@
 
-build/js-min/%-min.js: build/js/%.js
+build/js-min/%.js: build/js/%.js
 	mkdir -p `dirname $@`
 	$(JSMIN) < $^ > $@
 
 build/js-min/coffee-script-iced.js : imports/iced/coffee-script-iced.js
+	cat < $< > $@
+
+build/js/coffee-script-iced.js : imports/iced/coffee-script-iced.js
 	cat < $< > $@
 
 build/iced/%.js : src/%.iced
@@ -66,3 +69,10 @@ build/js/main.js: build/iced/config.js \
 	build/iced/main.js \
 	build/iced/util.js
 	iced build/stitch.iced build/iced > $@
+
+build/html/index-min.html: html/index.html \
+	build/js-min/main.js \
+	build/js-min/coffee-script-iced.js
+	mkdir -p `dirname $@`
+	python bin/inline.py -m < $< > $@
+
