@@ -25,5 +25,11 @@ accept_form_input = (e) ->
 accept_hide_passphrase_click = (e) ->
   hide = se = event.srcElement.checked
   (engine._doc.q 'passphrase').type = if hide then "password" else "text"
+
+tbody_enable = (e, b) ->
+  e.style.display = if b then "table-row-group" else "none"
+
+show_advanced = (b) ->
+  tbody_enable engine._doc.q('advanced-expander'), not b
+  tbody_enable engine._doc.q('advanced'), b
   
-    

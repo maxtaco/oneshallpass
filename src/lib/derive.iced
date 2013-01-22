@@ -214,11 +214,8 @@ exports.V2 = class V2 extends Base
     limit = (1 << exp) - 1
 
     i = 0
-    
     while i < limit
-
       await @delay i, defer()
-        
       if compute_hook i 
         intermediate = hmac.finalize intermediate
         hmac.reset()

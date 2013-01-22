@@ -47,15 +47,15 @@
    </tbody>
 
    <!-- Expand to advanced? -->
-   <tbody>
+   <tbody id="advanced-expander">
     <tr>
      <td class="input-label">advanced</td>
-     <td><input id="expand" type="button" value="expand"></td>
+     <td><input id="expand" type="button" value="expand" onclick="show_advanced(true);"></td>
     </tr>
    </tbody>
 
    <!-- Advanced fields -->
-   <tbody>
+   <tbody id="advanced" style="display: none" >
     <tr>
      <td class="input-label">generation</td>
      <td>
@@ -148,7 +148,7 @@
 
     <tr>
      <td class="input-label"></td>
-     <td><input id="collapse" type="button" value="collapse"></td>
+     <td><input id="collapse" type="button" value="collapse" onclick="show_advanced(false);"></td>
     </tr>
 
    </tbody>
