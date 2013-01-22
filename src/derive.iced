@@ -119,7 +119,7 @@ class Base
       slot._derived_key = dk if dk?
       slot._running = false
         
-    await @finalize dk, defer ret if dk
+    ret = @finalize dk if dk
     cb ret
     
   ##-----------------------------------------
@@ -170,7 +170,7 @@ exports.V1 = class V1 extends Base
     
   ##-----------------------------------------
  
-  finalize : (dk, cb) -> cb dk
+  finalize : (dk) -> dk
 
 ##=======================================================================
 
@@ -221,7 +221,7 @@ exports.V2 = class V2 extends Base
           
   ##-----------------------------------------
 
-  finalize : (dk, cb) ->
+  finalize : (dk) ->
     i = 0
     ret = null
     
@@ -233,7 +233,7 @@ exports.V2 = class V2 extends Base
       ret = b64 if @is_ok_pw b64
       i++
 
-    cb ret
+    ret
     
   ##-----------------------------------------
   
