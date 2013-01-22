@@ -144,7 +144,7 @@ class Base
 
   ##-----------------------------------------
   
-  secbits : -> parseInt(@_input.get('secbits'), 10)
+  secbits : -> @_input.get 'secbits'
   email : -> @_input.get 'email'
   passphrase : -> @_input.get 'passphrase'
   host : -> @_input.get 'host'
@@ -169,12 +169,9 @@ exports.V1 = class V1 extends Base
       if compute_hook i
         a = [ "OneShallPass v1.0", @email(), @host(), @generation(), i ]
         txt = a.join '; '
-        hmac = C.algo.HMAC.create C.algo.SHA512, @passphrase()
-        hash = hmac.update(txt).finalize()
-        hmac = null
+        hash = C.HmacSHA512 txt, @passphrase()
         b16 = hash.toString()
         b64 = hash.toString(C.enc.Base64)
-        hash = null
         tail = parseInt b16[b16.length-8...], 16
         if tail % d is 0 and @is_ok_pw b64 then ret = b64
         else i++

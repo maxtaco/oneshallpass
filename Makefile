@@ -14,6 +14,9 @@ deps: deps-crypto-js deps-purepack deps-jquery
 clean:
 	rm -rf build
 
+depclean:
+	rm -rf deps
+
 deps-crypto-js:
 	mkdir -p deps
 	cd deps ; \
@@ -96,4 +99,4 @@ build/html/index.html: html/index.html \
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
 
-.PHONY = clean
+.PHONY = clean depclean
