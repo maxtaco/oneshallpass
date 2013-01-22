@@ -189,8 +189,13 @@ exports.V2 = class V2 extends Base
   
   ##-----------------------------------------
   
-  constructor : (i) -> super i
+  constructor : (input, @_keymode = 0x1) ->
+    super input
+    
+  ##-----------------------------------------
+  
   version : () -> 2
+  set_keymode : (k) -> @_keymode = k
 
   ##-----------------------------------------
   
@@ -200,7 +205,7 @@ exports.V2 = class V2 extends Base
 
     # The initial setup as per PBKDF2, with email as the salt
     hmac = C.algo.HMAC.create C.algo.SHA512, @passphrase()
-    block_index = C.lib.WordArray.create [ 0x1 ]
+    block_index = C.lib.WordArray.create [ @_keymode ]
     block = hmac.update(@email()).finalize block_index
     hmac.reset()
 
