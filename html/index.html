@@ -9,6 +9,7 @@
   <!--{% nclude purepack.js %}-->
   {% include coffee-script-iced.js %}
   {% include lib.js %}
+  {% include main.js %}
   </script>
   <style type="text/css">
   <!--{# include css/main.css %}-->
@@ -27,7 +28,10 @@
     <tr>
      <td>passphrase</td>
      <td><input id="passphrase" name="passphrpase" type="text" autocapitalize="off" value="sailor pigdom cork futile" /><br/>
-     <input id="hide-passphrase" name="hide-passphrase" type="checkbox">hide typing</input>
+      <div>
+       <input id="hide-passphrase" name="hide-passphrase" type="checkbox">
+       <span class="secondary-control">hide typing</span>
+     </div>
     </tr>
 
     <tr>

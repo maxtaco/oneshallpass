@@ -18,6 +18,9 @@ class Cache
     k = sio.unique_id()
     obj = @_c[k] = si unless (obj = @_c[k])?
     return obj
+
+  start : () ->
+    console.log "starting background timer loop; write me!"
   
 ##=======================================================================
 
@@ -163,6 +166,11 @@ exports.Engine = class Engine
     @_cache = new Cache
     @_bi = new BrowserInfo()
     @_ri = new RawInput @
+
+  ##-----------------------------------------
+
+  start : () ->
+    @_cache.start()
 
   ##-----------------------------------------
 

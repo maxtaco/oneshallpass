@@ -64,33 +64,35 @@ build/js-min/coffee-script-iced.js : imports/iced/coffee-script-iced.js
 build/js/coffee-script-iced.js : imports/iced/coffee-script-iced.js
 	cat < $< > $@
 
-build/iced/%.js : src/%.iced
+build/js/main.js : src/main.iced
+	mkdir -p `dirname $@`
+	(iced --bare --print -I none $^ > $@~) && mv $@~ $@
+
+build/iced/%.js : src/lib/%.iced
 	mkdir -p `dirname $@`
 	(iced --print -I none $^ > $@~) && mv $@~ $@
 
-build/iced/lib/%.js : src/lib/%.iced
+build/js/lib.js: build/iced/config.js \
+	build/iced/derive.js \
+	build/iced/document.js \
+	build/iced/engine.js \
+	build/iced/util.js
 	mkdir -p `dirname $@`
-	(iced --print -I none $^ > $@~) && mv $@~ $@
-
-build/js/lib.js: build/iced/lib/config.js \
-	build/iced/lib/derive.js \
-	build/iced/lib/document.js \
-	build/iced/lib/engine.js \
-	build/iced/lib/util.js
-	mkdir -p `dirname $@`
-	(iced bin/stitch.iced build/iced/lib/ > $@~) && mv $@~ $@
+	(iced bin/stitch.iced build/iced/ > $@~) && mv $@~ $@
 
 build/html/index-min.html: html/index.html \
 	build/js-min/lib.js \
 	build/js-min/coffee-script-iced.js \
-	build/js-min/crypto.js
+	build/js-min/crypto.js \
+	build/js-min/main.js
 	mkdir -p `dirname $@`
 	(python bin/inline.py -m < $< > $@~) && mv $@~ $@
 
 build/html/index.html: html/index.html \
 	build/js/lib.js \
 	build/js/coffee-script-iced.js \
-	build/js/crypto.js
+	build/js/crypto.js \
+	build/js/main.js
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
 
