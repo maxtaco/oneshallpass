@@ -3,12 +3,17 @@
 
 exports.Dummy = class Dummy
   constructor : (@_o) ->
-  getElementById : -> (x) -> @[x]
+  getElementById : (x) -> @[x]
   q : (x) ->  @getElementById x
 
 ##=======================================================================
 
 exports.Browser = class Browser
+
+  constructor : (@_o) ->
+
+  getElementById : (x) -> @_o.getElementById x
+  q : (x) ->  @getElementById x
   
   set_generated_pw : (dk) ->
     @toggle_result 'done'

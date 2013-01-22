@@ -2,6 +2,7 @@
 util = require './util'
 {config} = require './config'
 derive = require './derive'
+doc = require './document'
 
 ##=======================================================================
 
@@ -10,7 +11,7 @@ class Cache
     @_c = {}
     @_poke()
 
-  poke : () ->
+  _poke : () ->
     @_last_access = util.unix_time()
 
   lookup : (sio) ->
@@ -20,24 +21,11 @@ class Cache
   
 ##=======================================================================
 
-class TestDocument
-  constructor : ->
-  getElementById : -> (x) -> @[x]
-
-##=======================================================================
-
-
-##=======================================================================
-
 input_trim : (x) ->
   rxx = /^(\s*)(.*?)(\s*)$/
   m = x.match rxx
   m[2]
 input_clean : (x) -> input_trim(x).toLowerCase()
-
-##=======================================================================
-
-class PwGen
 
 ##=======================================================================
 
@@ -109,7 +97,7 @@ class Input
 
 ##=======================================================================
 
-class RawInput extends Input
+exports.RawInput = class RawInput extends Input
   
   constructor : (main) ->
     super main
@@ -157,14 +145,9 @@ class RawInput extends Input
 
 ##=======================================================================
 
-class SanitizedInput extends Input
+exports.SanitizedInput = class SanitizedInput extends Input
   constructor : (main) ->
     super main
-
-##=======================================================================
-
-class DerivedKey
-  constructor : (@_pwi) ->
 
 ##=======================================================================
 
@@ -172,7 +155,7 @@ class BrowserInfo
 
 ##=======================================================================
 
-class Main
+exports.Main = class Main
   
   ##-----------------------------------------
 
@@ -206,7 +189,5 @@ class Main
   maybe_run : () ->
     @run() if (@_si = @_ri.sanitize())?
     
-  ##-----------------------------------------
-  
 ##=======================================================================
 

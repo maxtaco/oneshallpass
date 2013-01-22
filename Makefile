@@ -68,23 +68,27 @@ build/iced/%.js : src/%.iced
 	mkdir -p `dirname $@`
 	(iced --print -I none $^ > $@~) && mv $@~ $@
 
-build/js/main.js: build/iced/config.js \
-	build/iced/derive.js \
-	build/iced/document.js \
-	build/iced/main.js \
-	build/iced/util.js
+build/iced/lib/%.js : src/lib/%.iced
 	mkdir -p `dirname $@`
-	(iced bin/stitch.iced build/iced > $@~) && mv $@~ $@
+	(iced --print -I none $^ > $@~) && mv $@~ $@
+
+build/js/lib.js: build/iced/lib/config.js \
+	build/iced/lib/derive.js \
+	build/iced/lib/document.js \
+	build/iced/lib/main.js \
+	build/iced/lib/util.js
+	mkdir -p `dirname $@`
+	(iced bin/stitch.iced build/iced/lib/ > $@~) && mv $@~ $@
 
 build/html/index-min.html: html/index.html \
-	build/js-min/main.js \
+	build/js-min/lib.js \
 	build/js-min/coffee-script-iced.js \
 	build/js-min/crypto.js
 	mkdir -p `dirname $@`
 	(python bin/inline.py -m < $< > $@~) && mv $@~ $@
 
 build/html/index.html: html/index.html \
-	build/js/main.js \
+	build/js/lib.js \
 	build/js/coffee-script-iced.js \
 	build/js/crypto.js
 	mkdir -p `dirname $@`
