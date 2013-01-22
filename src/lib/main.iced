@@ -155,7 +155,7 @@ class BrowserInfo
 
 ##=======================================================================
 
-exports.Main = class Main
+exports.Engine = class Engine
   
   ##-----------------------------------------
 
