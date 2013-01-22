@@ -80,7 +80,7 @@ class Base
         indices.push i
         n--
         break if n is 0
-    @add_syms_at_indices input, indicies
+    @add_syms_at_indices input, indices
 
   #-----------------------------------------
 
@@ -92,6 +92,7 @@ class Base
 
   translate_at_indices : (input, indices, _map) ->
     last = 0
+    arr = []
     for index in indices
       arr.push input[last...index]
       c = input.charAt index
@@ -104,6 +105,12 @@ class Base
 
   ##-----------------------------------------
 
+  format : (x) ->
+    console.log "FORMAT #{x} #{@nsym()}"
+    @add_syms x, @nsym()
+    
+  ##-----------------------------------------
+
   run : (compute_hook, cb) ->
     ret = null
     v = "_v#{@version()}"
@@ -113,7 +120,9 @@ class Base
     if not (dk = slot._derived_key)? and not slot._running
         
       slot._running = true
-      
+
+      # show right away that we're going to be computing...
+      compute_hook 0
       await setTimeout defer(), config.derive.initial_delay
       
       if compute_hook 0
@@ -123,6 +132,7 @@ class Base
       slot._running = false
         
     ret = @finalize dk if dk
+    ret = @format ret if ret
     cb ret
     
   ##-----------------------------------------
@@ -139,7 +149,7 @@ class Base
   passphrase : -> @_input.get 'passphrase'
   host : -> @_input.get 'host'
   generation : -> @_input.get 'generation'
-  
+  nsym : -> @_input.get 'nsym'
 
 ##=======================================================================
 

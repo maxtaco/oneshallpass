@@ -104,7 +104,7 @@ class Input
       if (ret = @unique_id() is @_main._ri.unique_id())
         if i % 10 is 0 then @_main._doc.show_computing i
       ret
-      
+
     @get_version_obj().derive_key @, compute_hook, cb
 
 ##=======================================================================
