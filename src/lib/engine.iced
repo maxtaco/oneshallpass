@@ -14,9 +14,8 @@ class Cache
   _poke : () ->
     @_last_access = util.unix_time()
 
-  lookup : (sio) ->
-    k = sio.unique_id()
-    obj = @_c[k] = sio unless (obj = @_c[k])?
+  lookup : (k) ->
+    obj = @_c[k] = {} unless (obj = @_c[k])?
     return obj
 
   start : () ->
@@ -58,7 +57,7 @@ class Version1Obj extends VersionObj
     input_trim(pp).replace /\s+/g, " "
 
   key_fields : -> [ 'email', 'passphrase', 'host', 'generation', 'secbits' ]
-  derive_key : (input, kgh, cb) -> (new derive.V1 input).run kgh, cb
+  derive_key : (input, co, kgh, cb) -> (new derive.V1 input).run co, kgh, cb
   
 ##-----------------------------------------------------------------------
 
@@ -71,7 +70,7 @@ class Version2Obj extends VersionObj
     pp.replace /\s+/g, ""
     
   key_fields : -> [ 'email', 'passphrase', 'secbits' ]
-  derive_key : (input, kgh, cb) -> (new derive.V2 input).run kgh, cb
+  derive_key : (input, co, kgh, cb) -> (new derive.V2 input).run co, kgh, cb
         
 ##=======================================================================
 
@@ -79,11 +78,19 @@ class Input
   
   constructor : (@_main) ->
     @_unique_id = null
+    SELECT = [ false, null ]
+    @_template =
+      email :  [ true, (x) -> input_clean x ]
+      passphrase : [ true, (x) => @_clean_passphrase x ]
+      host : [ true, (x) -> input_clean x ]
+      version : SELECT
+      secbits : SELECT
+      nsym : SELECT
+      generation : SELECT
+      length : SELECT
     
   #-----------------------------------------
   
-  get : (k) -> @[k]
-  set : (k,v) -> @[k] = v
   get_version_obj : () -> VersionObj.make @get 'version'
 
   #-----------------------------------------
@@ -100,30 +107,17 @@ class Input
     # the compute hook is called once per iteration in the inner loop
     # of key derivation.  It can be used to stop the derivation (by returning
     # false) and also to report progress to the UI
+    
+    uid = @unique_id()
+    
     compute_hook = (i) =>
-      if (ret = @unique_id() is @_main._ri.unique_id())
-        if i % 10 is 0 then @_main._doc.show_computing i
+      if (ret = (uid is @unique_id())) and i % 10 is 0
+        @_main._doc.show_computing i
       ret
 
-    @get_version_obj().derive_key @, compute_hook, cb
+    co = @_main._cache.lookup uid
 
-##=======================================================================
-
-exports.RawInput = class RawInput extends Input
-  
-  constructor : (main) ->
-    super main
-    @_key = null
-    SELECT = [ false, null ]
-    @_template =
-      email :  [ true, (x) -> input_clean x ]
-      passphrase : [ true, (x) => @_clean_passphrase x ]
-      host : [ true, (x) -> input_clean x ]
-      version : SELECT
-      secbits : SELECT
-      nsym : SELECT
-      generation : SELECT
-      length : SELECT
+    @get_version_obj().derive_key @, co, compute_hook, cb
 
   #-----------------------------------------
 
@@ -147,13 +141,10 @@ exports.RawInput = class RawInput extends Input
     
   #-----------------------------------------
 
-  sanitize : () ->
-    si = new SanitizedInput @_main
+  is_ready : () ->
     for k of @_template
-      if not (v = @get k)?
-        return null
-      si[k] = v
-    si
+      return false if not (v = @get k)?
+    true
 
 ##=======================================================================
 
@@ -174,7 +165,7 @@ exports.Engine = class Engine
   constructor : (@_doc) ->
     @_cache = new Cache
     @_bi = new BrowserInfo()
-    @_ri = new RawInput @
+    @_inp = new Input @
 
   ##-----------------------------------------
 
@@ -185,25 +176,19 @@ exports.Engine = class Engine
 
   got_input : (event) ->
     se = event.srcElement
-    @_ri.set se.id, se.value
+    @_inp.set se.id, se.value
     @maybe_run()
 
   ##-----------------------------------------
 
   run : () ->
-
-    # If we already had an object for this input, grab that instead.
-    # Otherwise, we'll add this one to cache...
-    @_si = @_cache.lookup @_si
-
-    await @_si.derive_key defer dk
-
+    await @_inp.derive_key defer dk
     @_doc.set_generated_pw dk if dk
     
   ##-----------------------------------------
 
   maybe_run : () ->
-    @run() if (@_si = @_ri.sanitize())?
+    @run() if @_inp.is_ready()
     
 ##=======================================================================
 

@@ -21,3 +21,9 @@ accept_focus = (e) ->
 
 accept_form_input = (e) ->
   engine.got_input e
+
+accept_hide_passphrase_click = (e) ->
+  hide = se = event.srcElement.checked
+  (engine._doc.q 'passphrase').type = if hide then "password" else "text"
+  
+    

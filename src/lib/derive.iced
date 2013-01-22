@@ -111,11 +111,11 @@ class Base
     
   ##-----------------------------------------
 
-  run : (compute_hook, cb) ->
+  run : (cache_obj, compute_hook, cb) ->
     ret = null
     v = "_v#{@version()}"
 
-    slot = @_input[v] = {} unless (slot = @_input[v])?
+    slot = cache_obj[v] = {} unless (slot = cache_obj[v])?
     
     if not (dk = slot._derived_key)? and not slot._running
         
@@ -242,7 +242,7 @@ exports.V2 = class V2 extends Base
     until ret
       a = [ "OneShallPass v2.0", @email(), @host(), @generation(), i ]
       txt = a.join '; '
-      hash = C.HmacSHA512 text, dk
+      hash = C.HmacSHA512 txt, dk
       b64 = hash.toString C.enc.Base64
       ret = b64 if @is_ok_pw b64
       i++
