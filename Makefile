@@ -53,6 +53,9 @@ build/js-min/%-min.js: build/js/%.js
 	mkdir -p `dirname $@`
 	$(JSMIN) < $^ > $@
 
+build/js-min/coffee-script-iced.js : imports/iced/coffee-script-iced.js
+	cat < $< > $@
+
 build/iced/%.js : src/%.iced
 	mkdir -p `dirname $@`
 	iced --print -I none $^ > $@
