@@ -78,7 +78,7 @@ class Version2Obj extends VersionObj
 
 class Input
   
-  constructor : (@_eng) ->
+  constructor : (@_eng, @keymode = derive.keymodes.WEB_PW, @fixed = {}) ->
     SELECT = [ false, null ]
     @_template =
       email :  [ true, (x) -> input_clean x ]
@@ -90,21 +90,18 @@ class Input
       generation : SELECT
       length : SELECT
     @_got_input = {}
-    @_keymode = derive.keymodes.WEB_PW
     
   #-----------------------------------------
   
   get_version_obj : () -> VersionObj.make @get 'version'
   timeout : () -> config.timeouts.input
   clear : -> @_got_input.passphrpase = false
-  keymode : () -> @_keymode
 
   #-----------------------------------------
   
   # Serialize the input and assign it a unique ID
-  unique_id : (version_obj, mode) ->
-    version_obj = @get_version_obj version_obj
-    parts = [ version_obj.version(), mode ]
+  unique_id : (version_obj) ->
+    parts = [ version_obj.version(), @_keymode ]
     fields = (@get f for f in version_obj.key_fields())
     all = parts.concat fields
     all.join ";"
@@ -117,7 +114,7 @@ class Input
     # false) and also to report progress to the UI
 
     vo = @get_version_obj()
-    uid = @unique_id()
+    uid = @unique_id vo
     
     compute_hook = (i) =>
       if (ret = (uid is @unique_id())) and i % 10 is 0
@@ -132,6 +129,7 @@ class Input
 
   get : (k) ->
     if not (p = @_template[k])? then null
+    else if (f = @fixed[k])? then f
     else
       raw = @_eng._doc.q(k).value
       if not p[0]                      then parseInt raw, 10
@@ -149,7 +147,7 @@ class Input
     for k of @_template
       return false if not (v = @get k)?
     true
-
+    
 ##=======================================================================
 
 exports.SanitizedInput = class SanitizedInput extends Input
@@ -261,6 +259,10 @@ exports.Engine = class Engine
 
   maybe_run : () ->
     @run() if @_inp.is_ready()
+  
+  ##-----------------------------------------
+
+  new_input : (mode, fixed) -> new Input @, mode, fixed
     
 ##=======================================================================
 

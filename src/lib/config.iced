@@ -11,5 +11,9 @@ exports.config =
     cache : 5*60
     document : 2*60
     input : 5*60
-  
+  server:
+    host : "oneshallpass.com"
+    generation : 1
+    version : 2
+    secbits : 8
     

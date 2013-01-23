@@ -155,7 +155,7 @@ class Base
   host : -> @_input.get 'host'
   generation : -> @_input.get 'generation'
   nsym : -> @_input.get 'nsym'
-  keymode : -> @_input.keymode()
+  keymode : -> @_input.keymode
 
 ##=======================================================================
 
