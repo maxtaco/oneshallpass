@@ -5,6 +5,7 @@ CRYPTO_JS_VERSION=3.0.2
 PUREPACK_VERSION=v0.0.1
 JQUERY_VERSION=1.9.0
 ICED_VERSION=1.4.0a
+PUREPACK_VERSION=0.0.1a
 
 CRYPTO_SRC=deps/crypto-js/src
 
@@ -49,6 +50,8 @@ build/js/iced.js : includes/iced-$(ICED_VERSION).js
 	cat < $< > $@
 build/js/jquery.js : includes/jquery-$(JQUERY_VERSION).js
 	cat < $< > $@
+build/js/purepack.js : includes/purepack-$(PUREPACK_VERSION).js
+	cat < $< > $@
 
 build/js/main.js : src/main.iced
 	mkdir -p `dirname $@`
@@ -70,6 +73,8 @@ build/js/lib.js: build/iced/config.js \
 build/html/index-min.html: html/index.html \
 	build/js-min/lib.js \
 	build/js-min/iced.js \
+	build/js-min/purepack.js \
+	build/js-min/jquery.js \
 	build/js-min/crypto.js \
 	build/js-min/main.js
 	mkdir -p `dirname $@`
@@ -79,6 +84,8 @@ build/html/index.html: html/index.html \
 	build/js/lib.js \
 	build/js/iced.js \
 	build/js/crypto.js \
+	build/js/purepack.js \
+	build/js/jquery.js \
 	build/js/main.js \
 	css/main.css 
 	mkdir -p `dirname $@`
