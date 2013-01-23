@@ -9,18 +9,14 @@ doc = require './document'
 class Cache
   constructor : () ->
     @_c = {}
-    @_poke()
 
-  _poke : () ->
-    @_last_access = util.unix_time()
+  timeout : () -> config.timeouts.cache
+  clear : () -> @_c = {}
 
   lookup : (k) ->
     obj = @_c[k] = {} unless (obj = @_c[k])?
     return obj
 
-  start : () ->
-    console.log "starting background timer loop; write me!"
-  
 ##=======================================================================
 
 input_trim = (x) ->
@@ -92,6 +88,8 @@ class Input
   #-----------------------------------------
   
   get_version_obj : () -> VersionObj.make @get 'version'
+  timeout : () -> config.timeouts.input
+  clear : () -> @set 'passphrase', ''
 
   #-----------------------------------------
   
@@ -154,27 +152,95 @@ exports.SanitizedInput = class SanitizedInput extends Input
 
 ##=======================================================================
 
-class BrowserInfo
+class Timer
+
+  #-----------------------------------------
+  
+  constructor : (@_obj) ->
+    @_last_set = null
+    
+  #-----------------------------------------
+  
+  set : () ->
+    now = util.unix_time()
+
+    hook = () =>
+      @_obj.clear()
+      @_id = null
+      @_last_set = null
+
+    # Only set the timer if we haven't set it recently....
+    if not @_id? or not @_last_set? or (now - @_last_set) > 5
+      @clear()
+      @_id = setTimeout hook, @_obj.timeout()*1000
+      @_last_set = now
+    
+  #-----------------------------------------
+  
+  clear : () ->
+    if @_id?
+      clearTimeout @_id
+      @_last_set = null
+      @_id = null
+
+##=======================================================================
+
+class Timers
+  
+  constructor : (@_eng) ->
+    @_timers = (new Timer o for o in [ @_eng._doc, @_eng._inp, @_eng._cache ] )
+    @_active = false
+
+  poke : () -> @start() if @_active
+  
+  start : () ->
+    @_active = true
+    (t.set() for t in @_timers)
+
+  stop : () ->
+    @_active = false
+    (t.clear() for t in @_timers)
+
+  toggle_timers : (b) ->
+    if b and not @_active then @start()
+    else if not b and @_active then @stop()
 
 ##=======================================================================
 
 exports.Engine = class Engine
   
   ##-----------------------------------------
-
-  constructor : (@_doc) ->
+  
+  constructor : (@_doc, @_loc) ->
     @_cache = new Cache
-    @_bi = new BrowserInfo()
     @_inp = new Input @
+    @_timers = new Timers @
 
+  ##-----------------------------------------
+
+  toggle_timers : (b) -> @_timers.toggle b
+
+  ##-----------------------------------------
+
+  _autofill : () ->
+    fields = [ "email", "version", "length", "secbits", "passphrase" ]
+    go = false
+    for k in fields when (v = @_loc.get k)?
+      @_doc.autofill k, v
+      @_inp.set k, v
+      go = true
+    @maybe_run() if go
+   
   ##-----------------------------------------
 
   start : () ->
-    @_cache.start()
-
+    @_timers.start()
+    @_autofill()
+   
   ##-----------------------------------------
 
   got_input : (event) ->
+    @_timers.poke()
     se = event.srcElement
     @_inp.set se.id, se.value
     @maybe_run()

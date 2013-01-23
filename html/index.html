@@ -29,11 +29,7 @@
      <td class="input-label">passphrase</td>
      <td><input id="passphrase" name="passphrpase" type="text" autocapitalize="off" value="sailor pigdom cork futile" class="input-field" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" />
     </tr>
-    <tr>
-     <td class="input-label minor">hide typing</td>
-     <td><input id="hide-passphrase" name="hide-passphrase" type="checkbox" onclick="accept_hide_passphrase_click(event);" /></td>
-    </tr>
-
+  
     <tr>
      <td class="input-label">e-mail</td>
      <td><input id="email" name="email" type="text" class="input-field" value="myname@gmail.com" autocapitalize="off" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" />
@@ -183,6 +179,20 @@
    
    </tbody>
 
+   <!-- UI and cache security -->
+   <tbody>
+    <tr>
+     <td class="input-label minor">hide typing</td>
+     <td><input id="hide-passphrase" name="hide-passphrase" type="checkbox" onclick="click_hide_passphrase(event);" /></td>
+    </tr>
+    
+     <tr>
+     <td class="input-label minor">timeout</td>
+     <td><input id="run-timers" name="run-timers" type="checkbox" onclick="click_run_timers(event);" checked="checked" /></td>
+    </tr>
+    
+   </tbody>
+    
   </table>
  </body>
 </html>

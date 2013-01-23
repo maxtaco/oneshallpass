@@ -7,5 +7,9 @@ exports.config =
   pw :
     min_size : 8
     max_size : 16
+  timeouts :
+    cache : 5*60
+    document : 2*60
+    input : 5*60
   
     
