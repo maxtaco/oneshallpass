@@ -1,15 +1,16 @@
 
-JSMIN=uglifyjs
+JSMIN=uglifyjs -c -m
 
 CRYPTO_JS_VERSION=3.0.2
 PUREPACK_VERSION=v0.0.1
-JQUERY_VERSION=2.0.0b1
+JQUERY_VERSION=1.9.0
+ICED_VERSION=1.4.0a
 
 CRYPTO_SRC=deps/crypto-js/src
 
 default: build/html/index.html build/html/index-min.html
 all: default
-deps: deps-crypto-js deps-purepack deps-jquery
+deps: deps-crypto-js
 
 clean:
 	rm -rf build
@@ -24,24 +25,6 @@ deps-crypto-js:
 		(cd crypto-js && svn up); \
 	else \
 		svn checkout http://crypto-js.googlecode.com/svn/tags/$(CRYPTO_JS_VERSION) crypto-js ; \
-	fi
-
-deps-purepack:
-	mkdir -p deps
-	cd deps ; \
-	if [ ! -d purepack ] ; then \
-		( git clone git://github.com/maxtaco/purepack && \
-                  cd purepack && \
-                  git checkout $(PUREPACK_VERSION) ) \
-	fi
-
-deps-jquery:
-	mkdir -p deps
-	cd deps ; \
-	if [ ! -d jquery ]; then \
-		( git clone git://github.com/jquery/jquery && \
-                  cd jquery && \
-                  git checkout $(JQUERY_VERSION) ) \
 	fi
 
 build/js/crypto.js: \
@@ -60,10 +43,9 @@ build/js-min/%.js: build/js/%.js
 	mkdir -p `dirname $@`
 	$(JSMIN) < $^ > $@
 
-build/js-min/coffee-script-iced.js : imports/iced/coffee-script-iced.js
+build/js/iced.js : includes/iced-$(ICED_VERSION).js
 	cat < $< > $@
-
-build/js/coffee-script-iced.js : imports/iced/coffee-script-iced.js
+build/js/jquery.js : includes/jquery-$(JQUERY_VERSION).js
 	cat < $< > $@
 
 build/js/main.js : src/main.iced
@@ -85,7 +67,7 @@ build/js/lib.js: build/iced/config.js \
 
 build/html/index-min.html: html/index.html \
 	build/js-min/lib.js \
-	build/js-min/coffee-script-iced.js \
+	build/js-min/iced.js \
 	build/js-min/crypto.js \
 	build/js-min/main.js
 	mkdir -p `dirname $@`
@@ -93,7 +75,7 @@ build/html/index-min.html: html/index.html \
 
 build/html/index.html: html/index.html \
 	build/js/lib.js \
-	build/js/coffee-script-iced.js \
+	build/js/iced.js \
 	build/js/crypto.js \
 	build/js/main.js \
 	css/main.css 

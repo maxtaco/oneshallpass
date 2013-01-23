@@ -8,7 +8,6 @@ minify = False
 opts, args = getopt.getopt(sys.argv[1:], 'm')
 for o,a in opts:
     if o == '-m':
-        print "minify!"
         minify = True
 
 

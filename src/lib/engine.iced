@@ -201,7 +201,7 @@ class Timers
     @_active = false
     (t.clear() for t in @_timers)
 
-  toggle_timers : (b) ->
+  toggle : (b) ->
     if b and not @_active then @start()
     else if not b and @_active then @stop()
 
