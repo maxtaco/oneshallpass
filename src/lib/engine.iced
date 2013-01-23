@@ -90,12 +90,14 @@ class Input
       generation : SELECT
       length : SELECT
     @_got_input = {}
+    @_keymode = derive.keymodes.WEB_PW
     
   #-----------------------------------------
   
-  get_version_obj : (vo) -> if vo? then vo else VersionObj.make @get 'version'
+  get_version_obj : () -> VersionObj.make @get 'version'
   timeout : () -> config.timeouts.input
   clear : -> @_got_input.passphrpase = false
+  keymode : () -> @_keymode
 
   #-----------------------------------------
   
@@ -109,34 +111,31 @@ class Input
 
   #-----------------------------------------
   
-  derive_key : (cb, mode, vo_orig) ->
+  derive_key : (cb) ->
     # the compute hook is called once per iteration in the inner loop
     # of key derivation.  It can be used to stop the derivation (by returning
     # false) and also to report progress to the UI
 
-    mode = derive.keymodes.WEB_PW unless mode?
-    vo = @get_version_obj vo_orig
-    uid = @unique_id vo, mode
+    vo = @get_version_obj()
+    uid = @unique_id()
     
     compute_hook = (i) =>
-      if (ret = (uid is @_eng._inp.unique_id(vo_orig, mode))) and i % 10 is 0
-        @_eng._doc.show_computing i, mode
+      if (ret = (uid is @unique_id())) and i % 10 is 0
+        @_eng._doc.show_computing i, @_mode
       ret
 
     co = @_eng._cache.lookup uid
 
-    (vo.key_deriver @).run co, mode, compute_hook, cb
+    (vo.key_deriver @).run co, compute_hook, cb
 
   #-----------------------------------------
 
   get : (k) ->
-    ret = null
-    if (p = @_template[k])?
+    if not (p = @_template[k])? then null
+    else
       raw = @_eng._doc.q(k).value
-      
-      if not p[0] then ret = parseInt raw, 10
-      else if p[1]? and @_got_input[k] then ret = p[1](raw)
-    ret
+      if not p[0]                      then parseInt raw, 10
+      else if p[1]? and @_got_input[k] then p[1](raw)
 
   set : (k) -> @_got_input[k] = true
   

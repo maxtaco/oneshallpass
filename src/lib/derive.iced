@@ -119,7 +119,7 @@ class Base
     
   ##-----------------------------------------
 
-  run : (cache_obj, mode, compute_hook, cb) ->
+  run : (cache_obj, compute_hook, cb) ->
     ret = null
 
     if not (dk = cache_obj._derived_key)? and not cache_obj._running
@@ -131,7 +131,7 @@ class Base
       await setTimeout defer(), config.derive.initial_delay
       
       if compute_hook 0
-        await @run_key_derivation mode, compute_hook, defer dk
+        await @run_key_derivation compute_hook, defer dk
       
       cache_obj._derived_key = dk if dk?
       cache_obj._running = false
@@ -155,6 +155,7 @@ class Base
   host : -> @_input.get 'host'
   generation : -> @_input.get 'generation'
   nsym : -> @_input.get 'nsym'
+  keymode : -> @_input.keymode()
 
 ##=======================================================================
 
@@ -164,7 +165,7 @@ exports.V1 = class V1 extends Base
  
   ##-----------------------------------------
 
-  run_key_derivation : (keymode, compute_hook, cb) ->
+  run_key_derivation : (compute_hook, cb) ->
     ret = null
     d = 1 << @secbits()
     i = 0
@@ -202,12 +203,12 @@ exports.V2 = class V2 extends Base
     
   ##-----------------------------------------
   
-  run_key_derivation : (keymode, compute_hook, cb) ->
-    
+  run_key_derivation : (compute_hook, cb) ->
+
     ret = null
     # The initial setup as per PBKDF2, with email as the salt
     hmac = C.algo.HMAC.create C.algo.SHA512, @passphrase()
-    block_index = C.lib.WordArray.create [ keymode ]
+    block_index = C.lib.WordArray.create [ @keymode() ]
     block = hmac.update(@email()).finalize block_index
     hmac.reset()
 
