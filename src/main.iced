@@ -36,3 +36,7 @@ show_advanced = (b) ->
   
 click_run_timers = (e) ->
   engine.toggle_timers event.srcElement.checked
+
+select_text = (e) ->
+  e.srcElement.focus()
+  e.srcElement.select()
