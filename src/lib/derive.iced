@@ -4,7 +4,15 @@ C = CryptoJS
 
 ##=======================================================================
 
+exports.keymodes = keymodes =
+  WEB_PW : 0x1
+  RECORD_AES : 0x2
+  RECORD_HMAC : 0x3
+
+##=======================================================================
+
 class Base
+  
   constructor : (@_input) ->
 
   #-----------------------------------------
@@ -185,10 +193,10 @@ exports.V1 = class V1 extends Base
 ##=======================================================================
 
 exports.V2 = class V2 extends Base
-  
+
   ##-----------------------------------------
   
-  constructor : (input, @_keymode = 0x1) ->
+  constructor : (input, @_keymode = keymodes.WEB_PW) ->
     super input
     
   ##-----------------------------------------

@@ -94,9 +94,11 @@ class Input
   #-----------------------------------------
   
   # Serialize the input and assigned it a unique ID
-  unique_id : () ->
-    unless @_unique_id?
-      @_unique_id = (@get f for f in @get_version_obj().key_fields()).join ";" 
+  unique_id : (mode = derive.keymodes.WEB_PW) ->
+    unless @_unique_id? and mode is derive.keymodes.WEB_PW
+      parts = (@get f for f in @get_version_obj().key_fields())
+      parts.push mode
+      @_unique_id = parts.join ";"
     @_unique_id
 
   #-----------------------------------------
