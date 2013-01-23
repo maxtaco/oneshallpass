@@ -53,7 +53,8 @@ class Version1Obj extends VersionObj
     input_trim(pp).replace /\s+/g, " "
 
   key_fields : -> [ 'email', 'passphrase', 'host', 'generation', 'secbits' ]
-  derive_key : (input, co, kgh, cb) -> (new derive.V1 input).run co, kgh, cb
+  key_deriver : (i) -> new derive.V1 i
+  version : () -> 1
   
 ##-----------------------------------------------------------------------
 
@@ -66,14 +67,14 @@ class Version2Obj extends VersionObj
     pp.replace /\s+/g, ""
     
   key_fields : -> [ 'email', 'passphrase', 'secbits' ]
-  derive_key : (input, co, kgh, cb) -> (new derive.V2 input).run co, kgh, cb
+  key_deriver : (i) -> new derive.V2 i 
+  version : () -> 2
         
 ##=======================================================================
 
 class Input
   
-  constructor : (@_main) ->
-    @_unique_id = null
+  constructor : (@_eng) ->
     SELECT = [ false, null ]
     @_template =
       email :  [ true, (x) -> input_clean x ]
@@ -87,43 +88,45 @@ class Input
     
   #-----------------------------------------
   
-  get_version_obj : () -> VersionObj.make @get 'version'
+  get_version_obj : (vo) -> if vo? then vo else VersionObj.make @get 'version'
   timeout : () -> config.timeouts.input
   clear : () -> @set 'passphrase', ''
 
   #-----------------------------------------
   
-  # Serialize the input and assigned it a unique ID
-  unique_id : (mode = derive.keymodes.WEB_PW) ->
-    unless @_unique_id? and mode is derive.keymodes.WEB_PW
-      parts = (@get f for f in @get_version_obj().key_fields())
-      parts.push mode
-      @_unique_id = parts.join ";"
-    @_unique_id
+  # Serialize the input and assign it a unique ID
+  unique_id : (version_obj, mode) ->
+    version_obj = @get_version_obj version_obj
+    parts = [ version_obj.version(), mode ]
+    fields = (@get f for f in version_obj.key_fields())
+    all = parts.concat fields
+    all.join ";"
 
   #-----------------------------------------
   
-  derive_key : (cb) ->
+  derive_key : (cb, mode, vo_orig) ->
     # the compute hook is called once per iteration in the inner loop
     # of key derivation.  It can be used to stop the derivation (by returning
     # false) and also to report progress to the UI
-    
-    uid = @unique_id()
+
+    mode = derive.keymodes.WEB_PW unless mode?
+    vo = @get_version_obj vo_orig
+    uid = @unique_id vo, mode
     
     compute_hook = (i) =>
-      if (ret = (uid is @unique_id())) and i % 10 is 0
-        @_main._doc.show_computing i
+      if (ret = (uid is @_eng._inp.unique_id(vo_orig, mode))) and i % 10 is 0
+        @_eng._doc.show_computing i, mode
       ret
 
-    co = @_main._cache.lookup uid
+    co = @_eng._cache.lookup uid
 
-    @get_version_obj().derive_key @, co, compute_hook, cb
+    (vo.key_deriver @).run co, mode, compute_hook, cb
 
   #-----------------------------------------
 
   get : (k) ->
     ret = if not (p = @_template[k])? then null
-    else if not p[0] then parseInt @_main._doc.q(k).value, 10
+    else if not p[0] then parseInt @_eng._doc.q(k).value, 10
     else @[k]
     ret
   
@@ -134,7 +137,6 @@ class Input
   #-----------------------------------------
   
   set : (k, v) ->
-    @_unique_id = null
     if not (p = @_template[k])? then null
     else if p[1] then @[k] = p[1](v)
     else (@[k] = v)
