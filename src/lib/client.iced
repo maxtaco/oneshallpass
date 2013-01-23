@@ -12,6 +12,5 @@ class Client
     @_eng._inp.derive_key cb, mode, @_vo
       
   login : () ->
-    await @derive_key 
     args =
       email : @_eng._inp.get 'email'

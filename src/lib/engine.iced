@@ -50,7 +50,9 @@ class Version1Obj extends VersionObj
     # Replace any interior whitepsace with just a single
     # plain space, but otherwise, interior whitespaces count
     # as part of the passphrase
-    input_trim(pp).replace /\s+/g, " "
+    ret = input_trim(pp).replace /\s+/g, " "
+    ret = null unless ret.length
+    ret
 
   key_fields : -> [ 'email', 'passphrase', 'host', 'generation', 'secbits' ]
   key_deriver : (i) -> new derive.V1 i
@@ -64,7 +66,9 @@ class Version2Obj extends VersionObj
     
   clean_passphrase : (pp) ->
     # strip out all spaces!
-    pp.replace /\s+/g, ""
+    ret = pp.replace /\s/g, ""
+    ret = null unless ret.length
+    ret
     
   key_fields : -> [ 'email', 'passphrase', 'secbits' ]
   key_deriver : (i) -> new derive.V2 i 
@@ -85,12 +89,13 @@ class Input
       nsym : SELECT
       generation : SELECT
       length : SELECT
+    @_got_input = {}
     
   #-----------------------------------------
   
   get_version_obj : (vo) -> if vo? then vo else VersionObj.make @get 'version'
   timeout : () -> config.timeouts.input
-  clear : () -> @set 'passphrase', ''
+  clear : -> @_got_input.passphrpase = false
 
   #-----------------------------------------
   
@@ -125,22 +130,20 @@ class Input
   #-----------------------------------------
 
   get : (k) ->
-    ret = if not (p = @_template[k])? then null
-    else if not p[0] then parseInt @_eng._doc.q(k).value, 10
-    else @[k]
+    ret = null
+    if (p = @_template[k])?
+      raw = @_eng._doc.q(k).value
+      
+      if not p[0] then ret = parseInt raw, 10
+      else if p[1]? and @_got_input[k] then ret = p[1](raw)
     ret
+
+  set : (k) -> @_got_input[k] = true
   
   #-----------------------------------------
 
   _clean_passphrase : (pp) -> @get_version_obj().clean_passphrase pp
 
-  #-----------------------------------------
-  
-  set : (k, v) ->
-    if not (p = @_template[k])? then null
-    else if p[1] then @[k] = p[1](v)
-    else (@[k] = v)
-    
   #-----------------------------------------
 
   is_ready : () ->
@@ -192,7 +195,7 @@ class Timer
 class Timers
   
   constructor : (@_eng) ->
-    @_timers = (new Timer o for o in [ @_eng._doc, @_eng._inp, @_eng._cache ] )
+    @_timers = (new Timer o for o in [ @_eng._doc, @_eng._cache ])
     @_active = false
 
   poke : () -> @start() if @_active
@@ -230,8 +233,8 @@ exports.Engine = class Engine
     fields = [ "email", "version", "length", "secbits", "passphrase" ]
     go = false
     for k in fields when (v = @_loc.get k)?
+      @_inp.set k
       @_doc.autofill k, v
-      @_inp.set k, v
       go = true
     @maybe_run() if go
    
@@ -246,7 +249,7 @@ exports.Engine = class Engine
   got_input : (event) ->
     @_timers.poke()
     se = event.srcElement
-    @_inp.set se.id, se.value
+    @_inp.set se.id
     @maybe_run()
 
   ##-----------------------------------------

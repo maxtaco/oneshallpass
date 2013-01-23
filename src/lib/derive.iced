@@ -6,8 +6,9 @@ C = CryptoJS
 
 exports.keymodes = keymodes =
   WEB_PW : 0x1
-  RECORD_AES : 0x2
-  RECORD_HMAC : 0x3
+  LOGIN_PW : 0x2
+  RECORD_AES : 0x3
+  RECORD_HMAC : 0x4
 
 ##=======================================================================
 
@@ -167,12 +168,16 @@ exports.V1 = class V1 extends Base
     ret = null
     d = 1 << @secbits()
     i = 0
+
+    # Do these calls once, and out of the critical path
+    [em, host, passphrase, gen]  = [@email(), @host(), @passphrase(), @generation()]
+    
     until ret
       await @delay i, defer()
       if compute_hook i
-        a = [ "OneShallPass v1.0", @email(), @host(), @generation(), i ]
+        a = [ "OneShallPass v1.0", em, host, gen, i ]
         txt = a.join '; '
-        hash = C.HmacSHA512 txt, @passphrase()
+        hash = C.HmacSHA512 txt, passphrase
         b16 = hash.toString()
         b64 = hash.toString(C.enc.Base64)
         tail = parseInt b16[b16.length-8...], 16
@@ -200,7 +205,6 @@ exports.V2 = class V2 extends Base
   run_key_derivation : (keymode, compute_hook, cb) ->
     
     ret = null
-
     # The initial setup as per PBKDF2, with email as the salt
     hmac = C.algo.HMAC.create C.algo.SHA512, @passphrase()
     block_index = C.lib.WordArray.create [ keymode ]
