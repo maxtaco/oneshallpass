@@ -18,7 +18,9 @@ clean:
 depclean:
 	rm -rf deps
 
-deps-crypto-js:
+deps-crypto-js: $(CRYPTO_SRC)/core.js
+
+$(CRYPTO_SRC)/core.js:
 	mkdir -p deps
 	cd deps ; \
 	if [ -d crypto-js ] ; then \
