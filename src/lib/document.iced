@@ -40,7 +40,7 @@ exports.Browser = class Browser
       @q("result-computing").value = txt
     else
       field = switch mode
-        when derive.keymodes.LOGIN_PW    then "login-pw-status"
+        when derive.keymodes.LOGIN_PW    then "login-status"
         when derive.keymodes.RECORD_AES  then "encryption-key-status"
         when derive.keymodes.RECORD_HMAC then "mac-key-status"
         else null
@@ -59,6 +59,16 @@ exports.Browser = class Browser
     else
       o.className += " " + black_style
       true
+
+  set_login_status : (ok, msg) ->
+    span = @q "login-status"
+    span.innerHTML = msg
+    span.style.color = if ok then 'green' else 'red'
+    
+  show_signup : () ->
+    row = @q "signup-row"
+    row.style.display = "table-row"
+    
       
     
 ##=======================================================================

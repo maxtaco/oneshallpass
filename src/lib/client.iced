@@ -10,6 +10,15 @@ states =
   
 ##=======================================================================
 
+ajax = (url, data, method, cb) ->
+  error = (x, status, error_thrown) ->
+    cb { ok : false, status : x.status, data : null }
+  success = (data, status, x) ->
+    cb { ok: true, status : x.status, data }
+  $.ajax { dataType : "json", url, data, success, error, type : method }
+
+##=======================================================================
+
 exports.Client = class Client
 
   #-----------------------------------------
@@ -48,11 +57,25 @@ exports.Client = class Client
    
   #-----------------------------------------
 
+  do_fetch : () ->
+
+  #-----------------------------------------
+
   login : () ->
     await @get_login_input defer inp
     await inp.derive_key defer pwh if inp?
     if pwh?
-      args =
-        email : inp.get 'email'
-        pwh   : pwh
-      console.log args
+      args = { pwh , email: inp.get 'email' }
+      await ajax "/user/login", args, "POST", defer res
+      doc = @_eng._doc
+      console.log "BAACK"
+      console.log res
+      if res.status isnt 200 or not (code = res.data?.status?.code)?
+        doc.set_login_status false, "The server is down (status=#{status})"
+      else if code isnt 0
+        doc.show_signup()
+      else
+        doc.set_login_status true, "Sign-in successful"
+        { @session } = data
+        @do_fetch()
+        

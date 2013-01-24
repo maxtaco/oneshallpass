@@ -45,3 +45,6 @@ click_sync = (e) ->
   b = e.srcElement.checked
   tbody_enable doc.q('sync-details'), b
   engine.toggle_sync b
+
+click_signup = (e) ->
+  console.log "Signup code here....." 
