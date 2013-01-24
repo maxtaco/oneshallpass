@@ -117,7 +117,7 @@ class Input
     uid = @unique_id vo
     
     compute_hook = (i) =>
-      if (ret = (uid is @unique_id())) and i % 10 is 0
+      if (ret = (uid is @unique_id(vo))) and i % 10 is 0
         @_eng._doc.show_computing i, @_mode
       ret
 
