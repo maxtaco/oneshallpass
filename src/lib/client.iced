@@ -5,7 +5,7 @@
 
 class Client
 
-  constructor : (@_eng, @_vo) ->
+  constructor : (@_eng) ->
 
   derive_key : (mode, cb) ->
     inp = @_eng.new_input mode, config.server
@@ -16,5 +16,7 @@ class Client
     inp.derive_key cb
       
   login : () ->
+    await @derive_key derive.keymodes.LOGIN_PW, defer pwh
     args =
       email : @_eng._inp.get 'email'
+      pwh : pwh
