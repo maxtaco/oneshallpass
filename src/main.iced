@@ -35,8 +35,13 @@ show_advanced = (b) ->
   tbody_enable doc.q('advanced'), b
   
 click_run_timers = (e) ->
-  engine.toggle_timers event.srcElement.checked
+  engine.toggle_timers e.srcElement.checked
 
 select_text = (e) ->
   e.srcElement.focus()
   e.srcElement.select()
+
+click_sync = (e) ->
+  b = e.srcElement.checked
+  tbody_enable doc.q('sync-details'), b
+  engine.toggle_sync b

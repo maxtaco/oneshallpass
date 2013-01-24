@@ -115,12 +115,14 @@ class Base
   ##-----------------------------------------
 
   format : (x) ->
-    @add_syms x, @nsym()
+    x = @add_syms x, @nsym()
+    x[0...@length()]
     
   ##-----------------------------------------
 
   run : (cache_obj, compute_hook, cb) ->
     ret = null
+    cfg = config.derive
 
     if not (dk = cache_obj._derived_key)? and not cache_obj._running
         
@@ -128,7 +130,11 @@ class Base
 
       # show right away that we're going to be computing...
       compute_hook 0
-      await setTimeout defer(), config.derive.initial_delay
+      
+      id = if @keymode() is keymodes.WEB_PW then cfg.initial_delay
+      else cfg.sync_initial_delay
+      
+      await setTimeout defer(), id
       
       if compute_hook 0
         await @run_key_derivation compute_hook, defer dk
@@ -156,6 +162,7 @@ class Base
   generation : -> @_input.get 'generation'
   nsym : -> @_input.get 'nsym'
   keymode : -> @_input.keymode
+  length : -> @_input.get 'length'
 
 ##=======================================================================
 

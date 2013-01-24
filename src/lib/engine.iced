@@ -2,7 +2,7 @@
 util = require './util'
 {config} = require './config'
 derive = require './derive'
-doc = require './document'
+{Client} = require './client'
 
 ##=======================================================================
 
@@ -92,6 +92,13 @@ class Input
     @_got_input = {}
     
   #-----------------------------------------
+
+  fork : (keymode, fixed) ->
+    out = new Input @_eng, keymode, fixed
+    out._got_input = @_got_input
+    out
+  
+  #-----------------------------------------
   
   get_version_obj : () -> VersionObj.make @get 'version'
   timeout : () -> config.timeouts.input
@@ -101,7 +108,7 @@ class Input
   
   # Serialize the input and assign it a unique ID
   unique_id : (version_obj) ->
-    parts = [ version_obj.version(), @_keymode ]
+    parts = [ version_obj.version(), @keymode ]
     fields = (@get f for f in version_obj.key_fields())
     all = parts.concat fields
     all.join ";"
@@ -118,7 +125,7 @@ class Input
     
     compute_hook = (i) =>
       if (ret = (uid is @unique_id(vo))) and i % 10 is 0
-        @_eng._doc.show_computing i, @_mode
+        @_eng._doc.show_computing i, @keymode
       ret
 
     co = @_eng._cache.lookup uid
@@ -219,10 +226,12 @@ exports.Engine = class Engine
     @_cache = new Cache
     @_inp = new Input @
     @_timers = new Timers @
+    @_client = new Client @
 
   ##-----------------------------------------
 
   toggle_timers : (b) -> @_timers.toggle b
+  toggle_sync :   (b) -> @_client.toggle b
 
   ##-----------------------------------------
 
@@ -247,6 +256,7 @@ exports.Engine = class Engine
     @_timers.poke()
     se = event.srcElement
     @_inp.set se.id
+    @_client.poke()
     @maybe_run()
 
   ##-----------------------------------------
@@ -262,7 +272,10 @@ exports.Engine = class Engine
   
   ##-----------------------------------------
 
-  new_input : (mode, fixed) -> new Input @, mode, fixed
+  fork_input : (mode, fixed) -> @_inp.fork mode, fixed
     
+  ##-----------------------------------------
+
+
 ##=======================================================================
 

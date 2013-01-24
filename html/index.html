@@ -154,7 +154,7 @@
 
     <tr>
      <td class="input-label">server sync</td>
-     <td><input id="sync" name="sync" type="checkbox" /></td>
+     <td><input id="sync" name="sync" type="checkbox" onclick="click_sync(event);"/></td>
     </tr>
    </tbody>
 
@@ -162,17 +162,22 @@
 
     <tr>
      <td class="input-label">sync status</td>
-     <td><span>...none...</span></td>
+     <td><span id="sync-status">...none...</span></td>
+    </tr>
+    
+    <tr>
+     <td class="input-label">server login</td>
+     <td><span id="login-pw-status">...none...</span></td>
     </tr>
     
     <tr>
      <td class="input-label">encryption key</td>
-     <td id="encryption-key-status">...none...</td>
+     <td><span id="encryption-key-status">...none...</span></td>
     </tr>
     
     <tr>
      <td class="input-label">MAC key</td>
-     <td id="mac-key-status">...none...</td>
+     <td><span id="mac-key-status">...none...</span></td>
     </tr>
    
    </tbody>
