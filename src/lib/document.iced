@@ -88,5 +88,7 @@ exports.Browser = class Browser
     span = @q "sync-status"
     span.innerHTML = msg
     @color span, ok
+
+  clear_sync_status : () -> @set_sync_status true, ""
     
 ##=======================================================================

@@ -28,31 +28,15 @@ exports.Client = class Client
     @_active = false
     @_state = states.NONE
     @_doc = @_eng.doc
+    @_session = null
+    @_inp = null
 
   #-----------------------------------------
 
   toggle : (b) ->
     @_active = b
     if b then @login()
-    else      @poke()
 
-  #-----------------------------------------
-  
-  poke : () ->
-    if (c = @_poke_cb)?
-      @_poke_cb = null
-      c()
-    else @login()
-
-  #-----------------------------------------
-
-  get_login_input : (cb) ->
-    inp = @_eng.fork_input derive.keymodes.LOGIN_PW, config.server
-    while not inp.is_ready() and @_active
-      await @_poke_cb = defer()
-    inp = null unless @_active
-    cb inp
-   
   #-----------------------------------------
 
   do_fetch : () ->
@@ -60,7 +44,10 @@ exports.Client = class Client
   #-----------------------------------------
 
   package_args : (cb) ->
-    await @get_login_input defer inp
+    inp = @_eng.fork_input derive.keymodes.LOGIN_PW, config.server
+    if not inp.is_ready()
+      @doc().set_sync_status false, "need email and passphrase"
+      inp = null
     res = null
     if inp? and not util.is_email(email = inp.get 'email')
       @doc().set_sync_status false, "Invalid email address"
@@ -86,9 +73,20 @@ exports.Client = class Client
  
   #-----------------------------------------
 
+  same_args : (args) ->
+    for k,v of args
+      return false unless @_login_args[k] is v
+    return true
+   
+  #-----------------------------------------
+
   login : (bgloop, cb) ->
     try_again = false
     await @package_args defer args
+
+    # don'e bother logging in again if we're already there
+    args = null if @_session? and @_login_args? and @same_args args
+    
     if args?
       @doc().set_sync_status true, "Logging in...." unless bgloop
       await ajax "/user/login", args, "POST", defer res
@@ -99,7 +97,8 @@ exports.Client = class Client
         @doc().show_signup() unless bgloop
       else
         @doc().set_sync_status true, "Sign-in successful"
-        { @session } = res.data
+        @_login_args = args
+        @_session = res.data.session
         console.log 
         @do_fetch()
     cb try_again if cb?

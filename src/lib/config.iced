@@ -2,7 +2,7 @@
 exports.config =
   derive:
     initial_delay : 500
-    sync_initial_delay : 1500
+    sync_initial_delay : 200
     internal_delay : 1
     iters_per_slot : 10
   pw :

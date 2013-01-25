@@ -260,7 +260,6 @@ exports.Engine = class Engine
     @_timers.poke()
     se = event.srcElement
     @_inp.set se.id
-    @_client.poke()
     @maybe_run()
 
   ##-----------------------------------------

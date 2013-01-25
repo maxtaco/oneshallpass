@@ -44,8 +44,10 @@ select_text = (e) ->
 click_sync = (e) ->
   b = e.srcElement.checked
   tbody_enable doc.q('sync-details'), b
+  doc.clear_sync_status()
   engine.toggle_sync b
-  doc.q('passphrase').readOnly = b
+  for f in [ 'passphrase', 'email' ]
+    doc.q(f).readOnly = b
 
 click_signup = (e) ->
   engine.client().signup()
