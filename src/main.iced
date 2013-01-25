@@ -45,8 +45,8 @@ click_sync = (e) ->
   b = e.srcElement.checked
   tbody_enable doc.q('sync-details'), b
   engine.toggle_sync b
+  doc.q('passphrase').readOnly = b
 
 click_signup = (e) ->
-  console.log "clicked signup..."
   engine.client().signup()
    

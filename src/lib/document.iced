@@ -75,7 +75,6 @@ exports.Browser = class Browser
   get_obj : (o) -> if typeof o is 'string' then @q o else o
 
   sync_status_toggle : (div) ->
-    console.log "toggle #{div}"
     for d in [ "text", "signup" ]
       id = "sync-status-#{d}-div"
       display = if (div is d) then "inline" else "none"
