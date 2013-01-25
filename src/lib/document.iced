@@ -29,21 +29,25 @@ exports.Browser = class Browser
     for f in [ 'waiting', 'done', 'computing' ]
       @q("result-td-#{f}").style.display = if s is f then 'inline' else 'none'
 
+  mode_to_dom_element : (mode) ->
+    switch mode
+      when derive.keymodes.WEB_PW      then "result-computing"
+      when derive.keymodes.LOGIN_PW    then "login-status"
+      when derive.keymodes.RECORD_AES  then "encryption-key-status"
+      when derive.keymodes.RECORD_HMAC then "mac-key-status"
+      else null
+
   show_computing : (s, mode) ->
     txt ="Computing....#{s}"
 
     # These cases are handled slightly differently because the result
     # field for Web PWs is an input field, and the others are dummy
     # HTML...
+    field = @mode_to_dom_element mode
     if mode is derive.keymodes.WEB_PW
       @toggle_result 'computing'
       @q("result-computing").value = txt
     else
-      field = switch mode
-        when derive.keymodes.LOGIN_PW    then "login-status"
-        when derive.keymodes.RECORD_AES  then "encryption-key-status"
-        when derive.keymodes.RECORD_HMAC then "mac-key-status"
-        else null
       @q(field).innerHTML = txt if field?
 
   get_obj : (o) -> if typeof o is 'string' then @q o else o
@@ -59,16 +63,31 @@ exports.Browser = class Browser
     else
       o.className += " " + black_style
       true
+      
+  color : (span, ok) ->
+    span.style.color = if ok then 'black' else 'red'
 
-  set_login_status : (ok, msg) ->
-    span = @q "login-status"
-    span.innerHTML = msg
-    span.style.color = if ok then 'green' else 'red'
+  finish_key : (mode) ->
+    if (field = @mode_to_dom_element(mode))? and (e = @q(field))?
+      e.innerHTML = "Computed"
+      e.style.color = "green"
+
+  get_obj : (o) -> if typeof o is 'string' then @q o else o
+
+  sync_status_toggle : (div) ->
+    console.log "toggle #{div}"
+    for d in [ "text", "signup" ]
+      id = "sync-status-#{d}-div"
+      display = if (div is d) then "inline" else "none"
+      @q(id).style.display = display
     
   show_signup : () ->
-    row = @q "signup-row"
-    row.style.display = "table-row"
-    
-      
+    @sync_status_toggle "signup"
+
+  set_sync_status : (ok, msg) ->
+    @sync_status_toggle "text"
+    span = @q "sync-status"
+    span.innerHTML = msg
+    @color span, ok
     
 ##=======================================================================

@@ -47,4 +47,6 @@ click_sync = (e) ->
   engine.toggle_sync b
 
 click_signup = (e) ->
-  console.log "Signup code here....." 
+  console.log "clicked signup..."
+  engine.client().signup()
+   

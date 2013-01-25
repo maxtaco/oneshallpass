@@ -235,6 +235,10 @@ exports.Engine = class Engine
 
   ##-----------------------------------------
 
+  client : () -> @_client
+  
+  ##-----------------------------------------
+
   _autofill : () ->
     fields = [ "email", "version", "length", "secbits", "passphrase" ]
     go = false
