@@ -85,7 +85,9 @@ exports.Client = class Client
     await @package_args defer args
 
     # don'e bother logging in again if we're already there
-    args = null if @_session? and @_login_args? and @same_args args
+    if @_session? and @_login_args? and @same_args args
+      @doc().set_sync_status true, "Signed in"
+      args = null
     
     if args?
       @doc().set_sync_status true, "Logging in...." unless bgloop
