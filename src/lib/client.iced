@@ -24,11 +24,13 @@ ajax = (url, data, method, cb) ->
 ##=======================================================================
 
 # Fulfill the CryptoJS template
-BinaryEncoder =
+Binary =
   stringify : (wa) ->
     v = wordArray.words
     n = wordArray.sigBytes
     (((v[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff) for i in [0...n]).join ''
+  to_wordArray: (b) ->
+    
 
 ##=======================================================================
 
@@ -47,8 +49,13 @@ exports.Decryptor = class Decryptor
   verify_mac : (obj, receive) ->
     packed = purepack.pack obj, ENCODING
     macer = C.algo.HMAC.create C.algo.SHA256, @_mac_key
-    computed = macer.update(packed).finalize().toString BinaryEncode
-    return (computed == receive)
+    computed = macer.update(packed).finalize().toString Binary
+    return (computed is receive)
+
+  decrypt_aes : (iv, ciphertext) ->
+
+    # Create a cryptoJS object
+    iv = C.lib.WordArray.create(iv)
 
   decrypt : (v, name) ->
     ret = null
@@ -72,8 +79,8 @@ exports.Decryptor = class Decryptor
       @hit_error "Decrypt failure", unpacked.toString(), name
       @_aes_errors++
     else if not ([err, unpacked] = purepack.unpack pt, ENCODING)? or err?
-      @hit_error, "Failed to decode plaintext", pt, name
-      @_decode_errors ++
+      @hit_error "Failed to decode plaintext", pt, name
+      @_decode_errors++
     else
       ret = unpacked
     ret
