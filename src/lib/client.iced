@@ -9,6 +9,9 @@ states =
   VERIFIED : 2
   WAITING_FOR_INPUT : 3
 
+ENCODING = "base64"
+C = CryptoJS
+
 ##=======================================================================
 
 ajax = (url, data, method, cb) ->
@@ -17,6 +20,63 @@ ajax = (url, data, method, cb) ->
   success = (data, status, x) ->
     cb { ok: true, status : x.status, data }
   $.ajax { dataType : "json", url, data, success, error, type : method }
+
+##=======================================================================
+
+# Fulfill the CryptoJS template
+BinaryEncoder =
+  stringify : (wa) ->
+    v = wordArray.words
+    n = wordArray.sigBytes
+    (((v[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff) for i in [0...n]).join ''
+
+##=======================================================================
+
+exports.Decryptor = class Decryptor
+
+  constructor : (@_aes_key, @_mac_key) ->
+    @_errors = []
+    @_mac_errors =  0
+    @_decode_errors = 0
+    @_aes_errors = 0
+    @_successes = 0
+
+  hit_error : (error, value, type) ->
+    @_errors.push { error, value, type }
+
+  verify_mac : (obj, receive) ->
+    packed = purepack.pack obj, ENCODING
+    macer = C.algo.HMAC.create C.algo.SHA256, @_mac_key
+    computed = macer.update(packed).finalize().toString BinaryEncode
+    return (computed == receive)
+
+  decrypt : (v, name) ->
+    ret = null
+    [err, unpacked] = purepack.unpack v, ENCODING
+    if err?
+      @hit_error err, v, name
+      @_decode_errors++
+    else if not (Array.isArray unpacked)
+      @hit_error "needed an array", unpacked.toString(), name
+      @_decode_errors++
+    else if unpacked[0] isnt 1
+      @hit_error "only can decode version 1", unpacked[0], name
+      @_decode_errors++
+    else if unpacked.length isnt 4
+      @hit_error "needed 4 fields in array", unpacked.length, name
+      @_decode_errors++
+    else if not @verify_mac unpacked[2..3], unpacked[1]
+      @hit_error "MAC mismatch", unpacked.toString(), name
+      @_mac_errors++
+    else if not (pt = @decrypt_aes unpacked[2], unpacked[3])?
+      @hit_error "Decrypt failure", unpacked.toString(), name
+      @_aes_errors++
+    else if not ([err, unpacked] = purepack.unpack pt, ENCODING)? or err?
+      @hit_error, "Failed to decode plaintext", pt, name
+      @_decode_errors ++
+    else
+      ret = unpacked
+    ret
 
 ##=======================================================================
 
@@ -30,6 +90,8 @@ exports.Client = class Client
     @_doc = @_eng.doc
     @_session = null
     @_inp = null
+    @_records = {}
+    @_decrypt_errors = []
 
   #-----------------------------------------
 
@@ -43,7 +105,28 @@ exports.Client = class Client
   do_fetch : () ->
     await @prepare_keys defer ok
     await @fetch_records defer recs if ok
+    ok = @decrypt_recs if recs? and ok
 
+  #-----------------------------------------
+
+  decrypt_error : (e) ->
+    @_decrypt_errors.push e
+   
+  #-----------------------------------------
+
+  decrypt_record : (k,v) ->
+    k = @decrypt k, "key"
+    v = @decrypt v, "value"
+    @_records[k] = v if k? and v?
+    
+  #-----------------------------------------
+
+  decrypt_records : (encoded_recs) ->
+    @_decrypt_errors = []
+    for k, v of encoded_recs
+      @decrypt_record k, v
+    return ok
+   
   #-----------------------------------------
 
   check_res : (res) -> 
@@ -53,10 +136,12 @@ exports.Client = class Client
    
   #-----------------------------------------
 
-  fetch_records : () ->
+  fetch_records : (cb) ->
+    out = null
     ajax "/records", {}, "GET", defer res
-    if (code = @check_res res)?
-    
+    if (code = @check_res res)? and code is 0
+      out = res.data
+    cb out
    
   #-----------------------------------------
 
@@ -140,3 +225,5 @@ exports.Client = class Client
         @doc().set_sync_status true, "Check #{em} for verification"
         @login_loop()
       
+##=======================================================================
+
