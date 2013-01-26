@@ -42,7 +42,22 @@ exports.Client = class Client
 
   do_fetch : () ->
     await @prepare_keys defer ok
+    await @fetch_records defer recs if ok
 
+  #-----------------------------------------
+
+  check_res : (res) -> 
+    if res.status isnt 200 or not (code = res?.data?.status?.code)?
+      @doc().set_sync_status false, "The server is down (status=#{status})"
+    return code
+   
+  #-----------------------------------------
+
+  fetch_records : () ->
+    ajax "/records", {}, "GET", defer res
+    if (code = @check_res res)?
+    
+   
   #-----------------------------------------
 
   prepare_keys : (cb) ->
@@ -101,8 +116,7 @@ exports.Client = class Client
     if args?
       @doc().set_sync_status true, "Logging in...." unless bgloop
       await ajax "/user/login", args, "POST", defer res
-      if res.status isnt 200 or not (code = res?.data?.status?.code)?
-        @doc().set_sync_status false, "The server is down (status=#{status})"
+      if not (code = @check_res res)? then null
       else if code isnt 0
         try_again = true
         @doc().show_signup() unless bgloop
@@ -122,9 +136,7 @@ exports.Client = class Client
       @doc().set_sync_status true, "Signing up email #{em}"
       await ajax "/user/signup", args, "POST", defer res
       err = null
-      if res.status isnt 200 or not (code = res.data?.status?.code)?
-        @doc().set_sync_status false, "The server is down (status=#{status})"
-      else
+      if (code = @check_res res)?
         @doc().set_sync_status true, "Check #{em} for verification"
         @login_loop()
       
