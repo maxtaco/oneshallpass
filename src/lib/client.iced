@@ -36,28 +36,50 @@ exports.Client = class Client
   toggle : (b) ->
     @_active = b
     if b then @login()
+    else @_session = null
 
   #-----------------------------------------
 
   do_fetch : () ->
+    await @prepare_keys defer ok
 
   #-----------------------------------------
 
-  package_args : (cb) ->
-    inp = @_eng.fork_input derive.keymodes.LOGIN_PW, config.server
+  prepare_keys : (cb) ->
+    await @prepare_key derive.keymodes.RECORD_HMAC, defer @_hmac
+    await @prepare_key derive.keymodes.RECORD_AES, defer @_aes if @_hmac
+    cb (@_aes and @_hmac)
+
+  #-----------------------------------------
+
+  prepare_key : (mode, cb) ->
+    inp = @package_input mode
+    await inp.derive_key defer key if inp?
+    @doc().finish_key mode if inp?
+    cb key, inp
+    
+  #-----------------------------------------
+
+  package_input : (mode) ->
+    inp = @_eng.fork_input mode, config.server
     if not inp.is_ready()
       @doc().set_sync_status false, "need email and passphrase"
       inp = null
     res = null
-    if inp? and not util.is_email(email = inp.get 'email')
+    if inp? and not util.is_email inp.get 'email'
       @doc().set_sync_status false, "Invalid email address"
       inp = null
-    if inp?
-      await inp.derive_key defer pwh if inp?
+    return inp
+    
+  #-----------------------------------------
+
+  package_args : (cb) ->
+    if (inp = @package_input derive.keymodes.LOGIN_PW)?
+      await inp.derive_key defer pwh
     if pwh?
       @doc().finish_key inp.keymode
-      res = { pwh, email }
-    cb res
+      res = { pwh, email : inp.get 'email' }
+    cb res, inp
     
   #-----------------------------------------
   
@@ -73,22 +95,9 @@ exports.Client = class Client
  
   #-----------------------------------------
 
-  same_args : (args) ->
-    for k,v of args
-      return false unless @_login_args[k] is v
-    return true
-   
-  #-----------------------------------------
-
   login : (bgloop, cb) ->
     try_again = false
-    await @package_args defer args
-
-    # don'e bother logging in again if we're already there
-    if @_session? and @_login_args? and @same_args args
-      @doc().set_sync_status true, "Signed in"
-      args = null
-    
+    await @package_args defer args, inp
     if args?
       @doc().set_sync_status true, "Logging in...." unless bgloop
       await ajax "/user/login", args, "POST", defer res
@@ -99,9 +108,8 @@ exports.Client = class Client
         @doc().show_signup() unless bgloop
       else
         @doc().set_sync_status true, "Sign-in successful"
-        @_login_args = args
+        @_login_inp = inp
         @_session = res.data.session
-        console.log 
         @do_fetch()
     cb try_again if cb?
         

@@ -108,6 +108,7 @@ class Input
   
   # Serialize the input and assign it a unique ID
   unique_id : (version_obj) ->
+    version_obj = @get_version_obj() unless version_obj
     parts = [ version_obj.version(), @keymode ]
     fields = (@get f for f in version_obj.key_fields())
     all = parts.concat fields
