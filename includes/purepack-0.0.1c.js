@@ -96,11 +96,33 @@
     Buffer.prototype.B64A = new CharMap("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-", "=");
 
     function Buffer() {
-      this._b = [];
+      this._buffers = [];
+      this._sz = 0x400;
+      this._logsz = 10;
+      this._push_new_buffer();
+      this._i = 0;
+      this._b = 0;
+      this._cp = 0;
+      this._tot = 0;
+      this._no_push = false;
     }
 
+    Buffer.prototype._push_new_buffer = function() {
+      var nb;
+      this._b = this._buffers.length;
+      this._i = 0;
+      nb = new Uint8Array(this._sz);
+      this._buffers.push(nb);
+      return nb;
+    };
+
     Buffer.prototype.push_byte = function(b) {
-      return this._b.push(b);
+      var buf;
+      if (this._no_push) throw new Error("Cannot push anymore into this buffer");
+      buf = this._buffers[this._b];
+      if (this._i === this._sz) buf = this._push_new_buffer();
+      buf[this._i++] = b;
+      return this._tot++;
     };
 
     Buffer.prototype.push_short = function(s) {
@@ -151,37 +173,61 @@
           return this.base16_encode();
         case 'binary':
           return this.binary_encode();
+        case 'ui8a':
+          return this.ui8a_encode();
       }
+    };
+
+    Buffer.prototype.encode = function(e) {
+      return this.toString(e);
     };
 
     Buffer.prototype._get = function(i) {
-      if (i < this._b.length) {
-        return this._b[i];
-      } else {
-        return 0;
+      var bi, li, lim, ret;
+      bi = this._logsz ? i >>> this._logsz : 0;
+      li = i % this._sz;
+      lim = bi === this._b ? this._i : this._sz;
+      ret = bi <= this._b && li < lim ? this._buffers[bi][li] : 0;
+      return ret;
+    };
+
+    Buffer.prototype.ui8a_encode = function() {
+      var i, out, _i, _ref1;
+      out = new Uint8Array(this._tot);
+      for (i = _i = 0, _ref1 = this._tot; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
+        out[i] = this._get(i);
       }
+      return out;
     };
 
     Buffer.prototype.binary_encode = function() {
-      return String.fromCharCode.apply(String, this._b);
+      var i, v;
+      v = (function() {
+        var _i, _ref1, _results;
+        _results = [];
+        for (i = _i = 0, _ref1 = this._tot; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
+          _results.push(this._get(i));
+        }
+        return _results;
+      }).call(this);
+      return String.fromCharCode.apply(String, v);
     };
 
     Buffer.prototype.base16_encode = function() {
-      var c, i, tmp, _i, _len, _ref1;
-      tmp = [];
-      _ref1 = this._b;
-      for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
-        c = _ref1[i];
-        tmp[i << 1] = this.B16.fwd[c >> 4];
-        tmp[(i << 1) + 1] = this.B16.fwd[c & 0xf];
+      var c, i, tmp, _i, _ref1;
+      tmp = "";
+      for (i = _i = 0, _ref1 = this._tot; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
+        c = this._get(i);
+        tmp += this.B16.fwd[c >> 4];
+        tmp += this.B16.fwd[c & 0xf];
       }
-      return tmp.join('');
+      return tmp;
     };
 
     Buffer.prototype.base32_encode = function() {
       var b, c, l, outlen, p, _i;
       b = [];
-      l = this._b.length;
+      l = this._tot;
       outlen = Math.floor(l / 5) * 8 + [0, 2, 4, 5, 7][l % 5];
       p = 0;
       for (c = _i = 0; _i < l; c = _i += 5) {
@@ -220,7 +266,7 @@
     Buffer.prototype._base64_encode = function(M) {
       var b, c, i, l, n, p, _i, _j;
       b = [];
-      l = this._b.length;
+      l = this._tot;
       c = l % 3;
       p = c > 0 ? (function() {
         var _i, _results;
@@ -253,19 +299,24 @@
           return (new Buffer).base32_decode(s);
         case 'hex':
           return (new Buffer).base16_decode(s);
+        case 'ui8a':
+          return (new Buffer).ui8a_decode(s);
       }
     };
 
+    Buffer.prototype.ui8a_decode = function(v) {
+      this._buffers = [v];
+      this._logsz = 0;
+      this._tot = this._sz = this._i = v.length;
+      this._no_push = true;
+      return this;
+    };
+
     Buffer.prototype.binary_decode = function(b) {
-      var i;
-      this._b = (function() {
-        var _i, _ref1, _results;
-        _results = [];
-        for (i = _i = 0, _ref1 = b.length; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
-          _results.push(b.charCodeAt(i));
-        }
-        return _results;
-      })();
+      var i, _i, _ref1;
+      for (i = _i = 0, _ref1 = b.length; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
+        this.push_byte(b.charCodeAt(i));
+      }
       return this;
     };
 
@@ -358,14 +409,16 @@
     };
 
     Buffer.prototype.consume_byte = function() {
-      return this._b.shift();
+      return this._get(this._cp++);
     };
 
     Buffer.prototype.consume_bytes = function(n) {
-      var ret;
-      ret = this._b.slice(0, n);
-      this._b = this._b.slice(n);
-      return ret;
+      var i, _i, _results;
+      _results = [];
+      for (i = _i = 0; 0 <= n ? _i < n : _i > n; i = 0 <= n ? ++_i : --_i) {
+        _results.push(this.consume_byte());
+      }
+      return _results;
     };
 
     Buffer.prototype.consume_string = function(n) {
@@ -525,12 +578,19 @@
 }).call(this);
 }, "main": function(exports, require, module) {// Generated by IcedCoffeeScript 1.3.3g
 (function() {
+  var Buffer, PackBuffer, UnpackBuffer, _ref;
 
   exports.pack = require('./pack').pack;
 
   exports.unpack = require('./unpack').unpack;
 
-  exports.Buffer = require('./buffer').Buffer;
+  _ref = require('./buffer'), Buffer = _ref.Buffer, PackBuffer = _ref.PackBuffer, UnpackBuffer = _ref.UnpackBuffer;
+
+  exports.Buffer = Buffer;
+
+  exports.PackBuffer = PackBuffer;
+
+  exports.UnpackBuffer = UnpackBuffer;
 
   exports.FloatConverter = require('./floats').Converter;
 
