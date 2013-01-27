@@ -5,7 +5,7 @@ CRYPTO_JS_VERSION=3.0.2
 PUREPACK_VERSION=v0.0.1
 JQUERY_VERSION=1.9.0
 ICED_VERSION=1.4.0a
-PUREPACK_VERSION=0.0.1a
+PUREPACK_VERSION=0.0.1c
 
 CRYPTO_SRC=deps/crypto-js/src
 
@@ -30,15 +30,18 @@ $(CRYPTO_SRC)/core.js:
 		svn checkout http://crypto-js.googlecode.com/svn/tags/$(CRYPTO_JS_VERSION) crypto-js ; \
 	fi
 
+#    aes:           [core, enc-base64, md5, evpkdf, cipher-core, aes]
 build/js/crypto.js: \
 	$(CRYPTO_SRC)/core.js \
-	$(CRYPTO_SRC)/cipher-core.js \
 	$(CRYPTO_SRC)/x64-core.js \
+	$(CRYPTO_SRC)/enc-base64.js \
 	$(CRYPTO_SRC)/hmac.js \
 	$(CRYPTO_SRC)/sha1.js \
 	$(CRYPTO_SRC)/sha512.js \
-	$(CRYPTO_SRC)/enc-base64.js \
-	$(CRYPTO_SRC)/aes.js 
+	$(CRYPTO_SRC)/md5.js \
+	$(CRYPTO_SRC)/evpkdf.js \
+	$(CRYPTO_SRC)/cipher-core.js \
+	$(CRYPTO_SRC)/aes.js
 	mkdir -p `dirname $@`
 	cat $^ > $@
 
