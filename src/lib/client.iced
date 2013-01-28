@@ -88,13 +88,18 @@ exports.Decryptor = class Decryptor
       @hit_error "AES failed", ctxt, name
     else
       ui8a = plaintext.stringify Ui8a
-      buf = purepack.decode ui8a, 'ui8a'
+      try
+        buf = purepack.decode ui8a, 'ui8a'
+      catch e
 
   ##-----------------------------------------
 
   decrypt : (v, name) ->
     ret = null
-    [err, unpacked] = purepack.unpack v, ENCODING
+    try
+      unpacked = purepack.unpack v, ENCODING
+    catch e
+      err = e
     if err?
       @hit_error err, v, name
       @_decode_errors++

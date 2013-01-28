@@ -991,8 +991,7 @@
     } else {
       err = "Decoding type '" + enc + "' failed";
     }
-    if (err != null) throw new Error(err);
-    return res;
+    return [err, res];
   };
 
 }).call(this);
