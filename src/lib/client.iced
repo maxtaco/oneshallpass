@@ -2,7 +2,7 @@
 {config} = require './config'
 derive   = require './derive'
 util     = require './util'
-purepack = require './purepack'
+purepack = require 'purepack'
 
 states =
   NONE : 0

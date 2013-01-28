@@ -59,6 +59,9 @@ build/js/purepack.js : includes/purepack-$(PUREPACK_VERSION).js
 build/js/main.js : src/main.iced
 	mkdir -p `dirname $@`
 	(iced --bare --print -I none $^ > $@~) && mv $@~ $@
+build/js/metastitch.js : src/metastitch.iced
+	mkdir -p `dirname $@`
+	(iced --bare --print -I none $^ > $@~) && mv $@~ $@
 
 build/iced/%.js : src/lib/%.iced
 	mkdir -p `dirname $@`
@@ -81,7 +84,9 @@ build/html/index-min.html: html/index.html \
 	build/js-min/purepack.js \
 	build/js-min/jquery.js \
 	build/js-min/crypto.js \
-	build/js-min/main.js
+	build/js-min/main.js \
+	build/js-min/metastitch.js \
+	css/main.css 
 	mkdir -p `dirname $@`
 	(python bin/inline.py -m < $< > $@~) && mv $@~ $@
 
@@ -92,6 +97,7 @@ build/html/index.html: html/index.html \
 	build/js/purepack.js \
 	build/js/jquery.js \
 	build/js/main.js \
+	build/js/metastitch.js \
 	css/main.css 
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
