@@ -141,9 +141,11 @@ class Base
       
       cache_obj._derived_key = dk if dk?
       cache_obj._running = false
-        
-    ret = @finalize dk if dk
-    ret = @format ret if ret
+
+    ret = if not dk?           then null
+    else if @is_internal_key() then dk
+    else                            @format @finalize dk
+    
     cb ret
     
   ##-----------------------------------------
@@ -209,6 +211,11 @@ exports.V2 = class V2 extends Base
     super input
     
   ##-----------------------------------------
+
+  is_internal_key : () ->
+    return @keymode() in [ keymodes.RECORD_AES, keymodes.RECORD_HMAC ]
+   
+  ##-----------------------------------------
   
   run_key_derivation : (compute_hook, cb) ->
 
@@ -239,7 +246,10 @@ exports.V2 = class V2 extends Base
       else
         break
 
-    ret = block.toString C.enc.Base64 if i is limit
+    ret = if i isnt limit then null
+    else if @is_internal_key() then block
+    else block.toString C.enc.Base64
+    
     cb ret
           
   ##-----------------------------------------

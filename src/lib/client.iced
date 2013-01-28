@@ -2,6 +2,7 @@
 {config} = require './config'
 derive   = require './derive'
 util     = require './util'
+purepack = require './purepack'
 
 states =
   NONE : 0
@@ -26,15 +27,24 @@ ajax = (url, data, method, cb) ->
 # Fulfill the CryptoJS template
 Binary =
   stringify : (wa) ->
-    v = wordArray.words
-    n = wordArray.sigBytes
-    (((v[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff) for i in [0...n]).join ''
-  to_wordArray: (b) ->
+    [v,n] = [wa.words, wa.sigBytes]
+    e = String.fromCharCode
+    (e((v[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff) for i in [0...n]).join ''
     
+# Fulfill the CryptoJS template -- we're abusing the 'stringify' interface,
+# but it's OK for now...
+Ui8a =
+  stringify : (wa) ->
+    [v,n] = [wa.words, wa.sigBytes]
+    out = new Uint8Array n
+    (out[i] = ((v[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff) for i in [0...n])
+    return out
 
 ##=======================================================================
 
 exports.Decryptor = class Decryptor
+
+  ##-----------------------------------------
 
   constructor : (@_aes_key, @_mac_key) ->
     @_errors = []
@@ -43,19 +53,44 @@ exports.Decryptor = class Decryptor
     @_aes_errors = 0
     @_successes = 0
 
+  ##-----------------------------------------
+
   hit_error : (error, value, type) ->
     @_errors.push { error, value, type }
 
-  verify_mac : (obj, receive) ->
+  ##-----------------------------------------
+
+  verify_mac : (obj, received) ->
     packed = purepack.pack obj, ENCODING
     macer = C.algo.HMAC.create C.algo.SHA256, @_mac_key
     computed = macer.update(packed).finalize().toString Binary
-    return (computed is receive)
+    return (computed is received)
 
-  decrypt_aes : (iv, ciphertext) ->
+  ##-----------------------------------------
+
+  # how to encrypt:
+  #   pick random iv with prng...
+  #   C.AES.encrypt msg, key, { iv }
+  #   i think msg and key should both be WordArrays... 
+  decrypt_aes : (iv, ctxt, name) ->
 
     # Create a cryptoJS object
-    iv = C.lib.WordArray.create(iv)
+    #  - iv is an array of signed int32s, that we get from msgpack.
+    #    It should be 4 words long, as per AES-256-CBC mode
+    #  - ciphertext is an array of 32-bit words
+    # 
+    iv = C.lib.WordArray.create iv
+    ctxt = C.lib.WordArray.create ctxt
+    cfg = { iv }
+    cp = C.lib.CipherParams.create { ciphertext : ctxt }
+    if not (plaintext = C.AES.decrypt cp, @_aes_key, cfg)?
+      @_aes_errors++
+      @hit_error "AES failed", ctxt, name
+    else
+      ui8a = plaintext.stringify Ui8a
+      buf = purepack.decode ui8a, 'ui8a'
+
+  ##-----------------------------------------
 
   decrypt : (v, name) ->
     ret = null
@@ -75,7 +110,7 @@ exports.Decryptor = class Decryptor
     else if not @verify_mac unpacked[2..3], unpacked[1]
       @hit_error "MAC mismatch", unpacked.toString(), name
       @_mac_errors++
-    else if not (pt = @decrypt_aes unpacked[2], unpacked[3])?
+    else if not (pt = @decrypt_aes unpacked[2], unpacked[3], name)?
       @hit_error "Decrypt failure", unpacked.toString(), name
       @_aes_errors++
     else if not ([err, unpacked] = purepack.unpack pt, ENCODING)? or err?
@@ -112,7 +147,7 @@ exports.Client = class Client
   do_fetch : () ->
     await @prepare_keys defer ok
     await @fetch_records defer recs if ok
-    ok = @decrypt_recs if recs? and ok
+    ok = @decrypt_records if recs? and ok
 
   #-----------------------------------------
 
