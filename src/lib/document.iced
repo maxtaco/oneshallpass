@@ -89,6 +89,9 @@ exports.Browser = class Browser
     span.innerHTML = msg
     @color span, ok
 
+  set_logged_in : (b) ->
+    @q('sync-push-button').disabled = not b
+
   clear_sync_status : () -> @set_sync_status true, ""
     
 ##=======================================================================

@@ -74,7 +74,8 @@ build/js/lib.js: build/iced/config.js \
 	build/iced/location.js \
 	build/iced/util.js \
 	build/iced/client.js \
-	build/iced/prng.js
+	build/iced/prng.js \
+	build/iced/crypt.js
 	mkdir -p `dirname $@`
 	(iced bin/stitch.iced build/iced/ > $@~) && mv $@~ $@
 

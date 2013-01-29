@@ -198,6 +198,10 @@ exports.V1 = class V1 extends Base
     cb ret
     
   ##-----------------------------------------
+  
+  is_internal_key : () -> false
+ 
+  ##-----------------------------------------
  
   finalize : (dk) -> dk
 

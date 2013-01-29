@@ -3,6 +3,7 @@
 derive   = require './derive'
 util     = require './util'
 purepack = require 'purepack'
+crypt    = require './crypt'
 
 states =
   NONE : 0
@@ -12,119 +13,7 @@ states =
 
 ENCODING = "base64"
 C = CryptoJS
-
-##=======================================================================
-
-ajax = (url, data, method, cb) ->
-  error = (x, status, error_thrown) ->
-    cb { ok : false, status : x.status, data : null }
-  success = (data, status, x) ->
-    cb { ok: true, status : x.status, data }
-  $.ajax { dataType : "json", url, data, success, error, type : method }
-
-##=======================================================================
-
-# Fulfill the CryptoJS template
-Binary =
-  stringify : (wa) ->
-    [v,n] = [wa.words, wa.sigBytes]
-    e = String.fromCharCode
-    (e((v[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff) for i in [0...n]).join ''
-    
-# Fulfill the CryptoJS template -- we're abusing the 'stringify' interface,
-# but it's OK for now...
-Ui8a =
-  stringify : (wa) ->
-    [v,n] = [wa.words, wa.sigBytes]
-    out = new Uint8Array n
-    (out[i] = ((v[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff) for i in [0...n])
-    return out
-
-##=======================================================================
-
-exports.Decryptor = class Decryptor
-
-  ##-----------------------------------------
-
-  constructor : (@_aes_key, @_mac_key) ->
-    @_errors = []
-    @_mac_errors =  0
-    @_decode_errors = 0
-    @_aes_errors = 0
-    @_successes = 0
-
-  ##-----------------------------------------
-
-  hit_error : (error, value, type) ->
-    @_errors.push { error, value, type }
-
-  ##-----------------------------------------
-
-  verify_mac : (obj, received) ->
-    packed = purepack.pack obj, ENCODING
-    macer = C.algo.HMAC.create C.algo.SHA256, @_mac_key
-    computed = macer.update(packed).finalize().toString Binary
-    return (computed is received)
-
-  ##-----------------------------------------
-
-  # how to encrypt:
-  #   pick random iv with prng...
-  #   C.AES.encrypt msg, key, { iv }
-  #   i think msg and key should both be WordArrays... 
-  decrypt_aes : (iv, ctxt, name) ->
-
-    # Create a cryptoJS object
-    #  - iv is an array of signed int32s, that we get from msgpack.
-    #    It should be 4 words long, as per AES-256-CBC mode
-    #  - ciphertext is an array of 32-bit words
-    # 
-    iv = C.lib.WordArray.create iv
-    ctxt = C.lib.WordArray.create ctxt
-    cfg = { iv }
-    cp = C.lib.CipherParams.create { ciphertext : ctxt }
-    if not (plaintext = C.AES.decrypt cp, @_aes_key, cfg)?
-      @_aes_errors++
-      @hit_error "AES failed", ctxt, name
-    else
-      ui8a = plaintext.stringify Ui8a
-      try
-        buf = purepack.decode ui8a, 'ui8a'
-      catch e
-
-  ##-----------------------------------------
-
-  decrypt : (v, name) ->
-    ret = null
-    try
-      unpacked = purepack.unpack v, ENCODING
-    catch e
-      err = e
-    if err?
-      @hit_error err, v, name
-      @_decode_errors++
-    else if not (Array.isArray unpacked)
-      @hit_error "needed an array", unpacked.toString(), name
-      @_decode_errors++
-    else if unpacked[0] isnt 1
-      @hit_error "only can decode version 1", unpacked[0], name
-      @_decode_errors++
-    else if unpacked.length isnt 4
-      @hit_error "needed 4 fields in array", unpacked.length, name
-      @_decode_errors++
-    else if not @verify_mac unpacked[2..3], unpacked[1]
-      @hit_error "MAC mismatch", unpacked.toString(), name
-      @_mac_errors++
-    else if not (pt = @decrypt_aes unpacked[2], unpacked[3], name)?
-      @hit_error "Decrypt failure", unpacked.toString(), name
-      @_aes_errors++
-    else if not ([err, unpacked] = purepack.unpack pt, ENCODING)? or err?
-      @hit_error "Failed to decode plaintext", pt, name
-      @_decode_errors++
-    else
-      ret = unpacked
-    ret
-
+ 
 ##=======================================================================
 
 exports.Client = class Client
@@ -134,7 +23,6 @@ exports.Client = class Client
   constructor : (@_eng) ->
     @_active = false
     @_state = states.NONE
-    @_doc = @_eng.doc
     @_session = null
     @_inp = null
     @_records = {}
@@ -145,7 +33,9 @@ exports.Client = class Client
   toggle : (b) ->
     @_active = b
     if b then @login()
-    else @_session = null
+    else
+      @_session = null
+      @doc().set_logged_in false
 
   #-----------------------------------------
 
@@ -161,6 +51,11 @@ exports.Client = class Client
    
   #-----------------------------------------
 
+  decrypt : (v, name) ->
+    @_decryptor.decrypt v, name
+  
+  #-----------------------------------------
+
   decrypt_record : (k,v) ->
     k = @decrypt k, "key"
     v = @decrypt v, "value"
@@ -169,23 +64,27 @@ exports.Client = class Client
   #-----------------------------------------
 
   decrypt_records : (encoded_recs) ->
-    @_decrypt_errors = []
     for k, v of encoded_recs
       @decrypt_record k, v
+    ok = true
+    if (eo = @_decryptor.finish())?
+      ok = false
+      @doc().set_sync_status false, "Decryption errors, see log for more info"
+      console.log eo
     return ok
    
   #-----------------------------------------
 
   check_res : (res) -> 
     if res.status isnt 200 or not (code = res?.data?.status?.code)?
-      @doc().set_sync_status false, "The server is down (status=#{status})"
+      @doc().set_sync_status false, "The server is down (status=#{res.status})"
     return code
    
   #-----------------------------------------
 
   fetch_records : (cb) ->
     out = null
-    ajax "/records", {}, "GET", defer res
+    await @ajax "/records", {}, "GET", defer res
     if (code = @check_res res)? and code is 0
       out = res.data
     cb out
@@ -193,9 +92,13 @@ exports.Client = class Client
   #-----------------------------------------
 
   prepare_keys : (cb) ->
+    ok = false
     await @prepare_key derive.keymodes.RECORD_HMAC, defer @_hmac
     await @prepare_key derive.keymodes.RECORD_AES, defer @_aes if @_hmac
-    cb (@_aes and @_hmac)
+    if (@_aes and @_hmac)?
+      @_decryptor = new crypt.Cryptor @_aes, @_hmac
+      ok = true
+    cb ok
 
   #-----------------------------------------
 
@@ -247,12 +150,13 @@ exports.Client = class Client
     await @package_args defer args, inp
     if args?
       @doc().set_sync_status true, "Logging in...." unless bgloop
-      await ajax "/user/login", args, "POST", defer res
+      await @ajax "/user/login", args, "POST", defer res
       if not (code = @check_res res)? then null
       else if code isnt 0
         try_again = true
         @doc().show_signup() unless bgloop
       else
+        @doc().set_logged_in true
         @doc().set_sync_status true, "Sign-in successful"
         @_login_inp = inp
         @_session = res.data.session
@@ -266,11 +170,26 @@ exports.Client = class Client
     if args?
       em = args.email
       @doc().set_sync_status true, "Signing up email #{em}"
-      await ajax "/user/signup", args, "POST", defer res
+      await @ajax "/user/signup", args, "POST", defer res
       err = null
       if (code = @check_res res)?
         @doc().set_sync_status true, "Check #{em} for verification"
         @login_loop()
       
+  ##-----------------------------------------
+  
+  ajax : (url, data, method, cb) ->
+    error = (x, status, error_thrown) ->
+      cb { ok : false, status : x.status, data : null }
+    success = (data, status, x) ->
+      cb { ok: true, status : x.status, data }
+    data.session = @_session if @_session
+    $.ajax { dataType : "json", url, data, success, error, type : method }
+
+  ##-----------------------------------------
+
+  push_record : () ->
+    console.log @_eng.get_input()
+  
 ##=======================================================================
 

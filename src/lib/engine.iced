@@ -79,7 +79,7 @@ class Version2Obj extends VersionObj
 class Input
   
   constructor : (@_eng, @keymode = derive.keymodes.WEB_PW, @fixed = {}) ->
-    SELECT = [ false, null ]
+    SELECT = [ true, null ]
     @_template =
       email :  [ true, (x) -> input_clean x ]
       passphrase : [ true, (x) => @_clean_passphrase x ]
@@ -89,6 +89,7 @@ class Input
       nsym : SELECT
       generation : SELECT
       length : SELECT
+      notes : [ false, (x) -> input_clean x ]
     @_got_input = {}
     
   #-----------------------------------------
@@ -140,8 +141,8 @@ class Input
     else if (f = @fixed[k])? then f
     else
       raw = @_eng._doc.q(k).value
-      if not p[0]                      then parseInt raw, 10
-      else if p[1]? and @_got_input[k] then p[1](raw)
+      if not p[1]?           then parseInt raw, 10
+      else if @_got_input[k] then p[1](raw)
 
   set : (k) -> @_got_input[k] = true
   
@@ -152,7 +153,7 @@ class Input
   #-----------------------------------------
 
   is_ready : () ->
-    for k of @_template
+    for k,row of @_template when row[0]
       return false if not (v = @get k)?
     true
     
@@ -277,6 +278,7 @@ exports.Engine = class Engine
   ##-----------------------------------------
 
   fork_input : (mode, fixed) -> @_inp.fork mode, fixed
+  get_input : () -> @_inp
     
   ##-----------------------------------------
 

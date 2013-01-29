@@ -29,6 +29,10 @@ click_hide_passphrase = (e) ->
 
 tbody_enable = (e, b) ->
   e.style.display = if b then "table-row-group" else "none"
+trow_enable = (e, b) -> 
+  e.style.display = if b then "table-row" else "none"
+inline_enable = (e, b) ->
+  e.style.display = if b then 'inline' else 'none' 
 
 show_advanced = (b) ->
   tbody_enable doc.q('advanced-expander'), not b
@@ -44,6 +48,8 @@ select_text = (e) ->
 click_sync = (e) ->
   b = e.srcElement.checked
   tbody_enable doc.q('sync-details'), b
+  trow_enable doc.q('sync-note-row'), b
+  inline_enable doc.q('sync-push-button'), b
   doc.clear_sync_status()
   engine.toggle_sync b
   for f in [ 'passphrase', 'email' ]
@@ -51,4 +57,6 @@ click_sync = (e) ->
 
 click_signup = (e) ->
   engine.client().signup()
-   
+
+push_record = (e) ->
+  engine.client().push_record()   

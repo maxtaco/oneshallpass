@@ -43,6 +43,11 @@
      <td><input id="host" name="host" type="text" class="input-field" value="chase.com" autocapitalize="off" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" /></td>
     </tr>
 
+    <tr class="input-label" id="sync-note-row" style="display: none;">
+     <td>notes</td>
+     <td><input id="notes" name="notes" type="text" class="input-field" value="optional notes to sync" onfocus="accept_focus(event);" /></td>
+    </tr>
+
    </tbody>
 
    <!-- Expand to advanced? -->
@@ -201,6 +206,7 @@
      <td id="result-td-waiting" >...waiting for input...</td>
      <td id="result-td-done" style="display: none;">
       <input id="result-done" type="text" readonly="readonly" onclick="select_text(event);"></input>
+      <input id="sync-push-button" value="push" type="button" onclick="push_record(event);" style="display: none;" disabled="true"></input>
      </td>
     </tr>
    
