@@ -1,28 +1,158 @@
 <html>
  <head>
-  <title>
-  One Shall Pass 
-  </title>
+  <title>One Shall Pass</title>
+  <!--*
+
+               O N E    S H A L L    P A S S
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   This page contains entirely in-line CSS and JavaScript,
+   so you make take it with you as a portable utility.
+
+   For more information, or to audit the file's JavaScript,
+   please see https://github.com/maxtaco/oneshallpass
+
+  *-->
   <script>
-  {% include crypto.js %}
-  {% include jquery.js %}
-  {% include metastitch.js %}
-  {% include purepack.js %}
-  metastitch_module("purepack", "main"); 
-  {% include iced.js %}
-  {% include lib.js %}
-  metastitch_finish();
-  {% include main.js %}
+    {% include crypto.js %}
+    {% include jquery.js %}
+    {% include metastitch.js %}
+    {% include purepack.js %}
+    metastitch_module("purepack", "main"); 
+    {% include iced.js %}
+    {% include lib.js %}
+    metastitch_finish();
+    {% include main.js %}
   </script>
   <style type="text/css">
-  {% include css/main.css %}
+    {% include css/main.css %}
+      body {
+        margin:0;
+        padding:0;
+        background-color:#cde;
+      }
+      #wrapper {
+        font-family:helvetica;
+      }
+      #col1 {
+        float:left;
+        width:500px;
+        margin:10px;
+        padding:10px;
+        border:1px solid #bcd;
+        background-color: #fff8ff;
+      }
+      #col2 {
+        margin:10px;
+        float:left;
+        width:300px;
+        padding:10px;
+      }
+      .input_label {
+        width:120px;
+        float:left;
+        color:#036;
+        font-weight:bold;
+        padding-top:6px;
+      }
+      .input {
+        margin-left:10px;
+        width:300px;
+        float:left;
+      }
+      .input input {
+        font-size: 1.0em;
+        width:250px;
+      }
+      .input_row {
+        margin:5px 0 5px 0;
+      }
+      .input_row button {
+        background-color: #369;
+        color:#fff;
+        border:#036;
+        font-wight:bold;
+        font-size:0.9em;
+        cursor:pointer;
+      }
+      .clear {clear:both;}
+      .explanation {
+        font-size:0.9em;
+      }
+      h1 {
+        margin-top:0px;
+        padding-top:0px;
+      }
+
   </style>
   <meta name="viewport" content="width = device-width" />
  </head>
  <body>
-  <h1>One Shall Pass</h1>
-  <h2>Site-Specific PWs</h2>
-  <h3>Secure, Open, Local, Free and Easy!</h3>
+
+  <div id="wrapper">
+    <div id="col1">
+
+      <div class="input_row">
+        <div class="input_label">
+          Email
+        </div>
+        <div class="input">
+          <input type="text" id="input-email" value="you@example.com" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" />
+        </div>
+        <div class="clear"></div>
+      </div>
+
+      <div class="input_row">
+        <div class="input_label">
+          Passhrase
+        </div>
+        <div class="input">
+          <input type="text" id="input-passphrase" value="hot sauce lemon party" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" />
+        </div>
+        <div class="clear"></div>
+      </div>
+
+      <div class="input_row">
+        <div class="input_label">
+          &nbsp;
+        </div>
+        <div class="input">
+          <button id="btn-no-sync" />No Sync</button>
+          <button id="btn-sync" />   Sync</button>
+        </div>
+        <div class="clear"></div>
+      </div>
+
+
+
+    </div>
+    <div id="col2">
+      <h1>One Shall Pass</h1>
+      <div class="explanation">
+        <p>
+          One Shall Pass is a <i>browser-side</i> service for calculating strong, site-specific passwords. It is <a href="https://github.com/maxtaco/oneshallpass">open source</a> for
+          auditing and forking. In contrast to other password services, OSP does not save your passwords anywhere.
+        </p>
+        <p>
+          How it works: the JavaScript on this page mashes up your email address, a universal passphrase (which you choose and mustn't forget), and the name of a service or site. It expensively hashes them thousands of times, to produce a site-specific password. If you enter the same inputs on another computer, OSP will
+          yield the same password.  Therefore, your passwords will be (1) strong, (2) different, and yet (3) recoverable.  You simply must remember
+          your universal passphrase and the names of your services and sites.
+        </p>
+        <p>
+          This page is self-contained HTML and may be saved for your convenience.
+        </p>
+        <p>
+          Server syncing to oneshallpass.com is free and optional. Your service names and notes will be encrypted browser-side using your universal passphrase and then synced, so you don't need to remember if you called a service "amazon.com" or "amazon".  However, OSP will still not transmit or record your universal passphrase or any generated passwords. That work is always done in-browser, as a function of your inputs.
+        </p>
+      </div>
+    </div>
+    <div class="clear"></div>
+  </div>
+
+  <br /><br /><br />
+  <br /><br /><br />
+  <br /><br /><br />
+  <br /><br /><br />
 
   <table border=1>
    <!-- First section is the mandatory stuff -->
