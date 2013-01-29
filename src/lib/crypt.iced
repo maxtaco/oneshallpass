@@ -60,7 +60,7 @@ exports.Cryptor = class Cryptor
 
   finish : () ->
     out = null
-    if @_errors.length?
+    if @_errors.length
       out = @_errors
       @_errors = []
     out

@@ -2,7 +2,7 @@
 util = require './util'
 {config} = require './config'
 derive = require './derive'
-{Client} = require './client'
+{Client,Record} = require './client'
 
 ##=======================================================================
 
@@ -79,17 +79,19 @@ class Version2Obj extends VersionObj
 class Input
   
   constructor : (@_eng, @keymode = derive.keymodes.WEB_PW, @fixed = {}) ->
-    SELECT = [ true, null ]
+    # Three fields: (1) if required to be non-empty; (2) if used in server push
+    # and (3), a validator
+    SELECT = [ true, true, null ]
     @_template =
-      email :  [ true, (x) -> input_clean x ]
-      passphrase : [ true, (x) => @_clean_passphrase x ]
-      host : [ true, (x) -> input_clean x ]
+      email :  [ true, true, (x) -> input_clean x ]
+      passphrase : [ true, false, (x) => @_clean_passphrase x ]
+      host : [ true, false , (x) -> input_clean x ]
       version : SELECT
       secbits : SELECT
       nsym : SELECT
       generation : SELECT
       length : SELECT
-      notes : [ false, (x) -> input_clean x ]
+      notes : [ false, true, (x) -> input_clean x ]
     @_got_input = {}
     
   #-----------------------------------------
@@ -141,8 +143,8 @@ class Input
     else if (f = @fixed[k])? then f
     else
       raw = @_eng._doc.q(k).value
-      if not p[1]?           then parseInt raw, 10
-      else if @_got_input[k] then p[1](raw)
+      if not p[2]?           then parseInt raw, 10
+      else if @_got_input[k] then p[2](raw)
 
   set : (k) -> @_got_input[k] = true
   
@@ -157,6 +159,17 @@ class Input
       return false if not (v = @get k)?
     true
     
+  #-----------------------------------------
+
+  to_record : () ->
+    d = {}
+    for k, row of @_template when row[1] and (v = @get k)
+      d[k] = v
+    host = @get 'host'
+    new Record host, d
+      
+  #-----------------------------------------
+
 ##=======================================================================
 
 exports.SanitizedInput = class SanitizedInput extends Input

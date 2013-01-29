@@ -16,6 +16,21 @@ C = CryptoJS
  
 ##=======================================================================
 
+exports.Record = class Record
+  constructor : (@key, @value, @encrypted = false) ->
+    
+  encrypt : (cryptor) ->
+    [k,v] = (cryptor.encrypt f for f in [ @key, @value ] )
+    return new Record k, v, true
+
+  decrypt : (cryptor) ->
+    [k,v] = (cryptor.decrypt f for f in [ @key, @value] )
+    return new Record k,v,false if k? and v?
+
+  to_ajax : () -> { rkey : @key, rvalue : @value }
+
+##=======================================================================
+
 exports.Client = class Client
 
   #-----------------------------------------
@@ -26,7 +41,6 @@ exports.Client = class Client
     @_session = null
     @_inp = null
     @_records = {}
-    @_decrypt_errors = []
 
   #-----------------------------------------
 
@@ -42,35 +56,25 @@ exports.Client = class Client
   do_fetch : () ->
     await @prepare_keys defer ok
     await @fetch_records defer recs if ok
-    ok = @decrypt_records if recs? and ok
+    ok = @decrypt_records recs if recs? and ok
 
-  #-----------------------------------------
-
-  decrypt_error : (e) ->
-    @_decrypt_errors.push e
-   
   #-----------------------------------------
 
   decrypt : (v, name) ->
-    @_decryptor.decrypt v, name
+    @_cryptor.decrypt v, name
   
   #-----------------------------------------
 
-  decrypt_record : (k,v) ->
-    k = @decrypt k, "key"
-    v = @decrypt v, "value"
-    @_records[k] = v if k? and v?
-    
-  #-----------------------------------------
-
-  decrypt_records : (encoded_recs) ->
-    for k, v of encoded_recs
-      @decrypt_record k, v
+  decrypt_records : (records) ->
+    for er in records
+      if (dr = er.decrypt @_cryptor)?
+        @_records[dr.key] = dr.value
     ok = true
-    if (eo = @_decryptor.finish())?
+    if (eo = @_cryptor.finish())?
       ok = false
       @doc().set_sync_status false, "Decryption errors, see log for more info"
-      console.log eo
+    console.log "Got records:"
+    console.log @_records
     return ok
    
   #-----------------------------------------
@@ -86,7 +90,7 @@ exports.Client = class Client
     out = null
     await @ajax "/records", {}, "GET", defer res
     if (code = @check_res res)? and code is 0
-      out = res.data
+      out = (new Record row.rkey, row.rvalue, true for row in res.data?.data)
     cb out
    
   #-----------------------------------------
@@ -96,7 +100,7 @@ exports.Client = class Client
     await @prepare_key derive.keymodes.RECORD_HMAC, defer @_hmac
     await @prepare_key derive.keymodes.RECORD_AES, defer @_aes if @_hmac
     if (@_aes and @_hmac)?
-      @_decryptor = new crypt.Cryptor @_aes, @_hmac
+      @_cryptor = new crypt.Cryptor @_aes, @_hmac
       ok = true
     cb ok
 
@@ -189,7 +193,15 @@ exports.Client = class Client
   ##-----------------------------------------
 
   push_record : () ->
-    console.log @_eng.get_input()
+    inp = @_eng.get_input()
+    console.log "Pushing input"
+    console.log inp
+    rec = inp.to_record()
+    console.log rec
+    erec = rec.encrypt @_cryptor
+    await @ajax "/records", erec.to_ajax(), "POST", defer res
+    if (code = @check_res res)?
+      @doc().set_sync_status true, "Push worked for #{inp.get 'host'}"
   
 ##=======================================================================
 
