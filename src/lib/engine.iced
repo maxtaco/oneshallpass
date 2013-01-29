@@ -173,14 +173,6 @@ class Input
     host = @get 'host'
     new Record host, d
       
-  #-----------------------------------------
-
-##=======================================================================
-
-exports.SanitizedInput = class SanitizedInput extends Input
-  constructor : (main) ->
-    super main
-
 ##=======================================================================
 
 class Timer

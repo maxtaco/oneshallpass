@@ -40,7 +40,6 @@ exports.Client = class Client
     @_active = false
     @_state = states.NONE
     @_session = null
-    @_inp = null
     @_records = {}
 
   #-----------------------------------------
