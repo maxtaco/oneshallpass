@@ -89,6 +89,16 @@ exports.Browser = class Browser
     span.innerHTML = msg
     @color span, ok
 
+  set_records : (recs) ->
+    sel = @q "stored-records"
+    keys = (k for k of recs)
+    keys = keys.sort()
+    console.log keys
+    opts =  [ "-" ].concat keys
+    console.log opts
+    html = ("\t<option>#{o}</option>" for o in opts).join("\n")
+    sel.innerHTML = html
+
   set_logged_in : (b) ->
     @q('sync-push-button').disabled = not b
 

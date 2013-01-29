@@ -58,6 +58,8 @@ exports.Client = class Client
     await @prepare_keys defer ok
     await @fetch_records defer recs if ok
     ok = @decrypt_records recs if recs? and ok
+    @doc().set_records @_records if ok
+    console.log @_records
 
   #-----------------------------------------
 
@@ -66,10 +68,13 @@ exports.Client = class Client
   
   #-----------------------------------------
 
+  store_record : (r) -> @_records[r.key] = r.value
+  
+  #-----------------------------------------
+
   decrypt_records : (records) ->
     for er in records
-      if (dr = er.decrypt @_cryptor)?
-        @_records[dr.key] = dr.value
+      @store_record dr if (dr = er.decrypt @_cryptor)?
     ok = true
     if (eo = @_cryptor.finish())?
       ok = false
@@ -191,9 +196,14 @@ exports.Client = class Client
 
   ##-----------------------------------------
 
+  get_record : (k) -> @_records[k]
+   
+  ##-----------------------------------------
+
   push_record : () ->
     inp = @_eng.get_input()
     rec = inp.to_record()
+    @store_record rec
     erec = rec.encrypt @_cryptor
     await @ajax "/records", erec.to_ajax(), "POST", defer res
     if (code = @check_res res)?

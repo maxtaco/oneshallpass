@@ -295,6 +295,21 @@ exports.Engine = class Engine
     
   ##-----------------------------------------
 
+  select_stored_record : (key) ->
+    @_timers.poke()
+    if not (rec = @client().get_record key)?
+      console.log "No record found for #{key}"
+    else
+      rec.host = key
+      for k,v of rec
+        @_inp.set k
+        el = @_doc.q(k)
+        @_doc.ungrey el
+        el.value = v
+      @maybe_run()
+
+  ##-----------------------------------------
+
 
 ##=======================================================================
 

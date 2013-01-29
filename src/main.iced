@@ -59,4 +59,8 @@ click_signup = (e) ->
   engine.client().signup()
 
 push_record = (e) ->
-  engine.client().push_record()   
+  engine.client().push_record()
+
+select_stored_recored = (e) ->
+  engine.select_stored_record(e.srcElement.value)
+  
