@@ -29,6 +29,11 @@ input_clean = (x) ->
   ret = null if ret.length is 0
   ret
 
+input_clean_preserve_case = (x) ->
+  ret = input_trim(x)
+  ret = null if ret.length is 0
+  ret
+
 ##=======================================================================
 
 class VersionObj
@@ -91,7 +96,7 @@ class Input
       nsym : SELECT
       generation : SELECT
       length : SELECT
-      notes : [ false, true, (x) -> input_clean x ]
+      notes : [ false, true, (x) -> input_clean_preserve_case x ]
     @_got_input = {}
     
   #-----------------------------------------
