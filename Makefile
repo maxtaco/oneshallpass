@@ -37,6 +37,7 @@ build/js/crypto.js: \
 	$(CRYPTO_SRC)/enc-base64.js \
 	$(CRYPTO_SRC)/hmac.js \
 	$(CRYPTO_SRC)/sha1.js \
+	$(CRYPTO_SRC)/sha256.js \
 	$(CRYPTO_SRC)/sha512.js \
 	$(CRYPTO_SRC)/md5.js \
 	$(CRYPTO_SRC)/evpkdf.js \

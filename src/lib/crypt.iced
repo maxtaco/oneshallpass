@@ -1,5 +1,7 @@
 
 purepack = require 'purepack'
+{prng} = require './prng'
+C = CryptoJS
 
 ##=======================================================================
 
@@ -20,14 +22,26 @@ exports.Ui8a = Ui8a =
     (out[i] = ((v[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff) for i in [0...n])
     return out
     
-  to_word_array : (uia) ->
+  to_i32a : (uia) ->
     n = uia.length
-    nw = (n >>> 2)  + (if (n & 0x3) then 1 else 0)
+    nw = (n >>> 2) + (if (n & 0x3) then 1 else 0)
     out = new Int32Array nw
     out[i] = 0 for i in [0...nw]
     for b, i in uia
-      out[i >>> 2] |= (b << (24 - (i % 4)*8))
+      out[i >>> 2] |= (b << ((3 - (i & 0x3)) << 3))
     out
+
+##=======================================================================
+
+exports.pack_to_word_array = pack_to_word_array = (obj) ->
+  ui8a = purepack.pack(obj, 'ui8a')
+  i32a = Ui8a.to_i32a ui8a
+  v = (w for w in i32a)
+  C.lib.WordArray.create v, ui8a.length
+
+exports.unpack_from_word_array = unpack_from_word_array = (wa) ->
+  ui8a = wa.toString Ui8a
+  purepack.unpack ui8a, 'ui8a'
 
 ##=======================================================================
 
@@ -58,19 +72,51 @@ exports.Cryptor = class Cryptor
 
   ##-----------------------------------------
 
-  verify_mac : (obj, received) ->
-    packed = purepack.pack obj, ENCODING
-    macer = C.algo.HMAC.create C.algo.SHA256, @_mac_key
-    computed = macer.update(packed).finalize().toString Binary
-    return (computed is received)
+  compute_mac : (mac_obj) ->
+    wa = pack_to_word_array mac_obj
+    C.HmacSHA256 wa, @_mac_key
+    
+  ##-----------------------------------------
 
+  verify_mac : (obj, received) ->
+    {words} = @compute_mac obj
+    if received.length isnt words.length then return false
+    for w,i in received
+      return false unless w is words[i]
+    return true
+
+  ##-----------------------------------------
+
+  encrypt : (obj) ->
+    words = pack_to_word_array obj
+    iv = prng.to_cryptojs_word_array C.algo.AES.blockSize
+
+    # The encyrpt algorithm returns a whole bunch of stuff that
+    # we don't need.  Just the ciphertext, please!
+    {ciphertext} = C.AES.encrypt words, @_aes_key, { iv }
+
+    # This depends on the fact that all words are fully populated,
+    # which they are..
+    mac_obj = [ ciphertext.words,  iv.words ]
+
+    # Take as input the above array, and output another word array
+    # in CryptoJS style....
+    mac = @compute_mac mac_obj
+
+    # This is the final layout...
+    vers = 1
+    out_obj = [ vers, mac.words ].concat mac_obj
+
+    # And finish up by encoding to base64
+    purepack.pack out_obj, 'base64'
+  
   ##-----------------------------------------
 
   # how to encrypt:
   #   pick random iv with prng...
   #   C.AES.encrypt msg, key, { iv }
   #   i think msg and key should both be WordArrays... 
-  decrypt_aes : (iv, ctxt) ->
+  decrypt_aes : (ctxt, iv) ->
     # Create a cryptoJS object
     #  - iv is an array of signed int32s, that we get from msgpack.
     #    It should be 4 words long, as per AES-256-CBC mode
@@ -85,10 +131,7 @@ exports.Cryptor = class Cryptor
 
   decrypt : (v, name) ->
     ret = null
-    try
-      unpacked = purepack.unpack v, ENCODING
-    catch e
-      err = e
+    [ err, unpacked ] = purepack.unpack v, 'base64'
     if err?
       @hit_error err, v, name
       @_decode_errors++
@@ -107,12 +150,29 @@ exports.Cryptor = class Cryptor
     else if not (pt = @decrypt_aes unpacked[2], unpacked[3], name)?
       @hit_error "Decrypt failure", unpacked.toString(), name
       @_aes_errors++
-    else if not (ui8a = pt.stringify Ui8a)? or
-            not ([err, unpacked] = purepack.unpack ui8a, 'ui8a')? or err?
-      @hit_error "Failed to decode plaintext", pt, name
+    else if not ([err, ret] = unpack_from_word_array pt)? or err?
+      @hit_error "Failed to decode plaintext", err, name
       @_decode_errors++
-    else
-      ret = unpacked
     ret
+
+##=======================================================================
+
+testit = () ->
+  ak = C.lib.WordArray.create [0...8]
+  mk = C.lib.WordArray.create [100...108]
+  cryptor = new Cryptor ak, mk
+  
+  obj = { a : 1, b : 2, c : [0,1,2,3], d : "holy smokes", e : false }
+  console.log "Obj ->"
+  console.log obj
+  
+  e = cryptor.encrypt obj
+  console.log "Enc ->"
+  console.log e
+
+  d = cryptor.decrypt e, "stuff"
+  console.log "Dec ->"
+  console.log d
+  console.log cryptor.finish()
 
 ##=======================================================================
