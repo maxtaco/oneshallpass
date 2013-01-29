@@ -20,7 +20,8 @@ exports.Record = class Record
   constructor : (@key, @value, @encrypted = false) ->
     
   encrypt : (cryptor) ->
-    [k,v] = (cryptor.encrypt f for f in [ @key, @value ] )
+    k = cryptor.encrypt @key, false
+    v = cryptor.encrypt @value, true
     return new Record k, v, true
 
   decrypt : (cryptor) ->

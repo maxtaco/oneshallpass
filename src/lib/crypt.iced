@@ -87,9 +87,12 @@ exports.Cryptor = class Cryptor
 
   ##-----------------------------------------
 
-  encrypt : (obj) ->
+  encrypt : (obj, random_iv = true) ->
     words = pack_to_word_array obj
-    iv = prng.to_cryptojs_word_array C.algo.AES.blockSize
+    BS = C.algo.AES.blockSize
+    
+    iv = if random_iv then prng.to_cryptojs_word_array BS
+    else C.lib.WordArray.create( ( 0 for i in [0...BS] ) , BS*4 )
 
     # The encyrpt algorithm returns a whole bunch of stuff that
     # we don't need.  Just the ciphertext, please!
