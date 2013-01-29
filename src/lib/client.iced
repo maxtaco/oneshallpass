@@ -74,8 +74,6 @@ exports.Client = class Client
     if (eo = @_cryptor.finish())?
       ok = false
       @doc().set_sync_status false, "Decryption errors, see log for more info"
-    console.log "Got records:"
-    console.log @_records
     return ok
    
   #-----------------------------------------
@@ -195,10 +193,7 @@ exports.Client = class Client
 
   push_record : () ->
     inp = @_eng.get_input()
-    console.log "Pushing input"
-    console.log inp
     rec = inp.to_record()
-    console.log rec
     erec = rec.encrypt @_cryptor
     await @ajax "/records", erec.to_ajax(), "POST", defer res
     if (code = @check_res res)?
