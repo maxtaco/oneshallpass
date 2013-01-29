@@ -59,7 +59,6 @@ exports.Client = class Client
     await @fetch_records defer recs if ok
     ok = @decrypt_records recs if recs? and ok
     @doc().set_records @_records if ok
-    console.log @_records
 
   #-----------------------------------------
 
