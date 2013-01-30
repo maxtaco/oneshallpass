@@ -1,5 +1,6 @@
 Location = require('./location').Location
 Engine   = require('./engine').Engine
+sc       = require('./status').codes
 
 # -----------------------------------------------------------------------------
 
