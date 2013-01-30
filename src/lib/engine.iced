@@ -59,7 +59,7 @@ class Version1Obj extends VersionObj
     ret = null unless ret.length
     ret
 
-  key_fields : -> [ 'email', 'passphrase', 'host', 'generation', 'secbits' ]
+  key_fields : -> [ 'email', 'passphrase', 'host', 'generation', 'security_bits' ]
   key_deriver : (i) -> new derive.V1 i
   version : () -> 1
   
@@ -75,7 +75,7 @@ class Version2Obj extends VersionObj
     ret = null unless ret.length
     ret
     
-  key_fields : -> [ 'email', 'passphrase', 'secbits' ]
+  key_fields : -> [ 'email', 'passphrase', 'security_bits' ]
   key_deriver : (i) -> new derive.V2 i 
   version : () -> 2
         

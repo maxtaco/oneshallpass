@@ -116,7 +116,7 @@ class Base
   ##-----------------------------------------
 
   format : (x) ->
-    x = @add_syms x, @nsym()
+    x = @add_syms x, @num_symbols()
     x[0...@length()]
     
   ##-----------------------------------------
@@ -158,12 +158,12 @@ class Base
 
   ##-----------------------------------------
   
-  secbits : -> @_input.get 'secbits'
+  security_bits : -> @_input.get 'security_bits'
   email : -> @_input.get 'email'
   passphrase : -> @_input.get 'passphrase'
   host : -> @_input.get 'host'
   generation : -> @_input.get 'generation'
-  nsym : -> @_input.get 'nsym'
+  num_symbols : -> @_input.get 'num_symbols'
   keymode : -> @_input.keymode
   length : -> @_input.get 'length'
 
@@ -177,7 +177,7 @@ exports.V1 = class V1 extends Base
 
   run_key_derivation : (compute_hook, cb) ->
     ret = null
-    d = 1 << @secbits()
+    d = 1 << @security_bits()
     i = 0
 
     # Do these calls once, and out of the critical path
@@ -235,7 +235,7 @@ exports.V2 = class V2 extends Base
     intermediate = block.clone()
 
   	# Add 2 because v2 is easier than v1..
-    exp = @secbits() + 2
+    exp = @security_bits() + 2
 
     # subtract 1 because 1 iteration done by default
     limit = (1 << exp) - 1

@@ -44,6 +44,8 @@ class Frontend
       hooks:
         on_compute_step: (keymode, step, ts) => @on_compute_step keymode, step, ts
         on_compute_done: (keymode, key)      => @on_compute_done keymode, key
+        on_timeout:      ()                  => @on_timeout()
+
     params = new Location(window.location).decode_url_params()
     opts.presets[k] = v for k,v of params
     return new Engine opts
@@ -54,6 +56,8 @@ class Frontend
   on_compute_done: (keymode, key) ->
     console.log "ocd: #{keymode}, #{key}"
 
+  on_timeout: ->
+    console.log "session timeout. todo: clear forms"
 
 # -----------------------------------------------------------------------------
 

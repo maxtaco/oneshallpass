@@ -49,11 +49,11 @@ function key_data (data) {
 					 data.passphrase, 
 					 data.host, 
 					 data.generation, 
-					 data.secbits ]; },
+					 data.security_bits ]; },
 			      2 : function() {
 				  return [ data.email, 
 					   data.passphrase, 
-					   data.secbits ]; } });
+					   data.security_bits ]; } });
     tmp = tmp.concat(fields);
     var key = tmp.join(";");
     data.key = key;
@@ -95,7 +95,7 @@ function get_url_params() {
 
 function format_pw (input) {
     var ret = input.slice(0, display_prefs.length);
-    ret = add_syms (ret, display_prefs.nsym);
+    ret = add_syms (ret, display_prefs.num_symbols);
     return ret;
 }
 
@@ -253,7 +253,7 @@ function swizzle (event) {
 	    "host" : host,
 	    "passphrase" : passphrase };
 
-        var fields = [ "generation", "secbits" ];
+        var fields = [ "generation", "security_bits" ];
         var i, f, v;
         for (i = 0; i < fields.length; i++) {
             f = fields[i];
@@ -262,7 +262,7 @@ function swizzle (event) {
         }
 	data.version = version;
         display_prefs.length = $("length").value;
-        display_prefs.nsym = $("nsym").value;
+        display_prefs.num_symbols = $("num_symbols").value;
 
         // Key the data, so that we can look it up in a hash-table.
         key_data (data);
@@ -286,7 +286,7 @@ function acceptFocus (event) {
 
 function prepopulate() {
     var p = get_url_params();
-    var params = [ "email", "version", "length", "secbits", "passphrase" ];
+    var params = [ "email", "version", "length", "security_bits", "passphrase" ];
     var i;
     for (i in params) {
 	curr = params[i];

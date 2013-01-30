@@ -110,7 +110,7 @@ function v2_pwgen (obj, iters, context) {
 	hmac.reset();
 
 	// Add 2 because v2 is easier than v1..
-	var exp = parseInt(obj.secbits, 10) + 2;
+	var exp = parseInt(obj.security_bits, 10) + 2;
 
 	// Subtract 1 because we do one interation by default...
 	var limit = (1 << exp) - 1
@@ -171,7 +171,7 @@ function v1_pwgen (obj, iters, context) {
 
     obj.generated_pw = null;
     obj.compute_done = false;
-    var d = 1 << parseInt(obj.secbits, 10);
+    var d = 1 << parseInt(obj.security_bits, 10);
     var i;
     for (i = 0; i < iters && !obj.generated_pw && obj.key == context.key; i++) {
 
