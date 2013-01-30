@@ -1,5 +1,12 @@
 
 exports.config =
+  input :
+    defaults :
+      algo_version : 1
+      security_bits : 7
+      generation : 1
+      length : 12
+      num_symbols : 0
   derive:
     initial_delay : 500
     sync_initial_delay : 200
@@ -15,7 +22,7 @@ exports.config =
   server:
     host : "oneshallpass.com"
     generation : 1
-    version : 2
-    secbits : 3
+    algo_version : 2
+    security_bits : 3
     length : 32
     

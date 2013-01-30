@@ -83,34 +83,35 @@ class Version2Obj extends VersionObj
 
 class Input
   
-  constructor : (@_eng, @keymode = derive.keymodes.WEB_PW, @fixed = {}) ->
+  constructor: ({ @engine, @keymode = derive.keymodes.WEB_PW, @fixed = {}, presets }) ->
     # Three fields: (1) if required to be non-empty; (2) if used in server push
     # and (3), a validator
     SELECT = [ true, true, null ]
     @_template =
-      email :  [ true, true, (x) -> input_clean x ]
-      passphrase : [ true, false, (x) => @_clean_passphrase x ]
       host : [ true, false , (x) -> input_clean x ]
-      version : SELECT
-      secbits : SELECT
-      nsym : SELECT
-      generation : SELECT
-      length : SELECT
+      passphrase : [ true, false, (x) => @_clean_passphrase x ]
+      email :  [ true, true, (x) -> input_clean x ]
       notes : [ false, true, (x) -> input_clean_preserve_case x ]
-    @_got_input = {}
+      algo_version : SELECT
+      length : SELECT
+      security_bits : SELECT
+      num_symbols : SELECT
+      generation : SELECT
+      no_timeout : SELECT
+    @_defaults = config.input.defaults
+    @_values = {}
     
   #-----------------------------------------
 
   fork : (keymode, fixed) ->
-    out = new Input @_eng, keymode, fixed
-    out._got_input = @_got_input
+    out = new Input { @engine, keymode, fixed }
     out
   
   #-----------------------------------------
   
   get_version_obj : () -> VersionObj.make @get 'version'
   timeout : () -> config.timeouts.input
-  clear : -> @_got_input.passphrpase = false
+  clear : -> 
 
   #-----------------------------------------
   
@@ -134,24 +135,27 @@ class Input
     
     compute_hook = (i) =>
       if (ret = (uid is @unique_id(vo))) and i % 10 is 0
-        @_eng._doc.show_computing i, @keymode
+        @engine.on_compute_step @keymode, i, 0
       ret
 
     co = @_eng._cache.lookup uid
 
-    (vo.key_deriver @).run co, compute_hook, cb
+    await (vo.key_deriver @).run co, compute_hook, defer res
+    @engine.on_compute_done @keymode if res
+    cb res
 
   #-----------------------------------------
 
   get : (k) ->
-    if not (p = @_template[k])? then null
-    else if (f = @fixed[k])? then f
-    else
-      raw = @_eng._doc.q("input-#{k}").value
-      if not p[2]?           then parseInt raw, 10
-      else if @_got_input[k] then p[2](raw)
-
-  set : (k) -> @_got_input[k] = true
+    if (f = @fixed[k])? then f
+    else if (v = @_values[k])? then v
+    else @_defaults[k]
+      
+  #-----------------------------------------
+  
+  set : (k, val) ->
+    val = tem[2](val) if (tem = @_template[k]?[2])?
+    @_values[k] = val
   
   #-----------------------------------------
 
@@ -211,7 +215,7 @@ class Timer
 class Timers
   
   constructor : (@_eng) ->
-    @_timers = (new Timer o for o in [ @_eng._doc, @_eng._cache ])
+    @_timers = (new Timer o for o in [ @_eng, @_eng._cache ])
     @_active = false
 
   poke : () -> @start() if @_active
@@ -233,12 +237,15 @@ class Timers
 exports.Engine = class Engine
   
   ##-----------------------------------------
-  
-  constructor : (@_doc, @_loc) ->
+
+  constructor : (opts) ->
+    { presets } = opts
+    { @on_compute_step, @on_compute_done, @on_timeout } = opts.hooks
     @_cache = new Cache
-    @_inp = new Input @
+    @_inp = new Input { engine : @, presets }
     @_timers = new Timers @
     @_client = new Client @
+    @_timers.start()
 
   ##-----------------------------------------
 
@@ -248,24 +255,8 @@ exports.Engine = class Engine
   ##-----------------------------------------
 
   client : () -> @_client
+  clear : () -> @on_timeout()
   
-  ##-----------------------------------------
-
-  _autofill : () ->
-    fields = [ "email", "version", "length", "secbits", "passphrase" ]
-    go = false
-    for k in fields when (v = @_loc.get k)?
-      @_inp.set k
-      @_doc.autofill k, v
-      go = true
-    @maybe_run() if go
-   
-  ##-----------------------------------------
-
-  start : () ->
-    @_timers.start()
-    @_autofill()
-   
   ##-----------------------------------------
 
   got_input : (dom_id) ->
