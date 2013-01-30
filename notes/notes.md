@@ -12,7 +12,7 @@ constructor:
   },
   hooks : {
     on_compute_step:  (keymode, step_num, total_steps)
-    on_compute_done:  (keymode)
+    on_compute_done:  (keymode, key)
     on_timeout     :  ()
   }
 
