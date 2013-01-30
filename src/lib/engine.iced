@@ -83,7 +83,11 @@ class Version2Obj extends VersionObj
 
 class Input
   
-  constructor: ({ @engine, @keymode = derive.keymodes.WEB_PW, @fixed = {}, presets }) ->
+  constructor: ({ @engine, @keymode, @fixed, presets }) ->
+    
+    @keymode = derive.keymodes.WEB_PW unless @keymode?
+    @fixed = {} unless @fixed?
+    
     # Three fields: (1) if required to be non-empty; (2) if used in server push
     # and (3), a validator
     SELECT = [ true, true, null ]
@@ -284,22 +288,7 @@ exports.Engine = class Engine
     
   ##-----------------------------------------
 
-  select_stored_record : (key) ->
-    @_timers.poke()
-    if not (rec = @client().get_record key)?
-      console.log "No record found for #{key}"
-    else
-      rec.host = key
-      for k,v of rec
-        @_inp.set k
-        el = @_doc.q(k)
-        @_doc.ungrey el
-        el.value = v
-      @maybe_run()
-
-  ##-----------------------------------------
-
-  has_login_info : () -> @client().has_login_info()
+  is_logged_in: () ->  
    
   ##-----------------------------------------
 
