@@ -268,10 +268,10 @@ exports.Engine = class Engine
    
   ##-----------------------------------------
 
-  got_input : (event) ->
+  got_input : (dom_id) ->
     @_timers.poke()
     se = event.srcElement
-    @_inp.set se.id
+    @_inp.set dom_id
     @maybe_run()
 
   ##-----------------------------------------
