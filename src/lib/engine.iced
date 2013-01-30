@@ -137,9 +137,9 @@ class Input
     vo = @get_version_obj()
     uid = @unique_id vo
     
-    compute_hook = (i) =>
+    compute_hook = (i, tot) =>
       if (ret = (uid is @unique_id(vo))) and i % 10 is 0
-        @engine.on_compute_step @keymode, i, 0
+        @engine.on_compute_step @keymode, i, tot
       ret
 
     co = @engine._cache.lookup uid

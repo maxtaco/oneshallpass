@@ -130,14 +130,14 @@ class Base
       cache_obj._running = true
 
       # show right away that we're going to be computing...
-      compute_hook 0
+      compute_hook 0, @_limit
       
       id = if @keymode() is keymodes.WEB_PW then cfg.initial_delay
       else cfg.sync_initial_delay
       
       await setTimeout defer(), id
       
-      if compute_hook 0
+      if compute_hook 0, @_limit
         await @run_key_derivation compute_hook, defer dk
       
       cache_obj._derived_key = dk if dk?
@@ -171,7 +171,10 @@ class Base
 
 exports.V1 = class V1 extends Base
 
-  constructor : (i) -> super i
+  constructor : (i) ->
+    super i
+    # A guess as to how long it's going to take...
+    @_limit = (1 << @security_bits())
  
   ##-----------------------------------------
 
@@ -185,7 +188,7 @@ exports.V1 = class V1 extends Base
     
     until ret
       await @delay i, defer()
-      if compute_hook i
+      if compute_hook i, @_limit
         a = [ "OneShallPass v1.0", em, host, gen, i ]
         txt = a.join '; '
         hash = C.HmacSHA512 txt, passphrase
@@ -215,6 +218,11 @@ exports.V2 = class V2 extends Base
   constructor : (input) ->
     super input
     
+  	# Add 2 because v2 is easier than v1..
+    exp = @security_bits() + 2
+    # subtract 1 because 1 iteration done by default
+    @_limit = limit = (1 << exp) - 1
+    
   ##-----------------------------------------
 
   is_internal_key : () ->
@@ -234,16 +242,11 @@ exports.V2 = class V2 extends Base
     # Make a copy of the original block....
     intermediate = block.clone()
 
-  	# Add 2 because v2 is easier than v1..
-    exp = @security_bits() + 2
-
-    # subtract 1 because 1 iteration done by default
-    limit = (1 << exp) - 1
 
     i = 0
-    while i < limit
+    while i < @_limit
       await @delay i, defer()
-      if compute_hook i 
+      if compute_hook i, @_limit
         intermediate = hmac.finalize intermediate
         hmac.reset()
         block[j] ^= w for w,j in intermediate

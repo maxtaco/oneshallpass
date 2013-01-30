@@ -1,5 +1,6 @@
 Location                = require('./location').Location
 Engine                  = require('./engine').Engine
+sc                      = require('./status').codes
 {JobWatcher, JobStatus} = require './job_watcher'
 {keymodes}              = require './derive'
 
