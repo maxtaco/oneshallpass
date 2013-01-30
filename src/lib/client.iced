@@ -198,6 +198,10 @@ exports.Client = class Client
    
   ##-----------------------------------------
 
+  has_login_info : () -> @_eng.fork_input(mode, config.server).is_ready()
+ 
+  ##-----------------------------------------
+
   push_record : () ->
     inp = @_eng.get_input()
     rec = inp.to_record()

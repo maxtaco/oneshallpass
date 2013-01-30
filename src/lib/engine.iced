@@ -147,7 +147,7 @@ class Input
     if not (p = @_template[k])? then null
     else if (f = @fixed[k])? then f
     else
-      raw = @_eng._doc.q(k).value
+      raw = @_eng._doc.q("input-#{k}").value
       if not p[2]?           then parseInt raw, 10
       else if @_got_input[k] then p[2](raw)
 
@@ -305,6 +305,10 @@ exports.Engine = class Engine
         el.value = v
       @maybe_run()
 
+  ##-----------------------------------------
+
+  has_login_info : () -> @client().has_login_info()
+   
   ##-----------------------------------------
 
 
