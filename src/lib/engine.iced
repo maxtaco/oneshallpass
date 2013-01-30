@@ -141,7 +141,7 @@ class Input
     co = @_eng._cache.lookup uid
 
     await (vo.key_deriver @).run co, compute_hook, defer res
-    @engine.on_compute_done @keymode if res
+    @engine.on_compute_done @keymode, res if res
     cb res
 
   #-----------------------------------------
@@ -249,22 +249,24 @@ exports.Engine = class Engine
 
   ##-----------------------------------------
 
-  toggle_timers : (b) -> @_timers.toggle b
-  toggle_sync :   (b) -> @_client.toggle b
-
-  ##-----------------------------------------
-
   client : () -> @_client
   clear : () -> @on_timeout()
   
   ##-----------------------------------------
 
-  got_input : (dom_id) ->
-    @_timers.poke()
-    se = event.srcElement
-    @_inp.set dom_id
-    @maybe_run()
+  poke : () -> @_timers.poke()
 
+  ##-----------------------------------------
+  
+  set : (k,v) ->
+    @_inp.set k, v
+    @poke()
+    @maybe_run()
+   
+  ##-----------------------------------------
+
+  get : (k) -> @_inp.get k
+   
   ##-----------------------------------------
 
   run : () ->
@@ -273,8 +275,7 @@ exports.Engine = class Engine
     
   ##-----------------------------------------
 
-  maybe_run : () ->
-    @run() if @_inp.is_ready()
+  maybe_run : () -> @run() if @_inp.is_ready()
   
   ##-----------------------------------------
 
