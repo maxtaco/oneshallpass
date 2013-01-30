@@ -1,17 +1,39 @@
+Location = require('./location').Location
+Engine   = require('./engine').Engine
 
-engine = null
-doc    = null
+# -----------------------------------------------------------------------------
 
-# -------------
+class Frontend
+
+  constructor: ->
+    @engine = @create_engine()
+    @attach_ux_events()
+
+  create_engine: ->
+    opts =
+      presets:
+        algo_version: 2
+      hooks:
+        on_compute_step: (keymode, step, ts) => @on_compute_step keymode, step, ts
+        on_compute_done: (keymode)           => @on_compute_done keymode
+    params = new Location(window.location).decode_url_params()
+    opts.presets[k] = v for k,v of params
+    @engine = new Engine opts
+
+  attach_ux_events: ->
+    
+
+# -----------------------------------------------------------------------------
 
 $ ->
+  fe = new Frontend()
   attach_ux_events()
   main()
 
 attach_ux_events = ->
-  $('#btn-no-sync, #btn-sync, #login_row').mouseover ->
+  $('#btn-no-sync, #btn-sync, #login-row').mouseover ->
     $('#sync-explanation').addClass 'highlight'
-  $('#btn-no-sync, #btn-sync, #login_row').mouseout ->
+  $('#btn-no-sync, #btn-sync, #login-row').mouseout ->
     $('#sync-explanation').removeClass 'highlight'
   $('#btn-login').click -> click_login @
   $('#input-email, #input-passphrase, #input-service').focus -> $(@).addClass 'modified'
@@ -40,6 +62,7 @@ main = () ->
   doc = new docmod.Browser window.document
   loc = new locmod.Location window.location
   engine = new engmod.Engine doc, loc
+
   engine.start()
 
 ungrey = (e) ->

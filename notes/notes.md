@@ -10,6 +10,7 @@ constructor:
   no_timeout:       (optional; default = false)
   on_compute_step:  (keymode, step_num, total_steps)
   on_compute_done:  (keymode)
+  on_timeout:       ()
 
 
 member functions

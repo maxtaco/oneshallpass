@@ -4,9 +4,9 @@
 
 exports.Location = class Location
   constructor : (@_o) ->
-    @_u = @_decode_url_params()
+    @_u = @decode_url_params()
 
-  _decode_url_params : () ->
+  decode_url_params : () ->
     ret = {}
     pl = /\+/g  # Regex for replacing addition symbol with a space
     search = /([^&=]+)=?([^&]*)/g # search an NV/pair
