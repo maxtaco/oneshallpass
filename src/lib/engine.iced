@@ -101,9 +101,9 @@ class Input
       security_bits : SELECT
       num_symbols : SELECT
       generation : SELECT
-      no_timeout : SELECT
+      no_timeout : [ false, false, null ]
     @_defaults = config.input.defaults
-    @_values = {}
+    @_values = presets or {}
     
   #-----------------------------------------
 
@@ -249,7 +249,7 @@ exports.Engine = class Engine
     @_inp = new Input { engine : @, presets }
     @_timers = new Timers @
     @_client = new Client @
-    @_timers.start()
+    @_timers.start() unless @_inp.get 'no_timeout'
 
   ##-----------------------------------------
 
@@ -263,6 +263,7 @@ exports.Engine = class Engine
   ##-----------------------------------------
   
   set : (k,v) ->
+    @_timers.toggle(not v) if k is 'no_timeout'
     @_inp.set k, v
     @poke()
     @maybe_run()
@@ -288,7 +289,12 @@ exports.Engine = class Engine
     
   ##-----------------------------------------
 
-  is_logged_in: () ->  
+  is_logged_in       : () -> @client().is_logged_in()
+  login              : () -> @client().login()
+  logout             : () -> @client().logout()
+  signup             : () -> @client().signup()
+  push               : () -> @client().push()
+  get_stored_records : () -> @client().get_stored_records()
    
   ##-----------------------------------------
 
