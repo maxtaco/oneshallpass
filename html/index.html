@@ -6,11 +6,13 @@
                O N E    S H A L L    P A S S
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   This page contains entirely in-line CSS and JavaScript,
-   so you make take it with you as a portable utility.
+   This page uses in-line CSS and JavaScript, so you
+   may take it with you as a portable utility.
 
    For more information, or to audit the file's JavaScript,
    please see https://github.com/maxtaco/oneshallpass
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   *-->
   <script>
@@ -26,122 +28,6 @@
   </script>
   <style type="text/css">
     {% include css/main.css %}
-      body {
-        margin:0;
-        padding:0;
-        background-color:#cde;
-      }
-      #wrapper {
-        font-family:helvetica;
-      }
-      #col1 {
-        float:left;
-        width:500px;
-        margin:10px;
-        padding:10px;
-        border:1px solid #bcd;
-        background-color: #fff8ff;
-      }
-      #col2 {
-        margin:10px;
-        float:left;
-        width:300px;
-        padding:10px;
-      }
-      .input-label {
-        width:120px;
-        float:left;
-        color:#036;
-        font-weight:bold;
-        padding-top:6px;
-      }
-      .input {
-        margin-left:10px;
-        width:300px;
-        float:left;
-      }
-      .input input {
-        font-size: 1.0em;
-        width:250px;
-        color:#999;
-      }
-      .input input.modified {
-        color:#000;
-      }
-      .input-row {
-        margin:5px 0 5px 0;
-      }
-      .input-row button {
-        background-color: #369;
-        color:#fff;
-        border:1px solid #036;
-        font-wight:bold;
-        font-size:0.9em;
-        cursor:pointer;
-        margin-left:0px;
-        margin-top:2px;
-        height:26px;
-      }
-      .input-row button#btn-logout {
-        background-color:#393;
-        border:1px solid #030;
-      }
-      .input-row button[disabled] {
-        background-color: #ccc;
-        color:#999;
-        border:1px solid #999;
-      }
-      .clear {clear:both;}
-      .explanation {
-        font-size:0.9em;
-      }
-      .explanation p {
-        padding:5px;
-        background-color:#cde;
-        border:1px solid #cde;
-        -webkit-transition: background-color 0.4s, color 0.4s, border 0.4s;
-        -moz-transition:    background-color 0.4s, color 0.4s, border 0.4s;
-        -o-transition:      background-color 0.4s, color 0.4s, border 0.4s;
-      }
-      .explanation p.highlight {
-        background-color:#fff;
-        border:1px solid #066;
-        color:#060;
-      }
-      .divider {
-        border-bottom:1px solid #ddd;
-      }
-      #btn-login {
-        float:left;
-      }
-      #login-status {
-        font-family:helvetica;
-        font-size:0.9em;
-        float:left;
-        width:189px;
-        border:1px solid #fff;
-        margin-top:2px;
-        margin-left:5px;
-        height:19px;
-        padding:5px 0 0 3px;
-      }
-      #login-status.logged-in {
-        font-family:courier new;
-        font-size:0.9em;
-        border:1px solid #fff;
-        background-color:#fff;
-        color:#090;
-        font-weight:bold;
-      }
-      #login-status-row {
-        margin-bottom:10px;
-        margin-top:10px;
-      }
-      h1 {
-        margin-top:0px;
-        padding-top:0px;
-      }
-
   </style>
   <meta name="viewport" content="width = device-width" />
  </head>
@@ -151,29 +37,23 @@
     <div id="col1">
 
       <div class="input-row">
-        <div class="input-label">
-          Email
-        </div>
+        <div class="label">Email</div>
         <div class="input">
-          <input type="text" id="input-email" value="you@example.com" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" />
+          <input type="text" id="input-email" value="you@example.com" />
         </div>
         <div class="clear"></div>
       </div>
 
       <div class="input-row">
-        <div class="input-label">
-          Passhrase
-        </div>
+        <div class="label">Passhrase</div>
         <div class="input">
-          <input type="text" id="input-passphrase" value="hot sauce lemon party" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" />
+          <input type="text" id="input-passphrase" value="hot sauce lemon party" />
         </div>
         <div class="clear"></div>
       </div>
 
       <div class="input-row" id="login-row">
-        <div class="input-label">
-          Optional Login
-        </div>
+        <div class="label">Optional Login</div>
         <div class="input">
           <button id="btn-login"  disabled="true" />Login</button>
           <button id="btn-logout" style="display:none;" />Logout</button>
@@ -182,8 +62,8 @@
         <div class="clear"></div>
       </div>
 
-      <div class="intput_row" id="login-status-row" style="display:none;">
-        <div class="input-label"></div>
+      <div class="input-row" id="login-status-row" style="display:none;">
+        <div class="label"></div>
         <div class="input">
           Hashing credentials...
         </div>
@@ -194,11 +74,9 @@
       </div>
 
       <div class="input-row">
-        <div class="input-label">
-          Service Name
-        </div>
+        <div class="label">Service Name</div>
         <div class="input">
-          <input type="text" id="input-service" value="iTunes" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" />
+          <input type="text" id="input-service" value="iTunes" />
         </div>
         <div class="clear"></div>
       </div>
@@ -213,9 +91,9 @@
           auditing and forking. In contrast to other password services, OSP does not save your passwords anywhere.
         </p>
         <p>
-          How it works: the JavaScript on this page mashes up your email address, a universal passphrase (which you choose and mustn't forget), and the name of a service or site. It expensively hashes them thousands of times, to produce a site-specific password. If you enter the same inputs on another computer, OSP will
+          How it works: the JavaScript on this page mashes up your email address, a universal passphrase (which you choose and mustn't forget), and the name of a host, such as "github.com". It expensively hashes them thousands of times, to produce a site-specific password. If you enter the same inputs on another computer, OSP will
           yield the same password.  Therefore, your passwords will be (1) strong, (2) different, and yet (3) recoverable.  You simply must remember
-          your universal passphrase and the names of your services and sites.
+          your universal passphrase and the names of your hosts.
         </p>
         <p>
           This page is self-contained HTML and may be saved for your convenience.
@@ -235,216 +113,5 @@
     <div class="clear"></div>
   </div>
 
-  <table border=1>
-   <!-- First section is the mandatory stuff -->
-   <tbody>
-                                       
-    <tr>
-     <td class="input-label">passphrase</td>
-     <td><input id="passphrase" name="passphrpase" type="text" autocapitalize="off" value="sailor pigdom cork futile" class="input-field" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" />
-    </tr>
-  
-    <tr>
-     <td class="input-label">e-mail</td>
-     <td><input id="email" name="email" type="text" class="input-field" value="myname@gmail.com" autocapitalize="off" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" />
-    </tr>
-
-    <tr class="input-label">
-     <td>service name</td>
-     <td><input id="host" name="host" type="text" class="input-field" value="chase.com" autocapitalize="off" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" /></td>
-    </tr>
-
-    <tr class="input-label" id="sync-note-row" style="display: none;">
-     <td>notes</td>
-     <td><input id="notes" name="notes" type="text" class="input-field" value="optional notes to sync" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" /></td>
-    </tr>
-
-   </tbody>
-
-   <!-- Expand to advanced? -->
-   <tbody id="advanced-expander">
-    <tr>
-     <td class="input-label">advanced</td>
-     <td><input id="expand" type="button" value="expand" onclick="show_advanced(true);"></td>
-    </tr>
-   </tbody>
-
-   <!-- Advanced fields -->
-   <tbody id="advanced" style="display: none" >
-    <tr>
-     <td class="input-label">generation</td>
-     <td>
-      <select id="generation" name="generation" onchange="accept_form_input(event);" />
-       <option>1</option>
-       <option>2</option>
-       <option>3</option>
-       <option>4</option>
-       <option>5</option>
-       <option>6</option>
-       <option>7</option>
-       <option>8</option>
-       <option>9</option>
-       <option>10</option>
-       <option>11</option>
-       <option>12</option>
-       <option>13</option>
-       <option>14</option>
-       <option>15</option>
-       <option>16</option>
-       <option>17</option>
-       <option>18</option>
-       <option>19</option>
-       <option>20</option>
-      </select>
-     </td>
-    </tr>
-
-    <tr>
-     <td class="input-label">security</td>
-     <td>
-      <select id="secbits" name="secbits" onchange="accept_form_input(event);" >
-       <option>1</option>
-       <option>2</option>
-       <option>3</option>
-       <option>4</option>
-       <option>5</option>
-       <option>6</option>
-       <option selected="selected">7</option>
-       <option>8</option>
-       <option>9</option>
-       <option>10</option>
-       <option>11</option>
-       <option>12</option>
-       <option>13</option>
-       <option>14</option>
-       <option>15</option>
-       <option>16</option>
-      </select>
-     </td>
-    </tr>
-
-    <tr>
-     <td class="input-label">length</td>
-     <td>
-      <select id="length" name="length" onchange="accept_form_input(event);" >
-       <option>8</option>
-       <option>9</option>
-       <option>10</option>
-       <option>11</option>
-       <option selected="selected">12</option>
-       <option>13</option>
-       <option>14</option>
-       <option>15</option>
-      </select>
-     </td>
-    </tr>
-
-    <tr>
-     <td class="input-label"># symbols</td>
-     <td>
-      <select id="nsym" name="nsym" onchange="accept_form_input(event);" >
-       <option>0</option>
-       <option>1</option>
-       <option>2</option>
-       <option>3</option>
-      </select>
-     </td>
-    </tr>
-
-    <tr>
-     <td class="input-label">algo version</td>
-     <td>
-      <select id="version" name="version" onchange="accept_form_input(event);" >
-       <option selected="selected">1</option>
-       <option>2</option>
-      </select>
-     </td>
-    </tr>
-
-    <tr>
-     <td class="input-label"></td>
-     <td><input id="collapse" type="button" value="collapse" onclick="show_advanced(false);"></td>
-    </tr>
-
-   </tbody>
-
-   <!-- Server syncing -->
-   <tbody>
-
-    <tr>
-     <td class="input-label">server sync</td>
-     <td><input id="sync" name="sync" type="checkbox" onclick="click_sync(event);"/></td>
-    </tr>
-   </tbody>
-
-   <tbody id="sync-details" style="display: none">
-
-    <tr>
-     <td class="input-label">Stored records</td>
-     <td><select id="stored-records" onchange="select_stored_recored(event)";>
-          <option>-</option>
-         </select>
-     </td> 
-    </tr>
-
-    <tr>
-     <td class="input-label">sync status</td>
-     <td>
-       <div id="sync-status-text-div"><span id="sync-status">...none...</span></div>
-       <div id="sync-status-signup-div" style="display: none;" >
-        <span>New to the site?</span>
-        <input type="button" id="signup" name="signup" onclick="click_signup(event);" value="Signup!"/>
-       </div>
-     </td>
-    </tr>
-    
-    <tr>
-     <td class="input-label">server login</td>
-     <td><span id="login-status">...none...</span></td>
-    </tr>
-
-    <tr>
-     <td class="input-label">encryption key</td>
-     <td><span id="encryption-key-status">...none...</span></td>
-    </tr>
-    
-    <tr>
-     <td class="input-label">MAC key</td>
-     <td><span id="mac-key-status">...none...</span></td>
-    </tr>
-   
-   </tbody>
-
-   <!-- Output Section -->
-   <tbody>
-    <tr>
-     <td class="output-label">your pw</td>
-     <td id="result-td-computing" style="display: none;">
-      <input id="result-computing" type="text" readonly value="computing"></input>
-     </td>
-     <td id="result-td-waiting" >...waiting for input...</td>
-     <td id="result-td-done" style="display: none;">
-      <input id="result-done" type="text" readonly="readonly" onclick="select_text(event);"></input>
-      <input id="sync-push-button" value="push" type="button" onclick="push_record(event);" style="display: none;" disabled="true"></input>
-     </td>
-    </tr>
-   
-   </tbody>
-
-   <!-- UI and cache security -->
-   <tbody>
-    <tr>
-     <td class="input-label minor">hide typing</td>
-     <td><input id="hide-passphrase" name="hide-passphrase" type="checkbox" onclick="click_hide_passphrase(event);" /></td>
-    </tr>
-    
-     <tr>
-     <td class="input-label minor">timeout</td>
-     <td><input id="run-timers" name="run-timers" type="checkbox" onclick="click_run_timers(event);" checked="checked" /></td>
-    </tr>
-    
-   </tbody>
-    
-  </table>
  </body>
 </html>

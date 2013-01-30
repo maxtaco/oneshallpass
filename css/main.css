@@ -1,35 +1,155 @@
 
-.input-label {
-    text-align: right;
-    font-weight: bold;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
+body {
+  margin:0;
+  padding:0;
+  background-color:#cde;
+  font-family:helvetica, arial, verdana, sans;
+}
+#wrapper {
+  font-family:helvetica;
+}
+#col1 {
+  float:left;
+  width:500px;
+  margin:10px;
+  padding:10px;
+  border:1px solid #bcd;
+  background-color: #fff8ff;
+}
+#col2 {
+  margin:10px;
+  float:left;
+  width:300px;
+  padding:10px;
+}
+.label {
+  width:120px;
+  float:left;
+  color:#036;
+  font-weight:bold;
+  padding-top:6px;
+}
+.input {
+  margin-left:10px;
+  width:300px;
+  float:left;
+}
+.input input {
+  font-size: 1.0em;
+  width:250px;
+  color:#999;
+}
+.input input.modified {
+  color:#000;
+}
+.input-row {
+  margin:5px 0 5px 0;
+}
+.input-row button {
+  background-color: #369;
+  color:#fff;
+  border:1px solid #036;
+  font-wight:bold;
+  font-size:0.9em;
+  cursor:pointer;
+  margin-left:0px;
+  margin-top:2px;
+  height:26px;
+}
+.input-row button#btn-logout {
+  background-color:#393;
+  border:1px solid #030;
+}
+.input-row button[disabled] {
+  background-color: #ccc;
+  color:#999;
+  border:1px solid #999;
+}
+.clear {clear:both;}
+.explanation {
+  font-size:0.9em;
+}
+.explanation p {
+  padding:5px;
+  background-color:#cde;
+  border:1px solid #cde;
+  -webkit-transition: background-color 0.4s, color 0.4s, border 0.4s;
+  -moz-transition:    background-color 0.4s, color 0.4s, border 0.4s;
+  -o-transition:      background-color 0.4s, color 0.4s, border 0.4s;
+}
+.explanation p.highlight {
+  background-color:#fff;
+  border:1px solid #066;
+  color:#060;
+}
+.divider {
+  border-bottom:1px solid #ddd;
+}
+#btn-login {
+  float:left;
+}
+#login-status {
+  font-family:helvetica;
+  font-size:0.9em;
+  float:left;
+  width:189px;
+  border:1px solid #fff;
+  margin-top:2px;
+  margin-left:5px;
+  height:19px;
+  padding:5px 0 0 3px;
+}
+#login-status.logged-in {
+  font-family:courier new;
+  font-size:0.9em;
+  border:1px solid #fff;
+  background-color:#fff;
+  color:#090;
+  font-weight:bold;
+}
+#login-status-row {
+  margin-bottom:10px;
+  margin-top:10px;
+}
+h1 {
+  margin-top:0px;
+  padding-top:0px;
+}
+
+
+/*
+.label {
+  text-align: right;
+  font-weight: bold;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 .output-label {
-    text-align: right;
-    font-weight: bold;
+  text-align: right;
+  font-weight: bold;
 }
 
 .minor {
-    font-size: 10px;
+  font-size: 10px;
 }
 
 body {
-    font-family: helvetica, arial, verdana, sans;
+  font-family: helvetica, arial, verdana, sans;
 }
 
 .input-field {
-    color: gray;
-    border-width: 2px;
-    width: 280px;
-    padding: 2px;
-    font-size: 100%;
-    bottom: auto;
-    top: auto;
+  color: gray;
+  border-width: 2px;
+  width: 280px;
+  padding: 2px;
+  font-size: 100%;
+  bottom: auto;
+  top: auto;
 }
 
 .input-black {
-    color: black;
+  color: black;
 }
+*/

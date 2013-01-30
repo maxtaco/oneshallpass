@@ -9,6 +9,10 @@ class Frontend
     @engine = @create_engine()
     @attach_ux_events()
 
+  attach_ux_events: ->
+    
+
+
   create_engine: ->
     opts =
       presets:
@@ -18,9 +22,8 @@ class Frontend
         on_compute_done: (keymode)           => @on_compute_done keymode
     params = new Location(window.location).decode_url_params()
     opts.presets[k] = v for k,v of params
-    @engine = new Engine opts
+    return new Engine opts
 
-  attach_ux_events: ->
     
 
 # -----------------------------------------------------------------------------
