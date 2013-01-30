@@ -255,6 +255,7 @@ exports.Engine = class Engine
 
   client : () -> @_client
   clear : () -> @on_timeout()
+  timeout : () -> config.timeouts.document
   
   ##-----------------------------------------
 

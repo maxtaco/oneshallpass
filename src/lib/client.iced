@@ -4,6 +4,7 @@ derive   = require './derive'
 util     = require './util'
 purepack = require 'purepack'
 crypt    = require './crypt'
+sc       = require('./status').codes
 
 states =
   NONE : 0
@@ -30,6 +31,12 @@ exports.Record = class Record
 
   to_ajax : () -> { rkey : @key, rvalue : @value }
 
+  to_dict : () ->
+    d = {}
+    (d[k] = v for k,v of @value)
+    d.host = @key
+    return d
+
 ##=======================================================================
 
 exports.Client = class Client
@@ -53,11 +60,12 @@ exports.Client = class Client
 
   #-----------------------------------------
 
-  do_fetch : () ->
-    await @prepare_keys defer ok
-    await @fetch_records defer recs if ok
-    ok = @decrypt_records recs if recs? and ok
-    @doc().set_records @_records if ok
+  do_fetch : (cb) ->
+    rc = sc.OK
+    await @prepare_keys defer rc
+    await @fetch_records defer rc, recs if rc is sc.OK
+    rc = @decrypt_records recs if rc is sc.OK
+    cb rc
 
   #-----------------------------------------
 
@@ -66,45 +74,48 @@ exports.Client = class Client
   
   #-----------------------------------------
 
-  store_record : (r) -> @_records[r.key] = r.value
+  store_record : (r) -> @_records[r.key] = r
   
   #-----------------------------------------
 
   decrypt_records : (records) ->
     for er in records
       @store_record dr if (dr = er.decrypt @_cryptor)?
-    ok = true
+    rc = sc.OK
     if (eo = @_cryptor.finish())?
-      ok = false
-      @doc().set_sync_status false, "Decryption errors, see log for more info"
-    return ok
+      rc = sc.BAD_DECODE
+      console.log "Decoding errors: #{JSON.stringify eo}"
+    return rc
    
   #-----------------------------------------
 
   check_res : (res) -> 
-    if res.status isnt 200 or not (code = res?.data?.status?.code)?
-      @doc().set_sync_status false, "The server is down (status=#{res.status})"
-    return code
+    if res.status is 200 and (code = res?.data?.status?.code)? then code
+    else null
    
   #-----------------------------------------
 
   fetch_records : (cb) ->
-    out = null
+    records = null
+    rc = sc.OK
     await @ajax "/records", {}, "GET", defer res
     if (code = @check_res res)? and code is 0
-      out = (new Record row.rkey, row.rvalue, true for row in res.data?.data)
-    cb out
+      records = (new Record row.rkey, row.rvalue, true for row in res.data?.data)
+    else
+      rc = sc.BAD_FETCH
+    cb rc, records
    
   #-----------------------------------------
 
   prepare_keys : (cb) ->
-    ok = false
     await @prepare_key derive.keymodes.RECORD_HMAC, defer @_hmac
     await @prepare_key derive.keymodes.RECORD_AES, defer @_aes if @_hmac
-    if (@_aes and @_hmac)?
+    rc = if (@_aes and @_hmac)?
       @_cryptor = new crypt.Cryptor @_aes, @_hmac
-      ok = true
-    cb ok
+      sc.OK
+    else
+      sc.BAD_DERIVE
+    cb rc
 
   #-----------------------------------------
 
@@ -130,12 +141,16 @@ exports.Client = class Client
   #-----------------------------------------
 
   package_args : (cb) ->
-    if (inp = @package_input derive.keymodes.LOGIN_PW)?
+    if not (inp = @package_input derive.keymodes.LOGIN_PW)?
+      rc = sc.BAD_ARGS
+    else
       await inp.derive_key defer pwh
-    if pwh?
-      @doc().finish_key inp.keymode
-      res = { pwh, email : inp.get 'email' }
-    cb res, inp
+      if pwh?
+        res = { pwh, email : inp.get 'email' }
+        rc = sc.OK
+      else
+        rc = sc.BAD_DERIVE
+    cb rc, res, inp
     
   #-----------------------------------------
   
@@ -150,12 +165,23 @@ exports.Client = class Client
       await @login true, defer try_again
  
   #-----------------------------------------
+ 
+  is_logged_in : () -> @_session
+  
+  #-----------------------------------------
+
+  logout : (cb) ->
+    rc = sc.OK
+    if is_logged_in() then @_session = null
+    else rc = sc.BAD_LOGIN
+    cb rc
+    
+  #-----------------------------------------
 
   login : (cb) ->
-    rc = null
-    await @package_args defer args, inp
-    if not args? then rc = src.BAD_ARGS
-    else
+    rc = if @logged_in() then sc.LOGGED_IN else sc.OK
+    await @package_args defer rc, args, inp
+    if rc is sc.OK
       await @ajax "/user/login", args, "POST", defer res
       rc = if not (code = @check_res res)? then sc.SERVER_DOWN
       else if code isnt 0                  then sc.BAD_LOGIN
@@ -167,15 +193,11 @@ exports.Client = class Client
   #-----------------------------------------
     
   signup : () ->
-    await @package_args defer args
-    if args?
-      em = args.email
-      @doc().set_sync_status true, "Signing up email #{em}"
+    await @package_args defer rc, args
+    if rc is sc.OK
       await @ajax "/user/signup", args, "POST", defer res
-      err = null
-      if (code = @check_res res)?
-        @doc().set_sync_status true, "Check #{em} for verification"
-        @login_loop()
+      if not (@check_res res)? then rc = sc.SERVER_DOWN
+    cb rc
       
   ##-----------------------------------------
   
@@ -189,22 +211,19 @@ exports.Client = class Client
 
   ##-----------------------------------------
 
-  get_record : (k) -> @_records[k]
+  get_stored_records : -> (v.to_dict() for k,v of @_records)
    
   ##-----------------------------------------
 
-  has_login_info : () -> @_eng.fork_input(mode, config.server).is_ready()
- 
-  ##-----------------------------------------
-
-  push_record : () ->
+  push_record : (cb) ->
+    rc = sc.OK
     inp = @_eng.get_input()
     rec = inp.to_record()
     @store_record rec
     erec = rec.encrypt @_cryptor
     await @ajax "/records", erec.to_ajax(), "POST", defer res
-    if (code = @check_res res)?
-      @doc().set_sync_status true, "Push worked for #{inp.get 'host'}"
+    if not (@check_res res)? then rc = sc.SERVER_DOWN
+    cb rc
   
 ##=======================================================================
 
