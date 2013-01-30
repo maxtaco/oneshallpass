@@ -221,7 +221,7 @@ exports.V2 = class V2 extends Base
   	# Add 2 because v2 is easier than v1..
     exp = @security_bits() + 2
     # subtract 1 because 1 iteration done by default
-    @_limit = limit = (1 << exp) - 1
+    @_limit = (1 << exp) - 1
     
   ##-----------------------------------------
 
@@ -254,7 +254,7 @@ exports.V2 = class V2 extends Base
       else
         break
 
-    ret = if i isnt limit then null
+    ret = if i isnt @_limit then null
     else if @is_internal_key() then block
     else block.toString C.enc.Base64
     
