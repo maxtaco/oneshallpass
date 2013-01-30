@@ -60,11 +60,11 @@ class Frontend
     el = $("#job-watcher #job-#{label}")
     if not el.length
       $('#job-watcher').prepend """
-        <div id="job-#{label}" style="display:nofne;">job #{label}</div>
+        <div id="job-#{label}" style="display:none;">job #{label}</div>
       """
       el = $("#job-watcher #job-#{label}")
-    el.stop()
-    el.fadeIn()
+    el.stop(true).slideDown().delay(10000).slideUp()
+
     j = @jw.getInfo label
     el.html """
       job #{label}: #{j.txt}
