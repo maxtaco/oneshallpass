@@ -151,23 +151,18 @@ exports.Client = class Client
  
   #-----------------------------------------
 
-  login : (bgloop, cb) ->
-    try_again = false
+  login : (cb) ->
+    rc = null
     await @package_args defer args, inp
-    if args?
-      @doc().set_sync_status true, "Logging in...." unless bgloop
+    if not args? then rc = src.BAD_ARGS
+    else
       await @ajax "/user/login", args, "POST", defer res
-      if not (code = @check_res res)? then null
-      else if code isnt 0
-        try_again = true
-        @doc().show_signup() unless bgloop
+      rc = if not (code = @check_res res)? then sc.SERVER_DOWN
+      else if code isnt 0                  then sc.BAD_LOGIN
       else
-        @doc().set_logged_in true
-        @doc().set_sync_status true, "Sign-in successful"
-        @_login_inp = inp
         @_session = res.data.session
-        @do_fetch()
-    cb try_again if cb?
+        await @do_fetch defer rc
+    cb rc
         
   #-----------------------------------------
     
