@@ -40,7 +40,6 @@ exports.Client = class Client
     @_active = false
     @_state = states.NONE
     @_session = null
-    @_inp = null
     @_records = {}
 
   #-----------------------------------------
@@ -59,7 +58,6 @@ exports.Client = class Client
     await @fetch_records defer recs if ok
     ok = @decrypt_records recs if recs? and ok
     @doc().set_records @_records if ok
-    console.log @_records
 
   #-----------------------------------------
 
@@ -198,6 +196,10 @@ exports.Client = class Client
 
   get_record : (k) -> @_records[k]
    
+  ##-----------------------------------------
+
+  has_login_info : () -> @_eng.fork_input(mode, config.server).is_ready()
+ 
   ##-----------------------------------------
 
   push_record : () ->

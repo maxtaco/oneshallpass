@@ -29,6 +29,11 @@ input_clean = (x) ->
   ret = null if ret.length is 0
   ret
 
+input_clean_preserve_case = (x) ->
+  ret = input_trim(x)
+  ret = null if ret.length is 0
+  ret
+
 ##=======================================================================
 
 class VersionObj
@@ -91,7 +96,7 @@ class Input
       nsym : SELECT
       generation : SELECT
       length : SELECT
-      notes : [ false, true, (x) -> input_clean x ]
+      notes : [ false, true, (x) -> input_clean_preserve_case x ]
     @_got_input = {}
     
   #-----------------------------------------
@@ -142,7 +147,7 @@ class Input
     if not (p = @_template[k])? then null
     else if (f = @fixed[k])? then f
     else
-      raw = @_eng._doc.q(k).value
+      raw = @_eng._doc.q("input-#{k}").value
       if not p[2]?           then parseInt raw, 10
       else if @_got_input[k] then p[2](raw)
 
@@ -168,14 +173,6 @@ class Input
     host = @get 'host'
     new Record host, d
       
-  #-----------------------------------------
-
-##=======================================================================
-
-exports.SanitizedInput = class SanitizedInput extends Input
-  constructor : (main) ->
-    super main
-
 ##=======================================================================
 
 class Timer
@@ -308,6 +305,10 @@ exports.Engine = class Engine
         el.value = v
       @maybe_run()
 
+  ##-----------------------------------------
+
+  has_login_info : () -> @client().has_login_info()
+   
   ##-----------------------------------------
 
 

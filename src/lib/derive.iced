@@ -1,6 +1,7 @@
 
 {config} = require './config'
 C = CryptoJS
+{pack_to_word_array} = require './pack'
 
 ##=======================================================================
 
@@ -264,8 +265,8 @@ exports.V2 = class V2 extends Base
     
     until ret
       a = [ "OneShallPass v2.0", @email(), @host(), @generation(), i ]
-      txt = a.join '; '
-      hash = C.HmacSHA512 txt, dk
+      wa = pack_to_word_array a
+      hash = C.HmacSHA512 wa, dk
       b64 = hash.toString C.enc.Base64
       ret = b64 if @is_ok_pw b64
       i++

@@ -93,9 +93,7 @@ exports.Browser = class Browser
     sel = @q "stored-records"
     keys = (k for k of recs)
     keys = keys.sort()
-    console.log keys
     opts =  [ "-" ].concat keys
-    console.log opts
     html = ("\t<option>#{o}</option>" for o in opts).join("\n")
     sel.innerHTML = html
 
