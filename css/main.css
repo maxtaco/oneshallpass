@@ -12,8 +12,8 @@ body {
   float:left;
   width:500px;
   margin:10px;
-  padding:10px;
-  border:1px solid #bcd;
+  padding:0px;
+  border:1px solid #7ab;
   background-color: #fff8ff;
 }
 #col2 {
@@ -43,7 +43,7 @@ body {
   color:#000;
 }
 .input-row {
-  margin:5px 0 5px 0;
+  margin:15px 10px 15px 10px;
 }
 .input-row button {
   background-color: #369;
@@ -114,6 +114,12 @@ body {
 h1 {
   margin-top:0px;
   padding-top:0px;
+}
+#status-bar {
+  min-height:10px;
+  padding:3px;
+  background-color:#9bd;
+  border-top:1px solid #7ab;
 }
 
 

@@ -113,7 +113,7 @@ class Input
   
   #-----------------------------------------
   
-  get_version_obj : () -> VersionObj.make @get 'version'
+  get_version_obj : () -> VersionObj.make @get 'algo_version'
   timeout : () -> config.timeouts.input
   clear : -> 
 
@@ -142,7 +142,7 @@ class Input
         @engine.on_compute_step @keymode, i, 0
       ret
 
-    co = @_eng._cache.lookup uid
+    co = @engine._cache.lookup uid
 
     await (vo.key_deriver @).run co, compute_hook, defer res
     @engine.on_compute_done @keymode, res if res
@@ -158,7 +158,7 @@ class Input
   #-----------------------------------------
   
   set : (k, val) ->
-    val = tem[2](val) if (tem = @_template[k]?[2])?
+    val = tem(val) if (tem = @_template[k]?[2])?
     @_values[k] = val
   
   #-----------------------------------------
@@ -277,7 +277,6 @@ exports.Engine = class Engine
 
   run : () ->
     await @_inp.derive_key defer dk
-    @_doc.set_generated_pw dk if dk
     
   ##-----------------------------------------
 

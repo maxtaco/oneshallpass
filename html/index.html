@@ -45,7 +45,7 @@
       </div>
 
       <div class="input-row">
-        <div class="label">Passhrase</div>
+        <div class="label">Passphrase</div>
         <div class="input">
           <input type="text" id="input-passphrase" value="hot sauce lemon party" />
         </div>
@@ -81,6 +81,8 @@
         <div class="clear"></div>
       </div>
 
+      <div id="status-bar">
+      </div>
 
     </div>
     <div id="col2">
@@ -91,16 +93,16 @@
           auditing and forking. In contrast to other password services, OSP does not save your passwords anywhere.
         </p>
         <p>
-          How it works: the JavaScript on this page mashes up your email address, a universal passphrase (which you choose and mustn't forget), and the name of a host, such as "github.com". It expensively hashes them thousands of times, to produce a site-specific password. If you enter the same inputs on another computer, OSP will
+          This page is self-contained and may be saved or used offline for your convenience.
+        </p>
+        <p>
+          <b>How does it work?</b> the JavaScript on this page mashes up your email address, a universal passphrase (which you choose and mustn't forget), and the name of a host, such as "github.com". It expensively hashes them thousands of times, to produce a site-specific password. If you enter the same inputs on another computer, OSP will
           yield the same password.  Therefore, your passwords will be (1) strong, (2) different, and yet (3) recoverable.  You simply must remember
           your universal passphrase and the names of your hosts.
         </p>
-        <p>
-          This page is self-contained HTML and may be saved for your convenience.
-        </p>
         <p id="sync-explanation">
-          Afraid you'll forget what you called a service? ("Amazon" or "Amazon.com"?) 
-          For convenience, you may sync your <i>encrypted</i> settings with oneshallpass.com.
+          Afraid you'll forget what you called a host? (e.g., "gmail" or "google" or "gmail.google.com") 
+          For convenience, you may push and pull your <i>encrypted</i> hostnames and settings with oneshallpass.com.
           Still, don't lose your universal passphrase! It is <i>not</i> synced and not recoverable.
         </p>
         <p>

@@ -3,15 +3,39 @@ Engine   = require('./engine').Engine
 
 # -----------------------------------------------------------------------------
 
+class StatusHistory
+  constructor: ->
+    @hist = []
+  new_item: (label, frac_done, txt) ->
+    item = {label, frac_done, txt}
+    item.id = Math.floor Math.random() * 1000000000
+    @hist.push item
+    return item.id
+  change_item: (id, {label, frac_done, txt}) ->
+    item = h for h in @hist when h.id is id
+    if txt?       then item.txt = txt
+    if label?     then item.label = label
+    if frac_done? then item.frac_done = frac_done
+  clear_item: (id) ->
+    @hist = (h for h in @hist when h.id isnt id)
+
+# -----------------------------------------------------------------------------
+
 class Frontend
 
   constructor: ->
     @engine = @create_engine()
+    @engine.set "email", "chris@foobar.com"
+    @engine.set "passphrase", "bleah bleah bleah"
+    @engine.set "host", "walmart"
+
+    @prefill_ux()
     @attach_ux_events()
 
-  attach_ux_events: ->
-    
+  prefill_ux: ->
+    console.log "Todo: fill ux"
 
+  attach_ux_events: ->
 
   create_engine: ->
     opts =
@@ -19,19 +43,25 @@ class Frontend
         algo_version: 2
       hooks:
         on_compute_step: (keymode, step, ts) => @on_compute_step keymode, step, ts
-        on_compute_done: (keymode)           => @on_compute_done keymode
+        on_compute_done: (keymode, key)      => @on_compute_done keymode, key
     params = new Location(window.location).decode_url_params()
     opts.presets[k] = v for k,v of params
     return new Engine opts
 
-    
+  on_compute_step: (keymode, step, total_steps) ->
+    console.log "ocs: #{keymode}, #{step}, #{total_steps}"
+
+  on_compute_done: (keymode, key) ->
+    console.log "ocd: #{keymode}, #{key}"
+
 
 # -----------------------------------------------------------------------------
 
 $ ->
   fe = new Frontend()
-  attach_ux_events()
-  main()
+ 
+
+###
 
 attach_ux_events = ->
   $('#btn-no-sync, #btn-sync, #login-row').mouseover ->
@@ -121,4 +151,4 @@ select_stored_recored = (e) ->
   
 
 
-
+###
