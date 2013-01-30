@@ -63,6 +63,10 @@
       .input input {
         font-size: 1.0em;
         width:250px;
+        color:#999;
+      }
+      .input input.modified {
+        color:#000;
       }
       .input_row {
         margin:5px 0 5px 0;
@@ -70,14 +74,68 @@
       .input_row button {
         background-color: #369;
         color:#fff;
-        border:#036;
+        border:1px solid #036;
         font-wight:bold;
         font-size:0.9em;
         cursor:pointer;
+        margin-left:0px;
+        margin-top:2px;
+        height:26px;
+      }
+      .input_row button#btn-logout {
+        background-color:#393;
+        border:1px solid #030;
+      }
+      .input_row button[disabled] {
+        background-color: #ccc;
+        color:#999;
+        border:1px solid #999;
       }
       .clear {clear:both;}
       .explanation {
         font-size:0.9em;
+      }
+      .explanation p {
+        padding:5px;
+        background-color:#cde;
+        border:1px solid #cde;
+        -webkit-transition: background-color 0.4s, color 0.4s, border 0.4s;
+        -moz-transition:    background-color 0.4s, color 0.4s, border 0.4s;
+        -o-transition:      background-color 0.4s, color 0.4s, border 0.4s;
+      }
+      .explanation p.highlight {
+        background-color:#fff;
+        border:1px solid #066;
+        color:#060;
+      }
+      .divider {
+        border-bottom:1px solid #ddd;
+      }
+      #btn-login {
+        float:left;
+      }
+      #login-status {
+        font-family:helvetica;
+        font-size:0.9em;
+        float:left;
+        width:189px;
+        border:1px solid #fff;
+        margin-top:2px;
+        margin-left:5px;
+        height:19px;
+        padding:5px 0 0 3px;
+      }
+      #login-status.logged-in {
+        font-family:courier new;
+        font-size:0.9em;
+        border:1px solid #fff;
+        background-color:#fff;
+        color:#090;
+        font-weight:bold;
+      }
+      #login-status-row {
+        margin-bottom:10px;
+        margin-top:10px;
       }
       h1 {
         margin-top:0px;
@@ -112,17 +170,38 @@
         <div class="clear"></div>
       </div>
 
-      <div class="input_row">
+      <div class="input_row" id="login_row">
         <div class="input_label">
-          &nbsp;
+          Optional Login
         </div>
         <div class="input">
-          <button id="btn-no-sync" />No Sync</button>
-          <button id="btn-sync" />   Sync</button>
+          <button id="btn-login"  disabled="true" />Login</button>
+          <button id="btn-logout" style="display:none;" />Logout</button>
+          <div class="clear"></div>
         </div>
         <div class="clear"></div>
       </div>
 
+      <div class="intput_row" id="login-status-row" style="display:none;">
+        <div class="input_label"></div>
+        <div class="input">
+          Hashing credentials...
+        </div>
+        <div class="clear"></div>
+      </div>
+
+      <div class="divider">
+      </div>
+
+      <div class="input_row">
+        <div class="input_label">
+          Service Name
+        </div>
+        <div class="input">
+          <input type="text" id="input-service" value="iTunes" onfocus="accept_focus(event);" onkeyup="accept_form_input(event);" />
+        </div>
+        <div class="clear"></div>
+      </div>
 
 
     </div>
@@ -141,18 +220,20 @@
         <p>
           This page is self-contained HTML and may be saved for your convenience.
         </p>
-        <p>
-          Server syncing to oneshallpass.com is free and optional. Your service names and notes will be encrypted browser-side using your universal passphrase and then synced, so you don't need to remember if you called a service "amazon.com" or "amazon".  However, OSP will still not transmit or record your universal passphrase or any generated passwords. That work is always done in-browser, as a function of your inputs.
+        <p id="sync-explanation">
+          Afraid you'll forget what you called a service? ("Amazon" or "Amazon.com"?) 
+          For convenience, you may sync your <i>encrypted</i> settings with oneshallpass.com.
+          Still, don't lose your universal passphrase! It is <i>not</i> synced and not recoverable.
         </p>
+        <p>
+          <a href="#no" onclick="showFAQ()">FAQ</a>
+      </div>
+      <div class="explanation" style="display:none;" id="faq">
+
       </div>
     </div>
     <div class="clear"></div>
   </div>
-
-  <br /><br /><br />
-  <br /><br /><br />
-  <br /><br /><br />
-  <br /><br /><br />
 
   <table border=1>
    <!-- First section is the mandatory stuff -->

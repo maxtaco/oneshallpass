@@ -1,6 +1,37 @@
 
 engine = null
-doc = null
+doc    = null
+
+# -------------
+
+$ ->
+  attach_ux_events()
+  main()
+
+attach_ux_events = ->
+  $('#btn-no-sync, #btn-sync, #login_row').mouseover ->
+    $('#sync-explanation').addClass 'highlight'
+  $('#btn-no-sync, #btn-sync, #login_row').mouseout ->
+    $('#sync-explanation').removeClass 'highlight'
+  $('#btn-login').click -> click_login @
+  $('#input-email, #input-passphrase, #input-service').focus -> $(@).addClass 'modified'
+  $('#input-email, #input-passphrase, #input-service').keyup (e) ->
+    engine.got_input $(@).attr('id')
+    if engine.has_login_info()
+      $('#btn-login').attr("disabled", false)
+
+click_login = (e) ->
+  console.log "logging in"
+  $('#login-status-row').slideDown 'fast'
+  $('#btn-login').attr("disabled", "disabled")
+  #if $('#input-email').val() and $('#input-passhprase').val()
+  #  try_to_login 
+  #  console.log "logging in"
+  #  $('#login-status-row').slideDown 'fast'
+  #  $('#btn-login').attr("disabled", "disabled")
+  #else
+
+
 
 main = () ->
   docmod = require './document'
@@ -10,8 +41,6 @@ main = () ->
   loc = new locmod.Location window.location
   engine = new engmod.Engine doc, loc
   engine.start()
-
-window.onload = () -> main()
 
 ungrey = (e) ->
   e.className += " input-black"
@@ -64,3 +93,6 @@ push_record = (e) ->
 select_stored_recored = (e) ->
   engine.select_stored_record(e.srcElement.value)
   
+
+
+
