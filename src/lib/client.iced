@@ -169,7 +169,7 @@ exports.Client = class Client
 
   logout : (cb) ->
     rc = sc.OK
-    if is_logged_in() then @_session = null
+    if @is_logged_in() then @_session = null
     else rc = sc.BAD_LOGIN
     cb rc
     
@@ -190,7 +190,7 @@ exports.Client = class Client
         
   #-----------------------------------------
     
-  signup : () ->
+  signup : (cb) ->
     await @package_args defer rc, args
     if rc is sc.OK
       await @ajax "/user/signup", args, "POST", defer res

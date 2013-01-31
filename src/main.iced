@@ -19,6 +19,7 @@ class Frontend
     if (p = @e.get "passphrase") then $("#input-passphrase").val(p).addClass("modified")
     if (e = @e.get "email") then $("#input-email").val(e).addClass("modified")
     if (h = @e.get "host") then $("#input-host").val(h).addClass("modified")
+    @update_login_button()
 
   attach_ux_events: ->
 
@@ -44,10 +45,102 @@ class Frontend
       @e.set "host", $('#input-host').val()
 
     $('#btn-login').click => 
+      $('#btn-login').attr('disabled','disabled')
+      @hide_login_dialogs()
+      @disable_login_credentials()
       @e.login @login_cb
 
-  login_cb: ->
-    console.log arguments
+    $('#btn-logout').click =>
+      $('#btn-logout').attr('disabled','disabled')
+      @hide_login_dialogs()
+      @e.logout @logout_cb      
+
+    $('#btn-join').click => 
+      $('#btn-join').attr('disabled','disabled')
+      @disable_login_credentials()
+      @e.signup @join_cb
+
+  logout_cb: (status) =>
+    console.log "lo cb: #{status} #{@e.is_logged_in()}"
+    if status isnt sc.OK
+      alert "Unhandled logout status #{status}"      
+    $('#btn-login').attr('disabled', false)
+    @enable_login_credentials()
+    @e.set "passphrase", ''
+    $('#input-passphrase').val ''
+    @update_login_button()
+
+  login_cb: (status) =>
+    console.log "cb: #{status} #{@e.is_logged_in()}"
+    if status is sc.OK
+      @update_login_button()
+    else
+      @enable_login_credentials()    
+      if status is sc.BAD_LOGIN
+        @show_bad_login_dialog()
+      else if status is sc.SERVER_DOWN
+        @show_bad_general_dialog()
+        $("#bad-general-msg").html """
+          The server was unreachable. Perhaps you're offline?
+          You can still use One Shall Pass, assuming you can recall
+          the names of your hosts. All hashing is done in the browser.
+        """
+      else
+        alert "Unhandled login error code: #{status}"
+
+  join_cb: (status) =>
+    @enable_login_credentials()
+    if status is sc.OK
+      @hide_bad_login_dialog()
+      @show_good_join_dialog()
+      $('.join-email').html @e.get 'email'      
+    else
+      @hide_bad_login_dialog()
+      @show_bad_general_dialog()
+      if status is sc.SERVER_DOWN
+        $("#bad-general-msg").html """
+          The server was unreachable and joining is not possible. Try again when connected?
+        """
+      else if status is sc.BAD_ARGS
+        $("#bad-general-msg").html """
+          The args you passed were not legit.
+        """
+      else
+        alert "Unhandled join error code: #{status}"
+
+    @update_login_button()
+
+  show_bad_general_dialog: ->
+    $("bad-general-dialog").show()
+
+  show_good_join_dialog: ->
+    $("#good-join-dialog").show()
+
+  disable_login_credentials: ->
+    $("#input-passphrase, #input-email").attr("disabled", "disabled")
+
+  enable_login_credentials: ->
+    $("#input-passphrase, #input-email").attr("disabled", false)
+
+  hide_login_dialogs: ->
+    @hide_bad_login_dialog()
+    @hide_good_join_dialog()
+    @hide_bad_general_dialog()
+
+  hide_good_join_dialog: ->
+    $("#good-join-dialog").hide()
+
+  hide_bad_general_dialog: ->
+    $("#bad-general-dialog").hide()
+
+  show_bad_login_dialog: ->
+    $("#bad-login-dialog").show()
+    @hide_good_join_dialog()
+    @hide_bad_general_dialog()
+
+  hide_bad_login_dialog: ->
+    $("#bad-login-dialog").hide()
+    $('#btn-join').attr('disabled',false)
 
   create_engine: ->
     opts =
@@ -63,8 +156,10 @@ class Frontend
     return new Engine opts
 
   update_login_button: ->
+    @hide_bad_login_dialog()
     if @e.is_logged_in()
       $('#btn-logout').show()
+      $('#btn-logout').attr "disabled", false
       $('#btn-login').hide()
     else 
       $('#btn-logout').hide()

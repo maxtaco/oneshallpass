@@ -54,6 +54,10 @@ body {
 .input input.modified {
   color:#000;
 }
+.input input.modified[disabled] {
+  color:#999;
+}
+
 .input-row {
   padding:10px 0 10px 10px;
 }
@@ -68,15 +72,18 @@ body {
   margin-top:2px;
   height:26px;
 }
+
 .input-row button#btn-logout {
   background-color:#393;
   border:1px solid #030;
 }
-.input-row button[disabled] {
+.input-row button[disabled], .input-row button#btn-logout[disabled] {
   background-color: #ccc;
   color:#999;
   border:1px solid #999;
 }
+
+
 .clear {clear:both;}
 .explanation {
   font-size:0.9em;

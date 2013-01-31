@@ -61,6 +61,25 @@
             <button id="btn-login"  disabled="true" />Login or Join</button>
             <button id="btn-logout" style="display:none;" />Logout</button>
             <div class="clear"></div>
+            <div id="bad-login-dialog" style="display:none;">
+              <p id="join-msg">
+                A hash of this email + passphrase is unrecognized by the server. Either
+                fix the typo, or...
+              </p>
+              <button id="btn-join">Join with this Combo</button>
+              <div class="clear"></div>
+            </div>
+            <div id="good-join-dialog" style="display:none;">
+              <p id="join-success-msg">
+                Success! Check for an email at <b class="join-email"></b>.
+                Once you've clicked it, you can retry the login link above.
+              </p>
+            </div>
+            <div id="bad-general-dialog" style="display:none;">
+              <p id="bad-general-msg">
+              </p>
+            </div>
+
           </div>
           <div class="clear"></div>
         </div>
