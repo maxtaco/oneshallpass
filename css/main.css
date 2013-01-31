@@ -38,12 +38,13 @@ body {
   font-size: 1.0em;
   width:250px;
   color:#999;
+  padding:3px;
 }
 .input input.modified {
   color:#000;
 }
 .input-row {
-  margin:15px 10px 15px 30px;
+  padding:10px 0 10px 10px;
 }
 .input-row button {
   background-color: #369;
@@ -117,9 +118,16 @@ h1 {
 }
 #job-watcher {
   min-height:10px;
-  padding:3px;
+  padding:0 0 5px 0;
   background-color:#9bd;
   border-top:1px solid #7ab;
+}
+#job-watcher .job {
+  margin-left:161px;
+  font-family:courier new;
+  font-size:0.8em;
+  color: #036;
+  padding:5px 0 0 0;
 }
 .visual-hash {
   margin-left:10px;
@@ -131,14 +139,12 @@ h1 {
 }
 #your-password {
   background-color:#eee;
-  padding: 10px 0px 10px 30px;
-  height:30px;
   border-top:1px solid #bbb;
 }
-#password-container {
-  margin-left:10px;
-  width:250px;
-  float:left;
+#output-password {
+  color:#600;
+  font-family:courier new;
+  font-weight:bold;
 }
 
 #
