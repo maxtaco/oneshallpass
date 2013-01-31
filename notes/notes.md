@@ -24,7 +24,7 @@ set  (key, val)
 get  (key)
 poke ()
 is_logged_in()
-logout()
+logout()		   # calls back with error/success
 login()            # calls back with error/success 
 signup()           # calls back with error/success
 get_stored_records() # returns array of items

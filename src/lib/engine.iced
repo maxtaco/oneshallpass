@@ -289,12 +289,12 @@ exports.Engine = class Engine
     
   ##-----------------------------------------
 
-  is_logged_in       : () -> @client().is_logged_in()
-  login              : () -> @client().login()
-  logout             : () -> @client().logout()
-  signup             : () -> @client().signup()
-  push               : () -> @client().push()
-  get_stored_records : () -> @client().get_stored_records()
+  is_logged_in       : ()   -> @client().is_logged_in()
+  login              : (cb) -> @client().login(cb)
+  logout             : (cb) -> @client().logout(cb)
+  signup             : (cb) -> @client().signup(cb)
+  push               : (cb) -> @client().push(cb)
+  get_stored_records : ()   -> @client().get_stored_records()
    
   ##-----------------------------------------
 

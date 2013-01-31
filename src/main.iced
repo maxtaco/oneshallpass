@@ -43,6 +43,12 @@ class Frontend
     $('#input-host').keyup =>
       @e.set "host", $('#input-host').val()
 
+    $('#btn-login').click => 
+      @e.login @login_cb
+
+  login_cb: ->
+    console.log arguments
+
   create_engine: ->
     opts =
       presets:
@@ -73,8 +79,6 @@ class Frontend
     if keymode is keymodes.WEB_PW
       $('#output-password').val ''
     
-    #console.log "ocs: #{keymode}, #{step}, #{total_steps}"
-
   on_compute_done: (keymode, key) ->
     @jw_update keymode,
       status:     JobStatus.COMPLETE

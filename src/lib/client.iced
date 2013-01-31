@@ -130,11 +130,9 @@ exports.Client = class Client
   package_input : (mode) ->
     inp = @_eng.fork_input mode, config.server
     if not inp.is_ready()
-      @doc().set_sync_status false, "need email and passphrase"
       inp = null
     res = null
     if inp? and not util.is_email inp.get 'email'
-      @doc().set_sync_status false, "Invalid email address"
       inp = null
     return inp
     
@@ -179,7 +177,8 @@ exports.Client = class Client
   #-----------------------------------------
 
   login : (cb) ->
-    rc = if @logged_in() then sc.LOGGED_IN else sc.OK
+    console.log cb
+    rc = if @is_logged_in() then sc.LOGGED_IN else sc.OK
     await @package_args defer rc, args, inp
     if rc is sc.OK
       await @ajax "/user/login", args, "POST", defer res
