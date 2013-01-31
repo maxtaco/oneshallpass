@@ -81,6 +81,13 @@ class Version2Obj extends VersionObj
         
 ##=======================================================================
 
+copy_dict = (input) ->
+  ret = {}
+  (ret[k] = v for k,v of input)
+  ret
+
+##=======================================================================
+
 class Input
   
   constructor: ({ @engine, @keymode, @fixed, presets }) ->
@@ -103,12 +110,12 @@ class Input
       generation : SELECT
       no_timeout : [ false, false, null ]
     @_defaults = config.input.defaults
-    @_values = presets or {}
+    @_values = if presets? then copy_dict presets else {}
     
   #-----------------------------------------
 
   fork : (keymode, fixed) ->
-    out = new Input { @engine, keymode, fixed }
+    out = new Input { @engine, keymode, fixed, presets : @_values }
     out
   
   #-----------------------------------------

@@ -89,8 +89,8 @@ exports.Client = class Client
    
   #-----------------------------------------
 
-  check_res : (res) -> 
-    if res.status is 200 and (code = res?.data?.status?.code)? then code
+  check_res : (res) ->
+    if res.status is 200 then res?.data?.status?.code
     else null
    
   #-----------------------------------------
@@ -177,13 +177,13 @@ exports.Client = class Client
   #-----------------------------------------
 
   login : (cb) ->
-    console.log cb
     rc = if @is_logged_in() then sc.LOGGED_IN else sc.OK
     await @package_args defer rc, args, inp
+    code = null
     if rc is sc.OK
       await @ajax "/user/login", args, "POST", defer res
-      rc = if not (code = @check_res res)? then sc.SERVER_DOWN
-      else if code isnt 0                  then sc.BAD_LOGIN
+      if not (code = @check_res res)?      then rc = sc.SERVER_DOWN
+      else if code isnt 0                  then rc = sc.BAD_LOGIN
       else
         @_session = res.data.session
         await @do_fetch defer rc
