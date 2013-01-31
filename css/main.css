@@ -31,7 +31,7 @@ body {
 }
 .input {
   margin-left:10px;
-  width:300px;
+  width:250px;
   float:left;
 }
 .input input {
@@ -43,7 +43,7 @@ body {
   color:#000;
 }
 .input-row {
-  margin:15px 10px 15px 10px;
+  margin:15px 10px 15px 30px;
 }
 .input-row button {
   background-color: #369;
@@ -121,7 +121,27 @@ h1 {
   background-color:#9bd;
   border-top:1px solid #7ab;
 }
+.visual-hash {
+  margin-left:10px;
+  border:1px solid #ddd;
+  width:22px;
+  float:left;  
+  margin-top:2px;
+  height:22px;
+}
+#your-password {
+  background-color:#eee;
+  padding: 10px 0px 10px 30px;
+  height:30px;
+  border-top:1px solid #bbb;
+}
+#password-container {
+  margin-left:10px;
+  width:250px;
+  float:left;
+}
 
+#
 
 /*
 .label {

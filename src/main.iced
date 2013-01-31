@@ -16,6 +16,10 @@ class Frontend
     @engine.set "passphrase", "bleah bleah bleah"
     @engine.set "host", "walmart"
 
+    setTimeout =>
+      @engine.set "security_bits", 12
+    , 1000
+
     @prefill_ux()
     @attach_ux_events()
 
@@ -23,6 +27,22 @@ class Frontend
     console.log "Todo: fill ux"
 
   attach_ux_events: ->
+
+    basic_inputs = [
+      '#input-email'
+      '#input-passphrase'
+      '#input-host'
+    ]
+    $(basic_inputs.join ',').focus ->
+      if not $(@).hasClass 'modified'
+        $(@).val ''
+        $(@).addClass 'modified'
+
+    $('#input-email').keyup => @engine.set "email", $('#input-email').val()
+    $('#input-passphrase').keyup => @engine.set "passphrase", $('#input-passphrase').val()
+    $('#input-host').keyup => @engine.set "host", $('#input-host').val()
+
+
 
   create_engine: ->
     opts =
