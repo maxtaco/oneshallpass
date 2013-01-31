@@ -71,19 +71,30 @@ class Frontend
       $('#btn-login').show()
     $('#btn-login').attr "disabled", not(@e.get('email') and @e.get('passphrase'))
 
+  keymode_name: (keymode) ->
+    switch keymode
+      when keymodes.WEB_PW      then return "password"
+      when keymodes.LOGIN_PW    then return "server password"
+      when keymodes.RECORD_AES  then return "encryption key"
+      when keymodes.RECORD_HMAC then return "authentication key"
+      else return 'unknown keymode'
+
+
   on_compute_step: (keymode, step, total_steps) ->
+    if keymode is keymodes.WEB_PW
+      $('#output-password').val ''
+    txt = "#{@keymode_name keymode} (#{step}/#{total_steps})"
+
     @jw_update keymode,
       status:     JobStatus.RUNNING
       frac_done:  step / total_steps
-      txt:        "Calculating #{keymode}; #{step}/#{total_steps}"
-    if keymode is keymodes.WEB_PW
-      $('#output-password').val ''
+      txt:        txt
     
   on_compute_done: (keymode, key) ->
     @jw_update keymode,
       status:     JobStatus.COMPLETE
       frac_done:  1.0
-      txt:        "Completed #{keymode}; #{key}"
+      txt:        "#{@keymode_name keymode}"
     if keymode is keymodes.WEB_PW
       $('#output-password').val key
     
@@ -92,19 +103,28 @@ class Frontend
     @draw_job_watcher label
 
   draw_job_watcher: (label) ->
-    el = $("#job-watcher #job-#{label}")
+    el = $("#job-#{label}")
     if not el.length
       $('#job-watcher').prepend """
         <div class="job" id="job-#{label}" style="display:none;">job #{label}</div>
       """
-      el = $("#job-watcher #job-#{label}")
+      el = $("#job-#{label}")
       el.slideDown()
 
     j = @jw.getInfo label
 
     el.html """
-      job #{label}: #{j.txt}
+      <div class="job-wrapper-status-#{j.status}">
+        <div class="job-status">#{k for k,v of JobStatus when v is j.status}</div>
+        <div class="job-txt">#{j.txt}</div>
+        <div class="job-completion">
+          <div class="job-completion-bar"></div>
+        </div>
+        <div class="clear"></div>
+      </div>
     """
+    bar_width = Math.floor j.frac_done * $("#job-#{label} .job-completion").width()
+    bar = $("#job-watcher #job-#{label} .job-completion-bar").width bar_width
 
   on_timeout: ->
     console.log "session timeout. todo: clear forms"

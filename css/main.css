@@ -132,11 +132,10 @@ h1 {
   border-top:1px solid #7ab;
 }
 #job-watcher .job {
-  margin-left:161px;
   font-family:courier new;
   font-size:0.8em;
   color: #036;
-  padding:5px 0 0 0;
+  padding:5px;
 }
 .visual-hash {
   margin-left:10px;
@@ -150,4 +149,24 @@ h1 {
   color:#600;
   font-family:courier new;
   font-weight:bold;
+}
+.job-status, .job-txt, .job-completion {
+  float:left;
+}
+.job-status {
+  width:125px;
+  text-align:right;
+}
+.job-txt {
+  margin-left:10px;
+  width:260px;
+}
+.job-completion {
+  width:70px;
+  background-color:#ace;
+}
+.job-completion-bar {
+  height:10px;
+  border:1px solid #669;
+  background-color:#fff;
 }

@@ -23,6 +23,6 @@ exports.config =
     host : "oneshallpass.com"
     generation : 1
     algo_version : 2
-    security_bits : 3
+    security_bits : 6
     length : 32
     
