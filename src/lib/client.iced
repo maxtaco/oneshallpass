@@ -122,7 +122,6 @@ exports.Client = class Client
   prepare_key : (mode, cb) ->
     inp = @package_input mode
     await inp.derive_key defer key if inp?
-    @doc().finish_key mode if inp?
     cb key, inp
     
   #-----------------------------------------
