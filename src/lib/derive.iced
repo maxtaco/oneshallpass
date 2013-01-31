@@ -145,7 +145,7 @@ class Base
 
     ret = if not dk?           then null
     else if @is_internal_key() then dk
-    else                            @format @finalize dk
+    else                       @format @finalize dk
     
     cb ret
     
@@ -242,21 +242,19 @@ exports.V2 = class V2 extends Base
     # Make a copy of the original block....
     intermediate = block.clone()
 
-
     i = 0
     while i < @_limit
       await @delay i, defer()
       if compute_hook i, @_limit
         intermediate = hmac.finalize intermediate
         hmac.reset()
-        block[j] ^= w for w,j in intermediate
+        block.words[j] ^= w for w,j in intermediate.words
         i++
       else
         break
 
     ret = if i isnt @_limit then null
-    else if @is_internal_key() then block
-    else block.toString C.enc.Base64
+    else block
     
     cb ret
           
