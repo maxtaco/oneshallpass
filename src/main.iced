@@ -11,14 +11,14 @@ class Frontend
 
   constructor: ->
     @jw     = new JobWatcher()
-    @engine = @create_engine()
+    @e      = @create_engine()
     @prefill_ux()
     @attach_ux_events()
 
   prefill_ux: ->
-    if (p = @engine.get "passphrase") then $("#input-passphrase").val(p).addClass("modified")
-    if (e = @engine.get "email") then $("#input-email").val(e).addClass("modified")
-    if (h = @engine.get "host") then $("#input-host").val(h).addClass("modified")
+    if (p = @e.get "passphrase") then $("#input-passphrase").val(p).addClass("modified")
+    if (e = @e.get "email") then $("#input-email").val(e).addClass("modified")
+    if (h = @e.get "host") then $("#input-host").val(h).addClass("modified")
 
   attach_ux_events: ->
 
@@ -32,9 +32,16 @@ class Frontend
         $(@).val ''
         $(@).addClass 'modified'
 
-    $('#input-email').keyup =>      @engine.set "email", $('#input-email').val()
-    $('#input-passphrase').keyup => @engine.set "passphrase", $('#input-passphrase').val()
-    $('#input-host').keyup =>       @engine.set "host", $('#input-host').val()
+    $('#input-email').keyup =>      
+      @e.set "email", $('#input-email').val()
+      @update_login_button()
+      
+    $('#input-passphrase').keyup =>
+      @e.set "passphrase", $('#input-passphrase').val()
+      @update_login_button()
+
+    $('#input-host').keyup =>
+      @e.set "host", $('#input-host').val()
 
   create_engine: ->
     opts =
@@ -48,6 +55,15 @@ class Frontend
     params = new Location(window.location).decode_url_params()
     opts.presets[k] = v for k,v of params
     return new Engine opts
+
+  update_login_button: ->
+    if @e.is_logged_in()
+      $('#btn-logout').show()
+      $('#btn-login').hide()
+    else 
+      $('#btn-logout').hide()
+      $('#btn-login').show()
+    $('#btn-login').attr "disabled", not(@e.get('email') and @e.get('passphrase'))
 
   on_compute_step: (keymode, step, total_steps) ->
     @jw_update keymode,
