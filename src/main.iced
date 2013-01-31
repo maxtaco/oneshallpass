@@ -16,7 +16,9 @@ class Frontend
     @attach_ux_events()
 
   prefill_ux: ->
-    console.log "Todo: fill ux"
+    if (p = @engine.get "passphrase") then $("#input-passphrase").val(p).addClass("modified")
+    if (e = @engine.get "email") then $("#input-email").val(e).addClass("modified")
+    if (h = @engine.get "host") then $("#input-host").val(h).addClass("modified")
 
   attach_ux_events: ->
 
@@ -30,11 +32,9 @@ class Frontend
         $(@).val ''
         $(@).addClass 'modified'
 
-    $('#input-email').keyup => @engine.set "email", $('#input-email').val()
+    $('#input-email').keyup =>      @engine.set "email", $('#input-email').val()
     $('#input-passphrase').keyup => @engine.set "passphrase", $('#input-passphrase').val()
-    $('#input-host').keyup => @engine.set "host", $('#input-host').val()
-
-
+    $('#input-host').keyup =>       @engine.set "host", $('#input-host').val()
 
   create_engine: ->
     opts =

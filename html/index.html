@@ -36,62 +36,59 @@
   <div id="wrapper">
     <div id="col1">
 
-      <div class="input-row">
-        <div class="label">Email</div>
-        <div class="input">
-          <input type="text" id="input-email" value="you@example.com" />
-        </div>
-        <div class="visual-hash"></div>
-        <div class="clear"></div>
-      </div>
-
-      <div class="input-row">
-        <div class="label">Passphrase</div>
-        <div class="input">
-          <input type="text" id="input-passphrase" value="hot sauce lemon party" />
-        </div>
-        <div class="visual-hash"></div>
-        <div class="clear"></div>
-      </div>
-
-      <div class="input-row" id="login-row">
-        <div class="label">Optional Login</div>
-        <div class="input">
-          <button id="btn-login"  disabled="true" />Login</button>
-          <button id="btn-logout" style="display:none;" />Logout</button>
+      <div class="input-bundle">
+        <div class="input-row">
+          <div class="label">Email</div>
+          <div class="input">
+            <input type="text" id="input-email" value="you@example.com" />
+          </div>
+          <div class="visual-hash"></div>
           <div class="clear"></div>
         </div>
-        <div class="clear"></div>
-      </div>
 
-      <div class="input-row" id="login-status-row" style="display:none;">
-        <div class="label"></div>
-        <div class="input">
-          Hashing credentials...
+        <div class="input-row">
+          <div class="label">Passphrase</div>
+          <div class="input">
+            <input type="text" id="input-passphrase" value="hot sauce lemon party" />
+          </div>
+          <div class="visual-hash"></div>
+          <div class="clear"></div>
         </div>
-        <div class="clear"></div>
-      </div>
 
-      <div class="divider">
-      </div>
-
-      <div class="input-row">
-        <div class="label">Host</div>
-        <div class="input">
-          <input type="text" id="input-host" value="iTunes" />
+        <div class="input-row" id="login-row">
+          <div class="label">Optional Login</div>
+          <div class="input">
+            <button id="btn-login"  disabled="true" />Login</button>
+            <button id="btn-logout" style="display:none;" />Logout</button>
+            <div class="clear"></div>
+          </div>
+          <div class="clear"></div>
         </div>
-        <div class="visual-hash"></div>
-        <div class="clear"></div>
+
       </div>
 
-      <div class="input-row" id="your-password">
-        <div class="label">Your Password</div>
-        <div class="input">
-          <input type="text" id="output-password" value="" />
+      <div class="input-bundle host-bundle">
+        <div class="input-row">
+          <div class="label">Host</div>
+          <div class="input">
+            <input type="text" id="input-host" value="iTunes" />
+          </div>
+          <div class="visual-hash"></div>
+          <div class="clear"></div>
         </div>
-        <div class="visual-hash"></div>
-        <div class="clear"></div>
       </div>
+
+      <div class="input-bundle password-bundle">
+        <div class="input-row">
+          <div class="label">Your Password</div>
+          <div class="input">
+            <input type="text" id="output-password" value="" />
+          </div>
+          <div class="visual-hash"></div>
+          <div class="clear"></div>
+        </div>
+      </div>
+
 
       <div id="job-watcher">
       </div>

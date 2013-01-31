@@ -29,6 +29,17 @@ body {
   font-weight:bold;
   padding-top:6px;
 }
+.input-bundle {
+  padding: 10px 0 10px 0;
+}
+.input-bundle.host-bundle {
+  border-top:1px solid #ccc;
+}
+.input-bundle.password-bundle {
+  background-color:#eee;
+  border-top:1px solid #bbb;
+}
+
 .input {
   margin-left:10px;
   width:250px;
@@ -83,9 +94,7 @@ body {
   border:1px solid #066;
   color:#060;
 }
-.divider {
-  border-bottom:1px solid #ddd;
-}
+
 #btn-login {
   float:left;
 }
@@ -132,56 +141,13 @@ h1 {
 .visual-hash {
   margin-left:10px;
   border:1px solid #ddd;
-  width:22px;
+  width:26px;
   float:left;  
   margin-top:2px;
-  height:22px;
-}
-#your-password {
-  background-color:#eee;
-  border-top:1px solid #bbb;
+  height:26px;
 }
 #output-password {
   color:#600;
   font-family:courier new;
   font-weight:bold;
 }
-
-#
-
-/*
-.label {
-  text-align: right;
-  font-weight: bold;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-}
-
-.output-label {
-  text-align: right;
-  font-weight: bold;
-}
-
-.minor {
-  font-size: 10px;
-}
-
-body {
-  font-family: helvetica, arial, verdana, sans;
-}
-
-.input-field {
-  color: gray;
-  border-width: 2px;
-  width: 280px;
-  padding: 2px;
-  font-size: 100%;
-  bottom: auto;
-  top: auto;
-}
-
-.input-black {
-  color: black;
-}
-*/
