@@ -170,7 +170,6 @@ h1 {
   -moz-transition:    background-color 0.0s, color 0.0s;
   -o-transition:      background-color 0.0s, color 0.0s;
 }
-
 .job-status, .job-txt, .job-completion {
   float:left;
 }
@@ -191,9 +190,22 @@ h1 {
   border:1px solid #669;
   background-color:#fff;
 }
-
 #advanced-table {
   font-size:0.8em;
+  width:250px;
+}
+#advanced-table td {
+  padding:5px;
+}
+#notes-label-cell {
+  width:70px;
+}
+#notes-ta-cell {
+  width:150px;
+}
+#input-notes {
+  height:40px;
+  width:175px;
 }
 .question {
   background-color:#fff;
