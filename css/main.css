@@ -10,17 +10,21 @@ body {
 }
 #col1 {
   float:left;
-  width:500px;
+  width:400px;
   margin:10px;
   padding:0px;
   border:1px solid #7ab;
   background-color: #fff8ff;
 }
 #col2 {
+  float:left;
+  width:72px;
+  margin:10px;
+}
+#col3 {
   margin:10px;
   float:left;
   width:300px;
-  padding:10px;
 }
 .label {
   width:120px;
@@ -158,13 +162,13 @@ h1 {
   color: #036;
   padding:5px;
 }
-.visual-hash {
-  margin-left:10px;
-  border:1px solid #ddd;
-  width:24px;
+.vhash {
+  border:1px solid #7ab;
+  width:72px;
   float:left;  
-  margin-top:2px;
-  height:24px;
+  margin-bottom:10px;
+  height:72px;
+  background-color:#fff;
 }
 #output-password {
   color:#603;

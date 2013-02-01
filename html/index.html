@@ -40,26 +40,24 @@
         <div class="input-row">
           <div class="label">Email</div>
           <div class="input">
-            <input type="text" id="input-email" value="you@example.com" />
+            <input type="text" id="input-email" value="you@example.com" tabindex="1" />
           </div>
-          <div class="visual-hash"></div>
           <div class="clear"></div>
         </div>
 
         <div class="input-row">
           <div class="label">Passphrase</div>
           <div class="input">
-            <input type="text" id="input-passphrase" value="hot sauce lemon party" />
+            <input type="text" id="input-passphrase" value="hot sauce lemon party"  tabindex="2" />
           </div>
-          <div class="visual-hash"></div>
           <div class="clear"></div>
         </div>
 
         <div class="input-row" id="login-row">
           <div class="label">Optional Login</div>
           <div class="input">
-            <button id="btn-login"  disabled="true" />Login or Join</button>
-            <button id="btn-logout" style="display:none;" />Logout</button>
+            <button id="btn-login"  disabled="true"  tabindex="3" />Login or Join</button>
+            <button id="btn-logout" style="display:none;"  tabindex="4" />Logout</button>
             <div class="clear"></div>
             <div id="bad-login-dialog" style="display:none;">
               <p id="join-msg">
@@ -90,7 +88,7 @@
         <div class="input-row">
           <div class="label">Load</div>
           <div class="input">
-            <select id="input-saved-host">
+            <select id="input-saved-host"  tabindex="5">
             </select>
           </div>
           <div class="clear"></div>
@@ -101,9 +99,8 @@
         <div class="input-row">
           <div class="label">Host</div>
           <div class="input">
-            <input type="text" id="input-host" value="iTunes" />
+            <input type="text" id="input-host" value="iTunes" tabindex="6" />
           </div>
-          <div class="visual-hash"></div>
           <div class="clear"></div>
         </div>
         <div class="input-row">
@@ -199,7 +196,7 @@
         <div class="input-row" id="save-row" style="display:none;">
           <div class="label">Save</div>
           <div class="input">
-            <button id="btn-save" disabled="disabled">Save</button>
+            <button id="btn-save" disabled="disabled"  tabindex="7">Save</button>
           </div>
           <div class="clear"></div>
         </div>          
@@ -209,9 +206,8 @@
         <div class="input-row">
           <div class="label">Your Password</div>
           <div class="input">
-            <input type="text" id="output-password" readonly="readonly" value="" />
+            <input type="text" id="output-password" readonly="readonly" value=""  tabindex="8"/>
           </div>
-          <div class="visual-hash"></div>
           <div class="clear"></div>
         </div>
       </div>
@@ -221,7 +217,23 @@
       </div>
 
     </div>
+
     <div id="col2">
+      <div class="vhash">
+        <canvas id="vhash-email" width="72" height="72"></canvas>
+      </div>
+      <div class="vhash">
+        <canvas id="vhash-passphrase" width="72" height="72"></canvas>
+      </div>
+      <div class="vhash">
+        <canvas id="vhash-host" width="72" height="72"></canvas>
+      </div>      
+      <div class="vhash">
+        <canvas id="vhash-password" width="72" height="72"></canvas>
+      </div>
+    </div>
+
+    <div id="col3">
       <h1>One Shall Pass</h1>
       <div class="explanation">
         <p>

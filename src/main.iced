@@ -3,6 +3,7 @@ Engine                  = require('./engine').Engine
 sc                      = require('./status').codes
 {JobWatcher, JobStatus} = require './job_watcher'
 {keymodes}              = require './derive'
+{vhash}                 = require './vhash'
 
 # -----------------------------------------------------------------------------
 
@@ -14,13 +15,20 @@ class Frontend
     @e      = null             # the engine
     @create_engine()
     @attach_ux_events()
+    @first_select()
 
+  first_select: ->
+    if $("#input-email").hasClass("modified") or $("#input-passphrase").hasClass("modified")
+      if not $("#input-email").hasClass("modified") then $("#input-email").focus()
+      else if not $("#input-passphrase").hasClass("modified") then $("#input-passphrase").focus()
+      else $("#btn-login").focus()
 
   fill_both: (key, val, input_id) ->
     ### fills both the engine and the UI ###
     @e.set key, val
     $("##{input_id}").val(@e.get key).addClass "modified"
     @update_login_button()
+    @update_vhashes()
 
   attach_ux_events: ->
 
@@ -36,21 +44,26 @@ class Frontend
 
     $('#input-email').keyup =>
       @e.set "email", $('#input-email').val()
+      @update_vhashes()
       @update_login_button()
       
     $('#input-passphrase').keyup =>
       @e.set "passphrase", $('#input-passphrase').val()
+      @update_vhashes()
       @update_login_button()
 
     $('#input-host').keyup =>
       @e.set "host", $('#input-host').val()
+      @update_vhashes()
       @update_save_button()
 
     $('#input-generation').change =>
       @e.set "generation", parseInt $('#input-generation').val()
+      @update_vhashes()
 
     $('#input-security-bits').change =>
       @e.set "security_bits", parseInt $('#input-security-bits').val()
+      @update_vhashes()
 
     $('#input-notes').keyup =>
       @e.set "notes", $('#input-notes').val()
@@ -58,9 +71,11 @@ class Frontend
 
     $('#input-num-symbols').change =>
       @e.set "num_symbols", $('#input-num-symbols').val()
+      @update_vhashes()
 
     $('#input-length').change =>
       @e.set "length", $('#input-length').val()
+      @update_vhashes()
 
     $('#btn-login').click => 
       $('#btn-login').attr('disabled','disabled')
@@ -76,7 +91,7 @@ class Frontend
     $('#input-passphrase, #input-email').focus =>
       $('#input-email').removeClass('error')
       $('#input-passphrase').removeClass('error')
-      
+
 
     $('#btn-join').click => 
       $('#input-email').removeClass('error')
@@ -105,6 +120,18 @@ class Frontend
 
     $("#btn-save").click =>
       @e.push @push_cb
+
+
+  update_vhashes: ->
+    new vhash $('#vhash-email')[0], @e.get "email"
+    new vhash $('#vhash-passphrase')[0], @e.get "passphrase"
+    new vhash $('#vhash-host')[0], JSON.stringify {
+      host:           @e.get("host")
+      generation:     @e.get("generation")
+      num_symbols:    @e.get("num_symbols")
+      length:         @e.get("length")
+      security_bits:  @e.get("security_bits")
+    }
 
   update_save_button: ->
     h = @e.get "host"
@@ -148,7 +175,9 @@ class Frontend
       @update_save_button()
     else
       @enable_login_credentials()    
-      if status is sc.BAD_LOGIN
+      if status is sc.BAD_ARGS
+        alert "Bad arguments; pick a real email address and passphrase"
+      else if status is sc.BAD_LOGIN
         @show_bad_login_dialog()
       else if status is sc.SERVER_DOWN
         @show_bad_general_dialog()
@@ -170,6 +199,8 @@ class Frontend
         <option value="#{r.host}"
         >#{r.host}</option>
       """ for r in recs).join "\n"
+      $("#input-saved-host").focus()
+
 
   join_cb: (status) =>
     @enable_login_credentials()
@@ -272,7 +303,7 @@ class Frontend
 
   on_compute_step: (keymode, step, total_steps) ->
     if keymode is keymodes.WEB_PW
-      $('#output-password').val ''
+      @update_output_pw ''
     txt = "#{@keymode_name keymode} (#{step+1}/#{total_steps+1})"
 
     @jw_update keymode,
@@ -289,11 +320,14 @@ class Frontend
       @update_output_pw key
 
   update_output_pw: (key) ->
-    $('#output-password').addClass("just-changed").val(key)
-    if @pw_effect_timeout then clearTimeout @pw_effect_timeout
-    @pw_effect_timeout = setTimeout (->
-      $('#output-password').removeClass "just-changed"
-    ), 500
+    $('#output-password').val key
+    if key and key.length
+      if @pw_effect_timeout then clearTimeout @pw_effect_timeout
+      $('#output-password').addClass("just-changed")
+      @pw_effect_timeout = setTimeout (->
+        $('#output-password').removeClass "just-changed"
+      ), 500
+    new vhash $('#vhash-password')[0], key
 
   jw_update: (label, changes) ->
     @jw.update label, changes
