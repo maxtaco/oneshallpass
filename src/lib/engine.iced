@@ -200,6 +200,12 @@ class Timer
     @_last_set = null
     
   #-----------------------------------------
+
+  force : () ->
+    @_obj.clear()
+    @clear()
+   
+  #-----------------------------------------
   
   set : () ->
     now = util.unix_time()
@@ -244,6 +250,9 @@ class Timers
   toggle : (b) ->
     if b and not @_active then @start()
     else if not b and @_active then @stop()
+
+  force : () ->
+    (t.force() for t in @_timers)
 
 ##=======================================================================
 
@@ -300,13 +309,15 @@ exports.Engine = class Engine
 
   is_logged_in       : ()   -> @client().is_logged_in()
   login              : (cb) -> @client().login(cb)
-  logout             : (cb) -> @client().logout(cb)
   signup             : (cb) -> @client().signup(cb)
   push               : (cb) -> @client().push(cb)
   get_stored_records : ()   -> @client().get_stored_records()
    
   ##-----------------------------------------
 
+  logout: (cb) ->
+    @_timers.force()
+    @client().logout(cb)
 
 ##=======================================================================
 
