@@ -76,6 +76,9 @@ class Frontend
       $('#faq').show()
       $('#faq-link').parent().hide()
 
+    $('#output-password').click =>
+      $('#output-password').select()
+
   logout_cb: (status) =>
     console.log "lo cb: #{status} #{@e.is_logged_in()}"
     if status isnt sc.OK
@@ -184,7 +187,7 @@ class Frontend
 
   keymode_name: (keymode) ->
     switch keymode
-      when keymodes.WEB_PW      then return "password"
+      when keymodes.WEB_PW      then return "base hash (#{@e.get('security_bits')}-bit)"
       when keymodes.LOGIN_PW    then return "server password"
       when keymodes.RECORD_AES  then return "encryption key"
       when keymodes.RECORD_HMAC then return "authentication key"
@@ -207,8 +210,12 @@ class Frontend
       frac_done:  1.0
       txt:        "#{@keymode_name keymode}"
     if keymode is keymodes.WEB_PW
-      $('#output-password').val key
-    
+      $('#output-password').addClass("just-changed").val(key)
+      if @pw_effect_timeout then clearTimeout @pw_effect_timeout
+      @pw_effect_timeout = setTimeout (->
+        $('#output-password').removeClass "just-changed"
+      ), 500
+
   jw_update: (label, changes) ->
     @jw.update label, changes
     @draw_job_watcher label

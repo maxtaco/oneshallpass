@@ -218,8 +218,7 @@ exports.V2 = class V2 extends Base
   constructor : (input) ->
     super input
     
-  	# Add 2 because v2 is easier than v1..
-    exp = @security_bits() + 2
+    exp = @security_bits()
     # subtract 1 because 1 iteration done by default
     @_limit = (1 << exp) - 1
     
