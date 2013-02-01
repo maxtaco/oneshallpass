@@ -86,13 +86,11 @@
 
       </div>
 
-      <div class="input-bundle saved-hosts-bundle">
+      <div class="input-bundle saved-hosts-bundle" style="display:none;">
         <div class="input-row">
           <div class="label">Load</div>
           <div class="input">
-            <select>
-              <option value="-">- choose -</option>
-              <option value="TD Ameritrade">TD Ameritrade</option>
+            <select id="input-saved-host">
             </select>
           </div>
           <div class="clear"></div>
@@ -108,13 +106,10 @@
           <div class="visual-hash"></div>
           <div class="clear"></div>
         </div>
-      </div>
-
-      <div class="input-bundle advanced-bundle">
         <div class="input-row">
           <div class="label">Advanced</div>
           <div class="input">
-            <table id="advanced-table">
+            <table id="advanced-table" cellspacing="0" cellpadding="0" border="0">
               <tr>
                 <td>generation</td>
                 <td>
@@ -144,26 +139,26 @@
                 <td>hashes</td>
                 <td>
                   <select id="input-security-bits">
-                    <option value="1">2^3</option>
-                    <option value="2">2^4</option>
-                    <option value="3">2^5</option>
-                    <option value="4">2^6</option>
-                    <option value="5">2^7</option>
-                    <option value="6">2^8</option>
-                    <option value="7" selected="selected">2^9</option>
-                    <option value="8">2^10</option>
-                    <option value="9">2^11</option>
-                    <option value="10">2^12</option>
-                    <option value="11">2^13</option>
-                    <option value="12">2^14</option>
-                    <option value="13">2^15</option>
-                    <option value="14">2^16</option>
-                    <option value="15">2^17</option>
-                    <option value="16">2^18</option>
-                    <option value="17">2^19</option>
-                    <option value="18">2^20</option>
-                    <option value="19">2^21</option>
-                    <option value="20">2^22</option>
+                    <option value="1">2^1</option>
+                    <option value="2">2^2</option>
+                    <option value="3">2^3</option>
+                    <option value="4">2^4</option>
+                    <option value="5">2^5</option>
+                    <option value="6">2^6</option>
+                    <option value="7" selected="selected">2^7</option>
+                    <option value="8">2^8</option>
+                    <option value="9">2^9</option>
+                    <option value="10">2^10</option>
+                    <option value="11">2^11</option>
+                    <option value="12">2^12</option>
+                    <option value="13">2^13</option>
+                    <option value="14">2^14</option>
+                    <option value="15">2^15</option>
+                    <option value="16">2^16</option>
+                    <option value="17">2^17</option>
+                    <option value="18">2^18</option>
+                    <option value="19">2^19</option>
+                    <option value="20">2^20</option>
                   </select>
                 </td>            
               </tr>
@@ -191,18 +186,30 @@
                   </select>
                 </td>
               </tr>
+              <tr style="display:none;" id="notes-row">
+                <td id="notes-label-cell">notes</td>
+                <td id="notes-ta-cell" colspan="3">
+                  <textarea id="input-notes"></textarea>
+                </td>
+              </tr>
             </table>
           </div>
-          <div class="visual-hash"></div>
           <div class="clear"></div>
         </div>
+        <div class="input-row" id="save-row" style="display:none;">
+          <div class="label">Save</div>
+          <div class="input">
+            <button id="btn-save" disabled="disabled">Save</button>
+          </div>
+          <div class="clear"></div>
+        </div>          
       </div>      
 
       <div class="input-bundle password-bundle">
         <div class="input-row">
           <div class="label">Your Password</div>
           <div class="input">
-            <input type="text" id="output-password" value="" />
+            <input type="text" id="output-password" readonly="readonly" value="" />
           </div>
           <div class="visual-hash"></div>
           <div class="clear"></div>

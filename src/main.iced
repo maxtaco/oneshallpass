@@ -11,14 +11,15 @@ class Frontend
 
   constructor: ->
     @jw     = new JobWatcher()
-    @e      = @create_engine()
-    @prefill_ux()
+    @e      = null             # the engine
+    @create_engine()
     @attach_ux_events()
 
-  prefill_ux: ->
-    if (p = @e.get "passphrase") then $("#input-passphrase").val(p).addClass("modified")
-    if (e = @e.get "email") then $("#input-email").val(e).addClass("modified")
-    if (h = @e.get "host") then $("#input-host").val(h).addClass("modified")
+
+  fill_both: (key, val, input_id) ->
+    ### fills both the engine and the UI ###
+    @e.set key, val
+    $("##{input_id}").val(@e.get key).addClass "modified"
     @update_login_button()
 
   attach_ux_events: ->
@@ -33,7 +34,7 @@ class Frontend
         $(@).val ''
         $(@).addClass 'modified'
 
-    $('#input-email').keyup =>      
+    $('#input-email').keyup =>
       @e.set "email", $('#input-email').val()
       @update_login_button()
       
@@ -43,12 +44,17 @@ class Frontend
 
     $('#input-host').keyup =>
       @e.set "host", $('#input-host').val()
+      @update_save_button()
 
     $('#input-generation').change =>
       @e.set "generation", parseInt $('#input-generation').val()
 
     $('#input-security-bits').change =>
       @e.set "security_bits", parseInt $('#input-security-bits').val()
+
+    $('#input-notes').keyup =>
+      @e.set "notes", $('#input-notes').val()
+      @update_save_button()
 
     $('#input-num-symbols').change =>
       @e.set "num_symbols", $('#input-num-symbols').val()
@@ -76,20 +82,61 @@ class Frontend
       $('#faq').show()
       $('#faq-link').parent().hide()
 
-  logout_cb: (status) =>
-    console.log "lo cb: #{status} #{@e.is_logged_in()}"
+    $('#output-password').click =>
+      $('#output-password').select()
+
+    $("#input-saved-host").change =>
+      v = $("#input-saved-host").val()
+      if v and v.length
+        @load_record_by_host v
+
+    $("""#input-security-bits, #input-generation,
+        #input-length, #input-host, #input-num-symbols,
+        #input-notes
+      """).change =>
+      @update_save_button()
+
+    $("#btn-save").click =>
+      @e.push @push_cb
+
+  update_save_button: ->
+    h = @e.get "host"
+    if h and h.length
+      $("#btn-save").attr "disabled", false
+    else
+      $("#btn-save").attr "disabled", "disabled"
+  
+  load_record_by_host: (h) ->
+    recs = @e.get_stored_records()
+    for r in recs when r.host is h
+      @fill_both "security_bits", r.security_bits, "input-security-bits"
+      @fill_both "generation", r.generation, "input-generation"
+      @fill_both "length", r.length, "input-length"
+      @fill_both "host", h, "input-host"
+      @fill_both "num_symbols", r.num_symbols, "input-num-symbols"
+      @fill_both "notes", (r.notes or ""), "input-notes"
+      $('#btn-save').attr 'disabled', 'disabled'
+
+  push_cb: (status) =>
     if status isnt sc.OK
-      alert "Unhandled logout status #{status}"      
-    $('#btn-login').attr('disabled', false)
-    @enable_login_credentials()
-    @e.set "passphrase", ''
-    $('#input-passphrase').val ''
-    @update_login_button()
+      alert "Unhandled push status #{status}"
+    else
+      $("#btn-save").attr "disabled", "disabled"
+      @maybe_show_saved_hosts()
+
+  logout_cb: (status) =>
+    if status isnt sc.OK
+      alert "Unhandled logout status #{status}"
+    @clear_all_but_email()
 
   login_cb: (status) =>
-    console.log "cb: #{status} #{@e.is_logged_in()}"
     if status is sc.OK
       @update_login_button()
+      @maybe_show_saved_hosts()
+      $("#save-row").slideDown()
+      @fill_both 'host', '', "input-host"      
+      @update_output_pw ''
+      @update_save_button()
     else
       @enable_login_credentials()    
       if status is sc.BAD_LOGIN
@@ -103,6 +150,17 @@ class Frontend
         """
       else
         alert "Unhandled login error code: #{status}"
+
+  maybe_show_saved_hosts: =>
+    recs = @e.get_stored_records()
+    if recs.length
+      $(".saved-hosts-bundle").slideDown()
+      $("#input-saved-host").html """
+        <option value="">- choose -</option>
+      """ + ("""
+        <option value="#{r.host}"
+        >#{r.host}</option>
+      """ for r in recs).join "\n"
 
   join_cb: (status) =>
     @enable_login_credentials()
@@ -167,9 +225,16 @@ class Frontend
         on_compute_done: (keymode, key)      => @on_compute_done keymode, key
         on_timeout:      ()                  => @on_timeout()
 
-    params = new Location(window.location).decode_url_params()
-    opts.presets[k] = v for k,v of params
-    return new Engine opts
+    p = new Location(window.location).decode_url_params()
+    @e      = new Engine opts
+    
+    if p.passphrase     then @fill_both "passphrase", p.passphrase, "input-passphrase"
+    if p.email          then @fill_both "email", p.email, "input-email"
+    if p.host           then @fill_both "host", p.host, "input-host"
+    if p.security_bits  then @fill_both "security_bits", p.security_bits, "input-security-bits"
+    if p.generation     then @fill_both "generation", p.generation, "input-generation"
+    if p.length         then @fill_both "length", p.length, "input-length"
+    if p.num_symbols    then @fill_both "num_symbols", p.num_symbols, "input-num-symbols"
 
   update_login_button: ->
     @hide_bad_login_dialog()
@@ -177,14 +242,16 @@ class Frontend
       $('#btn-logout').show()
       $('#btn-logout').attr "disabled", false
       $('#btn-login').hide()
+      $('#notes-row').show()
     else 
       $('#btn-logout').hide()
       $('#btn-login').show()
+      $('#notes-row').hide()
     $('#btn-login').attr "disabled", not(@e.get('email') and @e.get('passphrase'))
 
   keymode_name: (keymode) ->
     switch keymode
-      when keymodes.WEB_PW      then return "password"
+      when keymodes.WEB_PW      then return "base hash (#{@e.get('security_bits')}-bit)"
       when keymodes.LOGIN_PW    then return "server password"
       when keymodes.RECORD_AES  then return "encryption key"
       when keymodes.RECORD_HMAC then return "authentication key"
@@ -207,8 +274,15 @@ class Frontend
       frac_done:  1.0
       txt:        "#{@keymode_name keymode}"
     if keymode is keymodes.WEB_PW
-      $('#output-password').val key
-    
+      @update_output_pw key
+
+  update_output_pw: (key) ->
+    $('#output-password').addClass("just-changed").val(key)
+    if @pw_effect_timeout then clearTimeout @pw_effect_timeout
+    @pw_effect_timeout = setTimeout (->
+      $('#output-password').removeClass "just-changed"
+    ), 500
+
   jw_update: (label, changes) ->
     @jw.update label, changes
     @draw_job_watcher label
@@ -238,7 +312,18 @@ class Frontend
     bar = $("#job-watcher #job-#{label} .job-completion-bar").width bar_width
 
   on_timeout: ->
-    console.log "session timeout. todo: clear forms"
+    @clear_all_but_email()
+
+  clear_all_but_email: ->
+    $("#save-row").slideUp()
+    $(".saved-hosts-bundle").slideUp()
+    $('#btn-login').attr('disabled', false)
+    @enable_login_credentials()
+    @fill_both 'passphrase', '', "input-passphrase"
+    @fill_both 'host', '',       "input-host"
+    @fill_both 'notes','',       "input-notes"
+    @update_output_pw ''
+    @update_login_button()
 
 # -----------------------------------------------------------------------------
 

@@ -53,6 +53,7 @@ body {
   width:250px;
   color:#999;
   padding:3px;
+  border:1px solid #999;
 }
 .input input.modified {
   color:#000;
@@ -156,9 +157,18 @@ h1 {
   height:26px;
 }
 #output-password {
-  color:#600;
+  color:#603;
   font-family:courier new;
   font-weight:bold;
+  -webkit-transition: background-color 0.5s, color 0.5s;
+  -moz-transition:    background-color 0.5s, color 0.5s;
+  -o-transition:      background-color 0.5s, color 0.5s;
+}
+#output-password.just-changed {
+  background-color:#fdf;
+  -webkit-transition: background-color 0.0s, color 0.0s;
+  -moz-transition:    background-color 0.0s, color 0.0s;
+  -o-transition:      background-color 0.0s, color 0.0s;
 }
 .job-status, .job-txt, .job-completion {
   float:left;
@@ -180,9 +190,22 @@ h1 {
   border:1px solid #669;
   background-color:#fff;
 }
-
 #advanced-table {
   font-size:0.8em;
+  width:250px;
+}
+#advanced-table td {
+  padding:5px;
+}
+#notes-label-cell {
+  width:70px;
+}
+#notes-ta-cell {
+  width:150px;
+}
+#input-notes {
+  height:40px;
+  width:175px;
 }
 .question {
   background-color:#fff;
