@@ -213,7 +213,7 @@ exports.Client = class Client
    
   ##-----------------------------------------
 
-  push_record : (cb) ->
+  push : (cb) ->
     rc = sc.OK
     inp = @_eng.get_input()
     rec = inp.to_record()

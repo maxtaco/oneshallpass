@@ -11,14 +11,14 @@ class Frontend
 
   constructor: ->
     @jw     = new JobWatcher()
-    @e      = @create_engine()
-    @prefill_ux()
+    @e      = null             # the engine
+    @create_engine()
     @attach_ux_events()
 
-  prefill_ux: ->
-    if (p = @e.get "passphrase") then $("#input-passphrase").val(p).addClass("modified")
-    if (e = @e.get "email") then $("#input-email").val(e).addClass("modified")
-    if (h = @e.get "host") then $("#input-host").val(h).addClass("modified")
+
+  fill_engine_and_ui: (key, val, input_id) ->
+    @e.set key, val
+    $("##{input_id}").val(@e.get key).addClass "modified"
     @update_login_button()
 
   attach_ux_events: ->
@@ -33,7 +33,7 @@ class Frontend
         $(@).val ''
         $(@).addClass 'modified'
 
-    $('#input-email').keyup =>      
+    $('#input-email').keyup =>
       @e.set "email", $('#input-email').val()
       @update_login_button()
       
@@ -43,6 +43,7 @@ class Frontend
 
     $('#input-host').keyup =>
       @e.set "host", $('#input-host').val()
+      @update_save_button()
 
     $('#input-generation').change =>
       @e.set "generation", parseInt $('#input-generation').val()
@@ -79,20 +80,62 @@ class Frontend
     $('#output-password').click =>
       $('#output-password').select()
 
-  logout_cb: (status) =>
-    console.log "lo cb: #{status} #{@e.is_logged_in()}"
+    $("#input-saved-host").change =>
+      v = $("#input-saved-host").val()
+      if v and v.length
+        @load_record_by_host v
+
+    $("""#input-security-bits, #input-generation,
+        #input-length, #input-host, #input-num-symbols
+      """).change =>
+      @update_save_button()
+
+    $("#btn-save").click =>
+      @e.push @push_cb
+
+  update_save_button: ->
+    h = @e.get "host"
+    if h and h.length
+      $("#btn-save").attr "disabled", false
+    else
+      $("#btn-save").attr "disabled", "disabled"
+  
+  load_record_by_host: (h) ->
+    recs = @e.get_stored_records()
+    for r in recs when r.host is h
+      @fill_engine_and_ui "security_bits", r.security_bits, "input-security-bits"
+      @fill_engine_and_ui "generation", r.generation, "input-generation"
+      @fill_engine_and_ui "length", r.length, "input-length"
+      @fill_engine_and_ui "host", h, "input-host"
+      @fill_engine_and_ui "num_symbols", r.num_symbols, "input-num-symbols"
+      $('#btn-save').attr 'disabled', 'disabled'
+
+  push_cb: (status) =>
     if status isnt sc.OK
-      alert "Unhandled logout status #{status}"      
+      alert "Unhandled push status #{status}"
+    else
+      $("#btn-save").attr "disabled", "disabled"
+      @maybe_show_saved_hosts()
+
+  logout_cb: (status) =>
+    if status isnt sc.OK
+      alert "Unhandled logout status #{status}"
+    $("#save-row").slideUp()      
+    $(".saved-hosts-bundle").slideUp()
     $('#btn-login').attr('disabled', false)
     @enable_login_credentials()
-    @e.set "passphrase", ''
-    $('#input-passphrase').val ''
+    @fill_engine_and_ui 'passphrase', '', "input-passphrase"
+    @fill_engine_and_ui 'host', '', "input-host"
+    @update_output_pw ''
     @update_login_button()
 
   login_cb: (status) =>
-    console.log "cb: #{status} #{@e.is_logged_in()}"
     if status is sc.OK
       @update_login_button()
+      @maybe_show_saved_hosts()
+      $("#save-row").slideDown()
+      @fill_engine_and_ui 'host', '', "input-host"
+      @update_output_pw ''
     else
       @enable_login_credentials()    
       if status is sc.BAD_LOGIN
@@ -106,6 +149,17 @@ class Frontend
         """
       else
         alert "Unhandled login error code: #{status}"
+
+  maybe_show_saved_hosts: =>
+    recs = @e.get_stored_records()
+    if recs.length
+      $(".saved-hosts-bundle").slideDown()
+      $("#input-saved-host").html """
+        <option value="">- choose -</option>
+      """ + ("""
+        <option value="#{r.host}"
+        >#{r.host}</option>
+      """ for r in recs).join "\n"
 
   join_cb: (status) =>
     @enable_login_credentials()
@@ -171,8 +225,11 @@ class Frontend
         on_timeout:      ()                  => @on_timeout()
 
     params = new Location(window.location).decode_url_params()
-    opts.presets[k] = v for k,v of params
-    return new Engine opts
+    @e      = new Engine opts
+    
+    if params.passphrase then @fill_engine_and_ui "passphrase", params.passphrase, "input-passphrase"
+    if params.email      then @fill_engine_and_ui "email", params.email, "input-email"
+    if params.host       then @fill_engine_and_ui "host", params.host, "input-host"
 
   update_login_button: ->
     @hide_bad_login_dialog()
@@ -210,11 +267,14 @@ class Frontend
       frac_done:  1.0
       txt:        "#{@keymode_name keymode}"
     if keymode is keymodes.WEB_PW
-      $('#output-password').addClass("just-changed").val(key)
-      if @pw_effect_timeout then clearTimeout @pw_effect_timeout
-      @pw_effect_timeout = setTimeout (->
-        $('#output-password').removeClass "just-changed"
-      ), 500
+      @update_output_pw key
+
+  update_output_pw: (key) ->
+    $('#output-password').addClass("just-changed").val(key)
+    if @pw_effect_timeout then clearTimeout @pw_effect_timeout
+    @pw_effect_timeout = setTimeout (->
+      $('#output-password').removeClass "just-changed"
+    ), 500
 
   jw_update: (label, changes) ->
     @jw.update label, changes

@@ -86,13 +86,11 @@
 
       </div>
 
-      <div class="input-bundle saved-hosts-bundle">
+      <div class="input-bundle saved-hosts-bundle" style="display:none;">
         <div class="input-row">
           <div class="label">Load</div>
           <div class="input">
-            <select>
-              <option value="-">- choose -</option>
-              <option value="TD Ameritrade">TD Ameritrade</option>
+            <select id="input-saved-host">
             </select>
           </div>
           <div class="clear"></div>
@@ -192,10 +190,10 @@
           </div>
           <div class="clear"></div>
         </div>
-        <div class="input-row">
+        <div class="input-row" id="save-row" style="display:none;">
           <div class="label">Save</div>
           <div class="input">
-            <button>Save</button>
+            <button id="btn-save" disabled="disabled">Save</button>
           </div>
           <div class="clear"></div>
         </div>          
