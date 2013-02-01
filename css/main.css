@@ -32,6 +32,9 @@ body {
 .input-bundle {
   padding: 10px 0 10px 0;
 }
+.input-bundle.saved-hosts-bundle {
+  border-top:1px solid #ccc;
+}
 .input-bundle.host-bundle {
   border-top:1px solid #ccc;
 }
@@ -176,4 +179,13 @@ h1 {
   height:10px;
   border:1px solid #669;
   background-color:#fff;
+}
+
+#advanced-table {
+  font-size:0.8em;
+}
+.question {
+  background-color:#fff;
+  color:#000;
+  font-size:1.1em;
 }

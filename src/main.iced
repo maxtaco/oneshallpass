@@ -44,6 +44,18 @@ class Frontend
     $('#input-host').keyup =>
       @e.set "host", $('#input-host').val()
 
+    $('#input-generation').change =>
+      @e.set "generation", parseInt $('#input-generation').val()
+
+    $('#input-security-bits').change =>
+      @e.set "security_bits", parseInt $('#input-security-bits').val()
+
+    $('#input-num-symbols').change =>
+      @e.set "num_symbols", $('#input-num-symbols').val()
+
+    $('#input-length').change =>
+      @e.set "length", $('#input-length').val()
+
     $('#btn-login').click => 
       $('#btn-login').attr('disabled','disabled')
       @hide_login_dialogs()
@@ -59,6 +71,10 @@ class Frontend
       $('#btn-join').attr('disabled','disabled')
       @disable_login_credentials()
       @e.signup @join_cb
+
+    $('#faq-link').click =>
+      $('#faq').show()
+      $('#faq-link').parent().hide()
 
   logout_cb: (status) =>
     console.log "lo cb: #{status} #{@e.is_logged_in()}"
@@ -178,7 +194,7 @@ class Frontend
   on_compute_step: (keymode, step, total_steps) ->
     if keymode is keymodes.WEB_PW
       $('#output-password').val ''
-    txt = "#{@keymode_name keymode} (#{step}/#{total_steps})"
+    txt = "#{@keymode_name keymode} (#{step+1}/#{total_steps+1})"
 
     @jw_update keymode,
       status:     JobStatus.RUNNING
