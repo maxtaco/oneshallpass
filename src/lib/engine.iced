@@ -184,9 +184,11 @@ class Input
   to_record : () ->
     d = {}
     for k, row of @_template when row[1] and (v = @get k)
+      if row[0] and not v? then return null
       d[k] = v
-    host = @get 'host'
-    new Record host, d
+      
+    if (host = @get 'host') then new Record host, d
+    else null
       
 ##=======================================================================
 
