@@ -5,44 +5,78 @@ class vhash
     @w      = @canvas.width
     @h      = @canvas.height
     @ctx    = @canvas.getContext '2d'
-    @rand   = new randomizer input
+    @rand   = new weak_randomizer input
     @input  = input
     @clear()
-    @draw()
+    @draw 0, 0, @w, @h, 0
 
   clear: ->
+    @ctx.globalAlpha = 1
     @ctx.clearRect 0, 0, @w, @h
 
   rcolor: ->
-    "#" + (@rand.nextInt(0,16).toString(16) for i in [0...6]).join ""
+    c   = @rand.nextInt(0,6)
+    pair = @rand.nextInt(0,16).toString(16) + @rand.nextInt(0,16).toString(16)
+
+    switch c
+      when 0 then res = "#00#{pair}ff"
+      when 1 then res = "#ff#{pair}00"
+      when 2 then res = "##{pair}ff00"
+      when 3 then res = "##{pair}00ff"
+      when 4 then res = "#00ff#{pair}"
+      when 5 then res = "#ff00#{pair}"
+    return res
 
   polygon: ->
     v = []
-    num_points = @rand.nextInt 3,7
+    num_points = @rand.nextInt 4,5
     for i in [0...num_points]
       v.push [@rand.nextFloat(), @rand.nextFloat()]
     v
 
-  draw: ->
+  repos: (fx,fy,x,y,w,h) ->
+    res = [
+      Math.floor(x + fx * w)
+      Math.floor(y + fy * h)
+    ]
+    res
+
+  draw: (x,y,w,h,depth) ->
     if @input?.length
       @ctx.fillStyle = @rcolor()
-      @ctx.fillRect 0, 0, @w, @h
-      num_shapes = @rand.nextInt 5, 10
-      for i in [0...num_shapes]
-        @ctx.beginPath()
-        @ctx.fillStyle = @rcolor()
-        poly = @polygon()
-        @ctx.moveTo Math.floor(poly[0] * @w), Math.floor(poly[1] * @h)
-        for v, j in poly[1...]
-          console.log "#{j}: #{v}"
-          x = Math.floor(v[0] * @w)
-          y = Math.floor(v[1] * @h)
-          @ctx.lineTo x,y
-          console.log x,y
-        @ctx.closePath()
-        @ctx.fill()
+      @ctx.fillRect x, y, w, h
+      if (depth isnt 0) and @rand.nextBool()
+        return
+      else if (depth is 0) or (depth <= 2 and @rand.nextBool())
+        @draw x,       y,       (w/2), (h/2), depth+1
+        @draw x+(w/2), y,       (w/2), (h/2), depth+1
+        @draw x,       y+(h/2), (w/2), (h/2), depth+1
+        @draw x+(w/2), y+(h/2), (w/2), (h/2), depth+1
+      else
+        if @rand.nextBool()
+          @ctx.globalAlpha = @rand.nextFloat()
+          @ctx.beginPath();
+          c = @repos @rand.nextFloat(), @rand.nextFloat(), x,y,w,h
+          rad = @rand.nextFloat() * w
+          @ctx.arc c[0], c[1], rad, 0, 2 * Math.PI, false
+          @ctx.fillStyle = @rcolor()
+          @ctx.fill();
 
-class randomizer
+        else
+          num_shapes = @rand.nextInt 2, 4
+          for i in [0...num_shapes]
+            @ctx.globalAlpha = @rand.nextFloat()
+            @ctx.beginPath()
+            @ctx.fillStyle = @rcolor()
+            poly = @polygon()
+            poly = ( @repos(v[0], v[1], x, y, w, h) for v in poly )
+            @ctx.moveTo poly[poly.length-1][0], poly[poly.length-1][1]
+            for v in poly[0...]
+              @ctx.lineTo v[0],v[1]
+            @ctx.closePath()
+            @ctx.fill()
+
+class weak_randomizer
   # not the fastest, (roughly 1/10 the speed of Math.random()) 
   # but a fine quick hack using CRC32
   # for getting helpful visual hashes
