@@ -77,6 +77,17 @@ class Frontend
       @e.set "length", $('#input-length').val()
       @update_vhashes()
 
+    $('#btn-hide-passphrase').click =>
+      $('#input-passphrase').attr("type","password")
+      $('#btn-hide-passphrase').hide()
+      $('#btn-show-passphrase').show()
+      
+    $('#btn-show-passphrase').click =>
+      $('#input-passphrase').attr("type","text")
+      $('#btn-show-passphrase').hide()
+      $('#btn-hide-passphrase').show()
+
+
     $('#btn-login').click => 
       $('#btn-login').attr('disabled','disabled')
       @hide_login_dialogs()
