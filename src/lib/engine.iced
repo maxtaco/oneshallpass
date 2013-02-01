@@ -319,8 +319,11 @@ exports.Engine = class Engine
   ##-----------------------------------------
 
   logout: (cb) ->
+    # Do this one first, since force will logout a second time, but
+    # ignore the return status code
+    await @client().logout defer res
     @_timers.force()
-    @client().logout(cb)
+    cb res
 
 ##=======================================================================
 

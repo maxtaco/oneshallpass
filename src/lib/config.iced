@@ -26,4 +26,5 @@ exports.config =
     algo_version : 2
     security_bits : 6
     length : 32
+    num_symbols : 0
     
