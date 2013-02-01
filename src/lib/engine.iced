@@ -237,7 +237,7 @@ class Timer
 class Timers
   
   constructor : (@_eng) ->
-    @_timers = (new Timer o for o in [ @_eng, @_eng._cache, @_eng._client ])
+    @_timers = (new Timer o for o in [ @_eng, @_eng._cache ] )
     @_active = false
 
   poke : () -> @start() if @_active
@@ -275,7 +275,9 @@ exports.Engine = class Engine
   ##-----------------------------------------
 
   client : () -> @_client
-  clear : () -> @on_timeout()
+  clear : () ->
+    @client().clear()
+    @on_timeout()
   timeout : () -> config.timeouts.document
   
   ##-----------------------------------------

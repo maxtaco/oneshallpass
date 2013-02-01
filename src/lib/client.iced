@@ -229,7 +229,6 @@ exports.Client = class Client
   
   ##-----------------------------------------
 
-  timeout : () -> config.timeouts.client
   clear : () ->
     @logout()
     @_records = {}
