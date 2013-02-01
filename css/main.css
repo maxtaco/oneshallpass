@@ -63,6 +63,11 @@ body {
   padding:3px;
   border:1px solid #999;
 }
+
+#input-passphrase {
+  width:210px;
+}
+
 .input input.modified {
   color:#000;
 }
@@ -126,24 +131,23 @@ body {
 }
 
 #btn-show-passphrase {
-  background-color: #757;
+  background-color: #755;
 }
 
 #btn-hide-passphrase {
-  background-color: #577;
+  background-color: #575;
 }
 
 button.toggle-viz {
   color:#fff;
-  border:0px solid #036;
-  font-size:0.7em;
+  border:1px solid #036;
+  font-size:0.5em;
   cursor:pointer;
-  margin-top:5px;
-  margin-bottom: 3px;
-  height: 20px;
-  position: absolute;
-  z-index: 1;
-  margin-left: 210px;
+  height: 26px;
+  margin-left: 5px;
+  width: 35px;
+  text-align: center;
+  float: right;
 }
 
 .input-row button#btn-logout {
