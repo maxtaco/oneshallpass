@@ -20,9 +20,12 @@ class Cache
 ##=======================================================================
 
 input_trim = (x) ->
-  rxx = /^(\s*)(.*?)(\s*)$/
-  m = x.match rxx
-  m[2]
+  if x and x?
+    x = x.replace /\s+/g, " "
+    rxx = /^(\s*)(.*?)(\s*)$/
+    m = x.match rxx
+    m[2]
+  else ""
   
 input_clean = (x) ->
   ret = input_trim(x).toLowerCase()
@@ -265,8 +268,8 @@ exports.Engine = class Engine
     { @on_compute_step, @on_compute_done, @on_timeout } = opts.hooks
     @_cache = new Cache
     @_inp = new Input { engine : @, presets }
-    @_timers = new Timers @
     @_client = new Client @
+    @_timers = new Timers @
     @_timers.start() unless @_inp.get 'no_timeout'
 
   ##-----------------------------------------
