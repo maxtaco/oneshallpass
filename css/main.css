@@ -61,6 +61,16 @@ body {
 .input input.modified[disabled] {
   color:#999;
 }
+.input input.modified.success {
+  background-color:#6f6;
+  color:#060;
+  border:1px solid #060;  
+}
+.input input.modified.error {
+  background-color:#f66;
+  color:#fff;
+  border:1px solid #900;
+}
 
 .input-row {
   padding:10px 0 10px 10px;
@@ -151,10 +161,10 @@ h1 {
 .visual-hash {
   margin-left:10px;
   border:1px solid #ddd;
-  width:26px;
+  width:24px;
   float:left;  
   margin-top:2px;
-  height:26px;
+  height:24px;
 }
 #output-password {
   color:#603;

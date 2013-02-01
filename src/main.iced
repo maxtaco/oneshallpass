@@ -73,7 +73,14 @@ class Frontend
       @hide_login_dialogs()
       @e.logout @logout_cb      
 
+    $('#input-passphrase, #input-email').focus =>
+      $('#input-email').removeClass('error')
+      $('#input-passphrase').removeClass('error')
+      
+
     $('#btn-join').click => 
+      $('#input-email').removeClass('error')
+      $('#input-passphrase').removeClass('error')
       $('#btn-join').attr('disabled','disabled')
       @disable_login_credentials()
       @e.signup @join_cb
@@ -131,6 +138,8 @@ class Frontend
 
   login_cb: (status) =>
     if status is sc.OK
+      $('#input-email').addClass 'success'
+      $('#input-passphrase').addClass 'success'
       @update_login_button()
       @maybe_show_saved_hosts()
       $("#save-row").slideDown()
@@ -209,6 +218,9 @@ class Frontend
 
   show_bad_login_dialog: ->
     $("#bad-login-dialog").show()
+    $('#input-email').addClass('error')
+    $('#input-passphrase').addClass('error')
+
     @hide_good_join_dialog()
     @hide_bad_general_dialog()
 
@@ -315,6 +327,9 @@ class Frontend
     @clear_all_but_email()
 
   clear_all_but_email: ->
+    $('#input-email').removeClass('success').removeClass('error')
+    $('#input-passphrase').removeClass('success').removeClass('error')
+
     $("#save-row").slideUp()
     $(".saved-hosts-bundle").slideUp()
     $('#btn-login').attr('disabled', false)
