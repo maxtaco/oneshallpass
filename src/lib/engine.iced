@@ -234,7 +234,7 @@ class Timer
 class Timers
   
   constructor : (@_eng) ->
-    @_timers = (new Timer o for o in [ @_eng, @_eng._cache ])
+    @_timers = (new Timer o for o in [ @_eng, @_eng._cache, @_eng._client ])
     @_active = false
 
   poke : () -> @start() if @_active

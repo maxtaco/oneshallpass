@@ -171,7 +171,7 @@ exports.Client = class Client
     rc = sc.OK
     if @is_logged_in() then @_session = null
     else rc = sc.BAD_LOGIN
-    cb rc
+    cb rc if cb?
     
   #-----------------------------------------
 
@@ -227,5 +227,13 @@ exports.Client = class Client
     
     cb rc
   
+  ##-----------------------------------------
+
+  timeout : () -> config.timeouts.client
+  clear : () ->
+    @logout()
+    @_records = {}
+   
+
 ##=======================================================================
 
