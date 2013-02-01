@@ -48,6 +48,14 @@ body {
   width:250px;
   float:left;
 }
+
+.input .minor {
+  font-size: 0.8em;
+  width: 250px;
+  color:#999;
+  height: 14px;
+}
+
 .input input {
   font-size: 1.0em;
   width:250px;
@@ -75,6 +83,7 @@ body {
 .input-row {
   padding:10px 0 10px 10px;
 }
+
 .input-row button {
   background-color: #369;
   color:#fff;
@@ -114,6 +123,49 @@ body {
   background-color:#fff;
   border:1px solid #066;
   color:#060;
+}
+
+#btn-show-passphrase {
+  background-color: #757;
+}
+
+#btn-hide-passphrase {
+  background-color: #577;
+}
+
+button.toggle-viz {
+  color:#fff;
+  border:0px solid #036;
+  font-size:0.7em;
+  cursor:pointer;
+  margin-top:5px;
+  margin-bottom: 3px;
+  height: 20px;
+  position: absolute;
+  z-index: 1;
+  margin-left: 210px;
+}
+
+.input-row button#btn-logout {
+  background-color:#393;
+  border:1px solid #030;
+}
+.input-row button[disabled], .input-row button#btn-logout[disabled] {
+  background-color: #ccc;
+  color:#999;
+  border:1px solid #999;
+}
+
+
+.clear {clear:both;}
+.explanation {
+  font-size:0.9em;
+}
+.explanation p {
+  padding:5px;
+  background-color:#cde;
+  border:1px solid #cde;
+
 }
 
 #btn-login {
