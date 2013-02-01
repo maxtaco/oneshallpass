@@ -184,9 +184,11 @@ class Input
   to_record : () ->
     d = {}
     for k, row of @_template when row[1] and (v = @get k)
+      if row[0] and not v? then return null
       d[k] = v
-    host = @get 'host'
-    new Record host, d
+      
+    if (host = @get 'host') then new Record host, d
+    else null
       
 ##=======================================================================
 
@@ -197,6 +199,12 @@ class Timer
   constructor : (@_obj) ->
     @_last_set = null
     
+  #-----------------------------------------
+
+  force : () ->
+    @_obj.clear()
+    @clear()
+   
   #-----------------------------------------
   
   set : () ->
@@ -242,6 +250,9 @@ class Timers
   toggle : (b) ->
     if b and not @_active then @start()
     else if not b and @_active then @stop()
+
+  force : () ->
+    (t.force() for t in @_timers)
 
 ##=======================================================================
 
@@ -298,13 +309,15 @@ exports.Engine = class Engine
 
   is_logged_in       : ()   -> @client().is_logged_in()
   login              : (cb) -> @client().login(cb)
-  logout             : (cb) -> @client().logout(cb)
   signup             : (cb) -> @client().signup(cb)
   push               : (cb) -> @client().push(cb)
   get_stored_records : ()   -> @client().get_stored_records()
    
   ##-----------------------------------------
 
+  logout: (cb) ->
+    @_timers.force()
+    @client().logout(cb)
 
 ##=======================================================================
 

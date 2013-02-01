@@ -217,10 +217,14 @@ exports.Client = class Client
     rc = sc.OK
     inp = @_eng.get_input()
     rec = inp.to_record()
-    @store_record rec
-    erec = rec.encrypt @_cryptor
-    await @ajax "/records", erec.to_ajax(), "POST", defer res
-    if not (@check_res res)? then rc = sc.SERVER_DOWN
+    if rec
+      @store_record rec
+      erec = rec.encrypt @_cryptor
+      await @ajax "/records", erec.to_ajax(), "POST", defer res
+      if not (@check_res res)? then rc = sc.SERVER_DOWN
+    else
+      rc = sc.BAD_ARGS
+    
     cb rc
   
 ##=======================================================================
