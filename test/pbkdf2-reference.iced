@@ -6,7 +6,7 @@ lib = fs.readFileSync("./build/js-min/crypto.js").toString()
 eval lib
 derive = require '../src/lib/derive'
 
-check_vector = (CryptoJS, v) ->
+check_vector = (CryptoJS, v, cb) ->
   opts = { keySize : v.dkLen / 4, iterations: v.c };
     
   # Get the raw word array.
@@ -26,7 +26,7 @@ check_vector = (CryptoJS, v) ->
   if res_us isnt v.DK
     console.log "XXX failure for case (with our code) #{JSON.stringify v}"
     res = false
-  return res
+  cb res
 
 # Test vectors from http://tools.ietf.org/html/rfc6070
 test_vectors = [{
@@ -59,8 +59,8 @@ test_vectors = [{
   	P : "passwordPASSWORDpassword",
   	S : "saltSALTsaltSALTsaltSALTsaltSALTsalt",
   	c : 4096,
-  	dkLen : 25,
-  	DK : "3d2eec4fe41c849b80c8d83662c0e44a8b291a964cf2f07038"
+  	dkLen : 20,
+  	DK : "3d2eec4fe41c849b80c8d83662c0e44a8b291a96"
   }, {
   	rfc : 6070,
   	case : 6,
@@ -85,6 +85,6 @@ eval fs.readFileSync("./build/js-min/crypto.js").toString()
 
 rc = 0
 for v in test_vectors
-  if not check_vector CryptoJS, v
-    rc =1
+  await check_vector CryptoJS, v, defer res
+  rc = 1 unless res
 process.exit rc

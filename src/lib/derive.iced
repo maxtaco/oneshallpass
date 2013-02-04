@@ -248,7 +248,6 @@ exports.V2 = class V2 extends Base
         intermediate = hmac.finalize intermediate
         hmac.reset()
         block.words[j] ^= w for w,j in intermediate.words
-        console.log "#{i} -> #{block.words[0]} (lim=#{@_limit})"
         i++
       else
         break
