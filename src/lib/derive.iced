@@ -1,6 +1,6 @@
 
 {config} = require './config'
-C = CryptoJS? or null
+C = if CryptoJS? then CryptoJS else null
 {pack_to_word_array} = require './pack'
 
 ##=======================================================================
@@ -218,8 +218,7 @@ exports.V2 = class V2 extends Base
   constructor : (input, @_hasher) ->
     super input
     exp = @security_bits()
-    # subtract 1 because 1 iteration done by default
-    @_limit = (1 << exp) - 1
+    @_limit = (1 << exp)
     @_hasher = C.algo.SHA512 unless @_hasher?
     
   ##-----------------------------------------
