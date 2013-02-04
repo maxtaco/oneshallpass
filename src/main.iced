@@ -3,7 +3,6 @@ Engine                  = require('./engine').Engine
 sc                      = require('./status').codes
 {JobWatcher, JobStatus} = require './job_watcher'
 {keymodes}              = require './derive'
-{vhash}                 = require './vhash'
 
 # -----------------------------------------------------------------------------
 
@@ -28,7 +27,6 @@ class Frontend
     @e.set key, val
     $("##{input_id}").val(@e.get key).addClass "modified"
     @update_login_button()
-    @update_vhashes()
 
   attach_ux_events: ->
 
@@ -44,26 +42,21 @@ class Frontend
 
     $('#input-email').keyup =>
       @e.set "email", $('#input-email').val()
-      @update_vhashes()
       @update_login_button()
       
     $('#input-passphrase').keyup =>
       @e.set "passphrase", $('#input-passphrase').val()
-      @update_vhashes()
       @update_login_button()
 
     $('#input-host').keyup =>
       @e.set "host", $('#input-host').val()
-      @update_vhashes()
       @update_save_button()
 
     $('#input-generation').change =>
       @e.set "generation", parseInt $('#input-generation').val()
-      @update_vhashes()
 
     $('#input-security-bits').change =>
       @e.set "security_bits", parseInt $('#input-security-bits').val()
-      @update_vhashes()
 
     $('#input-notes').keyup =>
       @e.set "notes", $('#input-notes').val()
@@ -71,11 +64,9 @@ class Frontend
 
     $('#input-num-symbols').change =>
       @e.set "num_symbols", $('#input-num-symbols').val()
-      @update_vhashes()
 
     $('#input-length').change =>
       @e.set "length", $('#input-length').val()
-      @update_vhashes()
 
     $('#btn-hide-passphrase').click =>
       $('#input-passphrase').attr("type","password")
@@ -132,17 +123,6 @@ class Frontend
     $("#btn-save").click =>
       @e.push @push_cb
 
-
-  update_vhashes: ->
-    new vhash $('#vhash-email')[0], @e.get "email"
-    new vhash $('#vhash-passphrase')[0], @e.get "passphrase"
-    new vhash $('#vhash-host')[0], @e.get("host"), JSON.stringify {
-      host:           @e.get("host")
-      generation:     @e.get("generation")
-      num_symbols:    @e.get("num_symbols")
-      length:         @e.get("length")
-      security_bits:  @e.get("security_bits")
-    }
 
   update_save_button: ->
     h = @e.get "host"
@@ -338,7 +318,6 @@ class Frontend
       @pw_effect_timeout = setTimeout (->
         $('#output-password').removeClass "just-changed"
       ), 500
-    new vhash $('#vhash-password')[0], key
 
   jw_update: (label, changes) ->
     @jw.update label, changes
