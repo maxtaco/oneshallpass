@@ -21,6 +21,9 @@ depclean:
 
 deps-crypto-js: $(CRYPTO_SRC)/core.js
 
+test: 
+	for f in test/*.js; do echo "test $$f..."; node $$f; done
+
 $(CRYPTO_SRC)/core.js:
 	mkdir -p deps
 	cd deps ; \
@@ -108,4 +111,4 @@ build/html/index.html: html/index.html \
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
 
-.PHONY = clean depclean
+.PHONY: clean depclean test
