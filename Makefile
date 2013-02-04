@@ -23,6 +23,7 @@ deps-crypto-js: $(CRYPTO_SRC)/core.js
 
 test: 
 	for f in test/*.js; do echo "test $$f..."; node $$f; done
+	for f in test/*.iced; do echo "test $$f..."; iced $$f; done
 
 $(CRYPTO_SRC)/core.js:
 	mkdir -p deps
@@ -33,7 +34,6 @@ $(CRYPTO_SRC)/core.js:
 		svn checkout http://crypto-js.googlecode.com/svn/tags/$(CRYPTO_JS_VERSION) crypto-js ; \
 	fi
 
-#    aes:           [core, enc-base64, md5, evpkdf, cipher-core, aes]
 build/js/crypto.js: \
 	$(CRYPTO_SRC)/core.js \
 	$(CRYPTO_SRC)/x64-core.js \
@@ -45,7 +45,8 @@ build/js/crypto.js: \
 	$(CRYPTO_SRC)/md5.js \
 	$(CRYPTO_SRC)/evpkdf.js \
 	$(CRYPTO_SRC)/cipher-core.js \
-	$(CRYPTO_SRC)/aes.js
+	$(CRYPTO_SRC)/aes.js \
+	$(CRYPTO_SRC)/pbkdf2.js
 	mkdir -p `dirname $@`
 	cat $^ > $@
 

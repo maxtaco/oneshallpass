@@ -1,6 +1,6 @@
 
 {config} = require './config'
-C = CryptoJS
+C = CryptoJS? or null
 {pack_to_word_array} = require './pack'
 
 ##=======================================================================
@@ -215,12 +215,12 @@ exports.V2 = class V2 extends Base
 
   ##-----------------------------------------
   
-  constructor : (input) ->
+  constructor : (input, @_hasher) ->
     super input
-    
     exp = @security_bits()
     # subtract 1 because 1 iteration done by default
     @_limit = (1 << exp) - 1
+    @_hasher = C.algo.SHA512 unless @_hasher?
     
   ##-----------------------------------------
 
@@ -233,7 +233,7 @@ exports.V2 = class V2 extends Base
 
     ret = null
     # The initial setup as per PBKDF2, with email as the salt
-    hmac = C.algo.HMAC.create C.algo.SHA512, @passphrase()
+    hmac = C.algo.HMAC.create @_hasher, @passphrase()
     block_index = C.lib.WordArray.create [ @keymode() ]
     block = hmac.update(@email()).finalize block_index
     hmac.reset()
@@ -241,13 +241,14 @@ exports.V2 = class V2 extends Base
     # Make a copy of the original block....
     intermediate = block.clone()
 
-    i = 0
+    i = 1
     while i < @_limit
       await @delay i, defer()
       if compute_hook i, @_limit
         intermediate = hmac.finalize intermediate
         hmac.reset()
         block.words[j] ^= w for w,j in intermediate.words
+        console.log "#{i} -> #{block.words[0]} (lim=#{@_limit})"
         i++
       else
         break
@@ -274,4 +275,14 @@ exports.V2 = class V2 extends Base
     ret
     
   ##-----------------------------------------
-  
+
+  test : (CryptoJS, password, salt, iterations, cb) ->
+    C = CryptoJS
+    @email = () -> salt
+    @passphrase = () -> password
+    @keymode = () -> 1
+    @_limit = iterations
+    compute_hook = () -> true
+    await @run_key_derivation compute_hook, defer res
+    cb res
+
