@@ -136,7 +136,7 @@ class Frontend
   update_vhashes: ->
     new vhash $('#vhash-email')[0], @e.get "email"
     new vhash $('#vhash-passphrase')[0], @e.get "passphrase"
-    new vhash $('#vhash-host')[0], JSON.stringify {
+    new vhash $('#vhash-host')[0], @e.get("host"), JSON.stringify {
       host:           @e.get("host")
       generation:     @e.get("generation")
       num_symbols:    @e.get("num_symbols")

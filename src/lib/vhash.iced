@@ -1,11 +1,12 @@
 
 class vhash
-  constructor: (canvas, input) ->
+  constructor: (canvas, @activate_input, @input) ->
+    @input = @activate_input unless @input?
     @canvas = canvas
     @w      = @canvas.width
     @h      = @canvas.height
     @ctx    = @canvas.getContext '2d'
-    @rand   = new weak_randomizer input
+    @rand   = new weak_randomizer @input
     @input  = input
     @clear()
     @draw 0, 0, @w, @h, 0
@@ -44,7 +45,7 @@ class vhash
     res
 
   draw: (x,y,w,h,depth) ->
-    if @input?.length
+    if @activate_input?.length
       @ctx.fillStyle = @rcolor()
       @ctx.fillRect x, y, w, h
       if @rand.nextInt(0,5) is 0
