@@ -15,7 +15,7 @@ class vhash
     @ctx.clearRect 0, 0, @w, @h
 
   rcolor: ->
-    c   = @rand.nextInt(0,6)
+    c   = @rand.nextInt(0,8)
     pair = @rand.nextInt(0,16).toString(16) + @rand.nextInt(0,16).toString(16)
 
     switch c
@@ -25,6 +25,8 @@ class vhash
       when 3 then res = "##{pair}00ff"
       when 4 then res = "#00ff#{pair}"
       when 5 then res = "#ff00#{pair}"
+      when 6 then res = "#ffffff"
+      when 7 then res = "#000000"
     return res
 
   polygon: ->
@@ -45,13 +47,21 @@ class vhash
     if @input?.length
       @ctx.fillStyle = @rcolor()
       @ctx.fillRect x, y, w, h
+      if @rand.nextInt(0,5) is 0
+        @rand.reset @input
       if (depth isnt 0) and @rand.nextBool()
         return
       else if (depth is 0) or (depth <= 2 and @rand.nextBool())
+        @ctx.save()
+        @ctx.rotate @rand.nextFloat() * Math.PI * 2
         @draw x,       y,       (w/2), (h/2), depth+1
+        @ctx.rotate @rand.nextFloat() * Math.PI * 2
         @draw x+(w/2), y,       (w/2), (h/2), depth+1
+        @ctx.rotate @rand.nextFloat() * Math.PI * 2
         @draw x,       y+(h/2), (w/2), (h/2), depth+1
+        @ctx.rotate @rand.nextFloat() * Math.PI * 2
         @draw x+(w/2), y+(h/2), (w/2), (h/2), depth+1
+        @ctx.restore()
       else
         if @rand.nextBool()
           @ctx.globalAlpha = @rand.nextFloat()
