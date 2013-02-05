@@ -225,17 +225,29 @@
     <div id="col2">
       <h1>One Shall Pass</h1>
       <div class="explanation">
+
         <p>
           One Shall Pass is a <i>browser-side</i> service for calculating strong, site-specific passwords. It is <a href="https://github.com/maxtaco/oneshallpass">open source</a>. In contrast to other password services, OSP does not save your passwords or universal passphrase anywhere.
         </p>
+
         <p>
-          This page is self-contained and may be saved or used offline for your convenience. You can also watch 
-          your network monitor and witness that it does not make any calls.
+          This page is self-contained, with only inline JS and CSS, and no images. So
+          you can conveniently save it or use it offline. You can also watch 
+          your network monitor to witness it makes no remote calls beyond the initial load.
         </p>
+
         <p id="sync-explanation">
-          One exceptional network feature:  If you're afraid you'll forget what you called a host (e.g., "gmail" or "google" or "gmail.google.com") or your features for a host (how long you want the password to be, etc.), you may login to oneshallpass.com.  This will push and pull your <i>encrypted</i> hostnames and settings with oneshallpass.com. It will not
-          sync your universal passphrase, so oneshallpass.com cannot access your passwords. Nor can oneshallpass.com read
-          your settings or hostnames. So do not lose your passphrase, as it is not recoverable.
+
+          There is one networked feature: if you're afraid you'll forget what
+          you called a host (e.g., "gmail" or "google" or "gmail.google.com")
+          or your features for a host (how long you want the password to be,
+          etc.), you may login to oneshallpass.com.  This will push and pull
+          your <i>encrypted</i> hostnames and settings with oneshallpass.com.
+          It will not sync your universal passphrase, so oneshallpass.com
+          cannot access your passwords. Nor can oneshallpass.com read your
+          settings or hostnames. So do not lose your passphrase, as it is not
+          recoverable.
+
         </p>        
         <p>
           <a href="#no" id="faq-link">FAQ</a>
@@ -243,13 +255,13 @@
       </div>
       <div class="explanation" style="display:none;" id="faq">
         <p class="question">
-          <b>How does it work?</b>
+          How does it work?
         </p>
         <p>In JavaScript, OSP hashes a structure including your email address your universal passphrase (which you choose and mustn't forget), then hashes the results with a host (such as "github.com"), and your settings for that host. If you enter the same inputs on another computer, OSP will
         yield the same password.
         </p>
         <p class="question">
-          <b>What if I lose my universal passphrase?</b>
+          What if I lose my universal passphrase?
         </p>
         <p>
           There is no recovery. Of course, the individual sites you use with OSP probably have
@@ -258,7 +270,7 @@
 
 
         <p class="question">
-          <b>What do the settings options mean?</b>
+          What do the settings options mean?
         </p>
         <p>
             <b>generation</b> is the version number for a host password. If you feel your password
@@ -270,26 +282,46 @@
             allow them, and a few sites demand them.
         </p>
         <p>
-            <b>hashes</b> controls how many SHA-512 hashes are performed on your universal passphrase and
-            email address before then hashing the results with a host specific setting. This is a defense
-            against an attacker who has compromised the database of a site you use, and wants to work backwards
-            using your email address to guess your universal passphrase. The default setting makes
-            it prohibitively expensive, assuming your universal passphrase is decent.
+            <b>hashes</b> controls how many SHA-512 hashes are performed on
+your universal passphrase and email address before hashing the results with a
+host-specific setting. This is a defense  against an attacker who has
+compromised the database of a site you use, and wants to work backwards using
+your email address to guess your universal passphrase. The default setting
+makes it prohibitively expensive, assuming your universal passphrase is
+decent.
+        </p>
+
         <p>
-            <b>length</b> determines the number of characters in your host passwords. Some sites have weird
-            rules.
+            <b>length</b> determines the number of characters in your host passwords. Some sites have weird rules.
         </p>
 
         <p class="question">
-          <b>How does the hashing not lock the page?</b>
+          How does the hashing not lock the page?
         </p>
 
         <p>
           The JS on this page was programmed in <a href="http://maxtaco.github.com/coffee-script/">IcedCoffeeScript</a>
           which makes async programming a lot easier. All the hashing steps defer occasionally. This would be annoying
-          to write in native JS, but iced coffee takes care of the details.
+          to write in native JS, but ICS takes care of the details.
         </p>
 
+        <p class="question">
+          How should I pick a passphrase?
+        </p>
+
+        <p>
+          We recommend a sequence of 4 to 6 random words, that have no grammatical
+          connection to each other.  This will give you between 50 and 80 bits of entropy,
+          depending on the size of your dictionary and the number of words in your passphrase.
+          Human beings tend to be bad at stringing together random unrelated words, so we made a little <a href="https://oneshallpass.com/pp.html">Web page</a> that does a decent job of it to help you out.
+        </p>
+
+        <p class="question">
+        Where can I learn more about implementation and technical details?
+        </p>
+
+        <p>Please see our GitHub-based
+          <a href="https://github.com/maxtaco/oneshallpass/blob/master/README.md">Technical FAQ</a></p>
       </div>
     </div>
     <div class="clear"></div>

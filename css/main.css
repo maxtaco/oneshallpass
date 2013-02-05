@@ -61,6 +61,7 @@ body {
   color:#999;
   padding:3px;
   border:1px solid #999;
+  height: 27px;
 }
 
 #input-passphrase {
@@ -86,18 +87,6 @@ body {
 
 .input-row {
   padding:10px 0 10px 10px;
-}
-
-.input-row button {
-  background-color: #369;
-  color:#fff;
-  border:1px solid #036;
-  font-wight:bold;
-  font-size:0.9em;
-  cursor:pointer;
-  margin-left:0px;
-  margin-top:2px;
-  height:26px;
 }
 
 .input-row button#btn-logout {
@@ -142,7 +131,7 @@ button.toggle-viz {
   border:1px solid #036;
   font-size:0.5em;
   cursor:pointer;
-  height: 26px;
+  height: 27px;
   margin-left: 5px;
   width: 35px;
   text-align: center;
@@ -273,4 +262,5 @@ h1 {
   background-color:#fff;
   color:#000;
   font-size:1.1em;
+  font-weight: bold;
 }
