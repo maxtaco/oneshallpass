@@ -45,7 +45,7 @@ class VersionObj
   @make : (v, args) ->
     switch v
       when 1 then new Version1Obj args
-      when 2 then new Version2Obj args
+      when 3 then new Version3Obj args
       else null
       
 ##-----------------------------------------------------------------------
@@ -68,7 +68,7 @@ class Version1Obj extends VersionObj
   
 ##-----------------------------------------------------------------------
 
-class Version2Obj extends VersionObj
+class Version3Obj extends VersionObj
 
   constructor : (@_args) ->
     
@@ -79,8 +79,8 @@ class Version2Obj extends VersionObj
     ret
     
   key_fields : -> [ 'email', 'passphrase', 'security_bits' ]
-  key_deriver : (i) -> new derive.V2 i 
-  version : () -> 2
+  key_deriver : (i) -> new derive.V3 i 
+  version : () -> 3
         
 ##=======================================================================
 

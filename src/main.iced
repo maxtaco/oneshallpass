@@ -253,7 +253,7 @@ class Frontend
   create_engine: ->
     opts =
       presets:
-        algo_version: 2
+        algo_version: 3
       hooks:
         on_compute_step: (keymode, step, ts) => @on_compute_step keymode, step, ts
         on_compute_done: (keymode, key)      => @on_compute_done keymode, key

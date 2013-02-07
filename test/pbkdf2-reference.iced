@@ -11,7 +11,7 @@ check_vector = (CryptoJS, v, cb) ->
     
   # Get the raw word array.
   raw_cjs = CryptoJS.PBKDF2(v.P, v.S, opts)
-  v2o = new derive.V2 { get : () -> 0 }, CryptoJS.algo.SHA1
+  v2o = new derive.V3 { get : () -> 0 }, CryptoJS.algo.SHA1
   await v2o.test CryptoJS, v.P, v.S, v.c, defer raw_us
 
   # Convert to string, and also truncate after the first dkLen
