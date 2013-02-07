@@ -1,6 +1,10 @@
-# Main Engine
+# Main Engine 
 
-## what engine exposes
+As found in the stiched `lib.js`, accessed via:
+
+```coffeescript
+{Engine} = require './engine'
+```
 
 ### constructor:
 
@@ -19,7 +23,6 @@
     on_timeout     :  ()
   }
 ```
-
 
 ### member functions
 
@@ -48,7 +51,25 @@
 * no_timeout
 
 
-
 # Passphrase Generator Engine
 
+As found in the stitched `pp.js`, accessed via
 
+```coffeescript
+{Engine} = require './engine'
+```
+
+### constructor:
+
+```coffeescript
+  default_values : {
+    entropy_requested : 58
+  } 
+  hooks : {
+    on_generate : (passphrase)
+  }
+```
+
+### member functions
+
+* 
