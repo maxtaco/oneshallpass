@@ -9,7 +9,13 @@ PUREPACK_VERSION=0.0.1e
 
 CRYPTO_SRC=deps/crypto-js/src
 
-default: build/html/index.html build/html/index-min.html
+default: html
+html: \
+	build/html/index.html \
+	build/html/index-min.html \
+	build/html/pp.html \
+	build/html/pp-min.html
+
 all: default
 deps: deps-crypto-js
 
@@ -54,21 +60,26 @@ build/js-min/%.js: build/js/%.js
 	mkdir -p `dirname $@`
 	$(JSMIN) < $^ > $@
 
-build/js/iced.js : includes/iced-$(ICED_VERSION).js
+build/js/iced.js: includes/iced-$(ICED_VERSION).js
 	cat < $< > $@
-build/js/jquery.js : includes/jquery-$(JQUERY_VERSION).js
+build/js/jquery.js: includes/jquery-$(JQUERY_VERSION).js
 	cat < $< > $@
-build/js/purepack.js : includes/purepack-$(PUREPACK_VERSION).js
+build/js/purepack.js: includes/purepack-$(PUREPACK_VERSION).js
+	cat < $< > $@
+build/js/dict.js: data/dict.js
 	cat < $< > $@
 
-build/js/main.js : src/main.iced
+build/js/main.js: src/main.iced
 	mkdir -p `dirname $@`
 	(iced --bare --print -I none $^ > $@~) && mv $@~ $@
-build/js/metastitch.js : src/metastitch.iced
+build/js/pp.js: src/pp.iced
+	mkdir -p `dirname $@`
+	(iced --bare --print -I none $^ > $@~) && mv $@~ $@
+build/js/metastitch.js: src/metastitch.iced
 	mkdir -p `dirname $@`
 	(iced --bare --print -I none $^ > $@~) && mv $@~ $@
 
-build/iced/%.js : src/lib/%.iced
+build/iced/%.js: src/lib/%.iced
 	mkdir -p `dirname $@`
 	(iced --print -I none $^ > $@~) && mv $@~ $@
 
@@ -112,6 +123,24 @@ build/html/index.html: html/index.html \
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
 	
+build/html/pp.html: html/pp.html \
+	build/js/crypto.js \
+	build/js/jquery.js \
+	build/js/dict.js \
+	build/js/pp.js \
+	css/main.css 
+	mkdir -p `dirname $@`
+	(python bin/inline.py < $< > $@~) && mv $@~ $@
+	
+build/html/pp-min.html: html/pp.html \
+	build/js-min/crypto.js \
+	build/js-min/jquery.js \
+	build/js-min/dict.js \
+	build/js-min/pp.js \
+	css/main.css 
+	mkdir -p `dirname $@`
+	(python bin/inline.py < $< > $@~) && mv $@~ $@
+
 %.md: %.md.in
 	python bin/footnoter.py < $< > $@
 

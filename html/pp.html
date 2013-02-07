@@ -1,0 +1,80 @@
+<html>
+ <head>
+  <title>One Shall Pass</title>
+  <!--*
+
+               O N E    S H A L L    P A S S 
+         p a s s p h r a s e    g e n e r a t o r
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   This page uses in-line CSS and JavaScript, so you
+   may take it with you as a portable utility.
+
+   For more information, or to audit the file's JavaScript,
+   please see https://github.com/maxtaco/oneshallpass
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  *-->
+  <script>
+    {% include crypto.js %}
+    {% include jquery.js %}
+    {% include dict.js %}
+    {% include pp.js %}
+  </script>
+  <style type="text/css">
+    {% include css/main.css %}
+  </style>
+  <meta name="viewport" content="width = device-width" />
+ </head>
+ <body>
+
+  <div id="wrapper">
+    <div id="col1">
+      <div class="input-bundle">
+
+        <div class="input-row">
+          <div class="label">Random seeds</div>
+          <div class="input">
+            <textarea id="input-seeed">...please press random keys...</textarea>
+          </div>
+          <div class="clear"></div>
+        </div>
+
+        <div class="input-row">
+          <div class="label">Needed entropy:</div>
+          <div class="input">
+            <select id="input-entropy" >
+              <option>29</option>
+              <option>43</option>
+              <option selected="selected">58</option>
+              <option>72</option>
+              <option>87</option>
+            </select>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+
+      <div class="input-bundle">
+        <div class="input-row">
+          <div class="label">Your Passphrase</div>
+          <div class="input">
+            <input type="text" id="output-passphrase" readonly="readonly" value="...waiting for input..." />
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="col2">
+      <h1>Passphrase Suggestor</h1>
+      <div class="explanation">
+      </div>
+    </div>
+    <div class="clear"></div>
+  </div>
+
+ </body>
+</html>
