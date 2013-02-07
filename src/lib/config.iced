@@ -3,7 +3,7 @@ exports.config =
   input :
     defaults :
       algo_version : 1
-      security_bits : 7
+      security_bits : 8
       generation : 1
       length : 12
       num_symbols : 0
@@ -23,7 +23,7 @@ exports.config =
     host : "oneshallpass.com"
     generation : 1
     algo_version : 2
-    security_bits : 6
+    security_bits : 8
     length : 32
     num_symbols : 0
     
