@@ -3,7 +3,7 @@ exports.config =
   input :
     defaults :
       algo_version : 3
-      security_bits : 7
+      security_bits : 8
       generation : 1
       length : 12
       num_symbols : 0

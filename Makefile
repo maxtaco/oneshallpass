@@ -111,5 +111,8 @@ build/html/index.html: html/index.html \
 	css/main.css 
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
+	
+%.md: %.md.in
+	python bin/footnoter.py < $< > $@
 
 .PHONY: clean depclean test
