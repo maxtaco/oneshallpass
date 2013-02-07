@@ -63,7 +63,7 @@ As found in the stitched `pp.js`, accessed via
 
 ```coffeescript
   default_values : {
-    entropy_requested : 58
+    entropy : 58
   } 
   hooks : {
     on_generate : (passphrase)
@@ -72,4 +72,6 @@ As found in the stitched `pp.js`, accessed via
 
 ### member functions
 
-* 
+* got_input_key() - got a key input -- can be a space or a real key
+* set_entropy()   - set the entropy to the number of bits given
+* get_entropy()   - the active amount of entropy 
