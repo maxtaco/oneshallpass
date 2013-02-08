@@ -198,6 +198,7 @@ class Frontend
   maybe_show_saved_hosts: =>
     recs = @e.get_stored_records()
     if recs.length
+      recs = recs.sort((a,b) -> a.host > b.host)
       $(".saved-hosts-bundle").slideDown()
       $("#input-saved-host").html """
         <option value="">- choose -</option>
