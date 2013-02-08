@@ -49,7 +49,9 @@ class Frontend
       @update_login_button()
 
     $('#input-host').keyup =>
-      @e.set "host", $('#input-host').val()
+      v = $('#input-host').val()
+      $('#input-saved-host').val('') unless v is @e.get 'host'
+      @e.set "host", v
       @update_save_button()
 
     $('#input-generation').change =>
