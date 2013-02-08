@@ -200,7 +200,7 @@ class Timer
   #-----------------------------------------
   
   constructor : (@_obj) ->
-    @_last_set = null
+    @_id = null
     
   #-----------------------------------------
 
@@ -216,20 +216,16 @@ class Timer
     hook = () =>
       @_obj.clear()
       @_id = null
-      @_last_set = null
 
     # Only set the timer if we haven't set it recently....
-    if not @_id? or not @_last_set? or (now - @_last_set) > 5
-      @clear()
-      @_id = setTimeout hook, @_obj.timeout()*1000
-      @_last_set = now
+    @clear()
+    @_id = setTimeout hook, @_obj.timeout()*1000
     
   #-----------------------------------------
   
   clear : () ->
     if @_id?
       clearTimeout @_id
-      @_last_set = null
       @_id = null
 
 ##=======================================================================
@@ -289,7 +285,6 @@ exports.Engine = class Engine
   set : (k,v) ->
     @_timers.toggle(not v) if k is 'no_timeout'
     @_inp.set k, v
-    @poke()
     @maybe_run()
    
   ##-----------------------------------------

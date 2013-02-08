@@ -43,16 +43,19 @@ class Frontend
     $('#input-email').keyup =>
       @e.set "email", $('#input-email').val()
       @update_login_button()
+      @e.poke()
       
     $('#input-passphrase').keyup =>
       @e.set "passphrase", $('#input-passphrase').val()
       @update_login_button()
+      @e.poke()
 
     $('#input-host').keyup =>
       v = $('#input-host').val()
       $('#input-saved-host').val('') unless v is @e.get 'host'
       @e.set "host", v
       @update_save_button()
+      @e.poke()
 
     $('#input-generation').change =>
       @e.set "generation", parseInt $('#input-generation').val()
@@ -63,6 +66,7 @@ class Frontend
     $('#input-notes').keyup =>
       @e.set "notes", $('#input-notes').val()
       @update_save_button()
+      @e.poke()
 
     $('#input-num-symbols').change =>
       @e.set "num_symbols", $('#input-num-symbols').val()
@@ -74,17 +78,19 @@ class Frontend
       $('#input-passphrase').attr("type","password")
       $('#btn-hide-passphrase').hide()
       $('#btn-show-passphrase').show()
+      @e.poke()
       
     $('#btn-show-passphrase').click =>
       $('#input-passphrase').attr("type","text")
       $('#btn-show-passphrase').hide()
       $('#btn-hide-passphrase').show()
-
+      @e.poke()
 
     $('#btn-login').click => 
       $('#btn-login').attr('disabled','disabled')
       @hide_login_dialogs()
       @disable_login_credentials()
+      @e.poke()
       @e.login @login_cb
 
     $('#btn-logout').click =>
@@ -103,13 +109,16 @@ class Frontend
       $('#btn-join').attr('disabled','disabled')
       @disable_login_credentials()
       @e.signup @join_cb
+      @e.poke()
 
     $('#faq-link').click =>
       $('#faq').show()
       $('#faq-link').parent().hide()
+      @e.poke()
 
     $('#output-password').click =>
       $('#output-password').select()
+      @e.poke()
 
     $("#input-saved-host").change =>
       v = $("#input-saved-host").val()
@@ -117,6 +126,7 @@ class Frontend
         @load_record_by_host v
       else
         @clear_host_notes_and_output()
+      @e.poke()
 
     $("""#input-security-bits, #input-generation,
         #input-length, #input-host, #input-num-symbols,
@@ -125,6 +135,7 @@ class Frontend
       @update_save_button()
 
     $("#btn-save").click =>
+      @e.poke()
       @e.push @push_cb
 
 
