@@ -4,7 +4,8 @@ config =
   defaults : 
     entropy : 58
     vary : 5
-    initial_keep : 2
+    initial_keep : 1.2
+    maximum_entropy : 87
 
 ##=======================================================================
 
@@ -25,9 +26,11 @@ class Frontend
     msg = if @in_initial_keep_window() then null
     else if pp
       @_first_output = now() unless @_first_output?
+      $('#output-passphrase').addClass('output').removeClass('need-more')
       pp
     else if not @eng.enough_entropy()
-      "Collected #{@eng.current_entropy()} of #{@eng.needed_entropy()}; need MORE"
+      $('#output-passphrase').addClass('need-more').removeClass('output')
+      "Collected #{@eng.current_entropy()} of #{@eng.needed_entropy()} bits; need MORE"
     else null
 
     $('#output-passphrase').val msg if msg?
@@ -42,16 +45,17 @@ class Frontend
 
     # Clear default text and ungray upon modification
     $('#input-seed').focus ->
-      if not $(@).hasClass 'modified'
+      if $(@).hasClass 'default-message'
         $(@).val ''
-        $(@).addClass 'modified'
+        $(@).removeClass 'default-message'
 
     # Attempt to generate a new passphrase upon each keypress
-    $('#input-seed').keyup (event) =>
+    $('#input-seed').keyup (event) ->
       self.got_input event.keyCode
+      $(@).val '' if $(@).val().length > 100
 
     $('#input-entropy').change () ->
-      self.set_entropy parseInt $(@).val()
+      self.set_entropy parseInt $(@).val().split()[0]
 
 
 ##=======================================================================
@@ -102,15 +106,16 @@ class Engine
 
   #-----------------------------------------
 
-  current_entropy : () -> @_seed.length
+  current_entropy : () -> (@_seed.length / 2) >> 0
   needed_entropy : () -> @_needed_entropy
   set_entropy : (n) -> @_needed_entropy = n
   enough_entropy : () -> @current_entropy() >= @needed_entropy()
+  maximum_entropy : () -> @current_entropy() >= config.defaults.maximum_entropy
 
   #-----------------------------------------
 
   got_input : (kc) ->
-    if (@_kcb.push kc) or @enough_entropy()
+    if (@_kcb.push kc) or @maximum_entropy()
       @_push_input kc
       @generate_passphrase()
     else null

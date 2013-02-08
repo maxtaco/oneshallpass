@@ -33,23 +33,23 @@
     <div id="col1">
       <div class="bundle input-bundle">
 
-        <div class="input-row">
+        <div class="row">
           <div class="label">Random seeds</div>
           <div class="input">
-            <textarea id="input-seed" class="input-field">...please press random keys...</textarea>
+            <textarea id="input-seed" class="default-message">...please press random keys...</textarea>
           </div>
           <div class="clear"></div>
         </div>
 
-        <div class="input-row">
-          <div class="label">Needed entropy:</div>
+        <div class="row">
+          <div class="label">Needed entropy</div>
           <div class="input">
-            <select id="input-entropy" class="input-field modified">
-              <option>29</option>
-              <option>43</option>
-              <option selected="selected">58</option>
-              <option>72</option>
-              <option>87</option>
+            <select id="input-entropy" class="modified">
+              <option>29 bits</option>
+              <option>43 bits</option>
+              <option selected="selected">58 bits</option>
+              <option>72 bits</option>
+              <option>87 bits</option>
             </select>
           </div>
           <div class="clear"></div>
@@ -57,12 +57,8 @@
       </div>
 
       <div class="bundle output-bundle">
-        <div class="input-row">
-          <div class="label">Your Passphrase</div>
-          <div class="input">
-            <input type="text" id="output-passphrase" readonly="readonly" value="...waiting for input..." />
-          </div>
-          <div class="clear"></div>
+        <div class="row">
+          <input type="text" id="output-passphrase" readonly="readonly" value="...waiting for input..." />
         </div>
       </div>
 
