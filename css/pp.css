@@ -1,0 +1,100 @@
+
+body {
+  margin:0;
+  padding:0;
+  background-color:#cde;
+  font-family:helvetica, arial, verdana, sans;
+}
+#wrapper {
+  font-family:helvetica;
+}
+#col1 {
+  float:left;
+  width:400px;
+  margin:10px;
+  padding:0px;
+  border:1px solid #7ab;
+  background-color: #fff8ff;
+}
+#col2 {
+  margin:10px;
+  float:left;
+  width:300px;
+}
+.label {
+  width:120px;
+  float:left;
+  color:#036;
+  font-weight:bold;
+  padding-top:6px;
+}
+.bundle {
+  padding: 10px 0 10px 0;
+}
+.bundle.input-bundle {
+}
+.bundle.output-bundle {
+  border-top:1px solid #ccc;
+}
+
+.input {
+  margin-left:10px;
+  width:250px;
+  float:left;
+}
+
+.input .input-field {
+  font-size: 1.0em;
+  width:250px;
+  color:#999;
+  padding:3px;
+  border:1px solid #999;
+  height: 27px;
+}
+
+#input-seed {
+  height: 100;
+}
+
+.input .input-field.modified {
+  color:#000;
+}
+
+.input-row {
+  padding:10px 0 10px 10px;
+}
+
+.clear {clear:both;}
+
+.explanation {
+  font-size:0.9em;
+}
+.explanation p {
+  padding:5px;
+  background-color:#cde;
+  border:1px solid #cde;
+
+}
+
+h1 {
+  margin-top:0px;
+  padding-top:0px;
+}
+
+#output-passphrase {
+  color:#603;
+  font-family:courier new;
+  font-weight:bold;
+  width: 250px;
+  -webkit-transition: background-color 0.5s, color 0.5s;
+  -moz-transition:    background-color 0.5s, color 0.5s;
+  -o-transition:      background-color 0.5s, color 0.5s;
+}
+
+#output-password.just-changed {
+  background-color:#fdf;
+  -webkit-transition: background-color 0.0s, color 0.0s;
+  -moz-transition:    background-color 0.0s, color 0.0s;
+  -o-transition:      background-color 0.0s, color 0.0s;
+}
+
