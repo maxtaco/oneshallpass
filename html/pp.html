@@ -23,7 +23,7 @@
     {% include pp.js %}
   </script>
   <style type="text/css">
-    {% include css/main.css %}
+    {% include css/pp.css %}
   </style>
   <meta name="viewport" content="width = device-width" />
  </head>
@@ -31,12 +31,12 @@
 
   <div id="wrapper">
     <div id="col1">
-      <div class="input-bundle">
+      <div class="bundle input-bundle">
 
         <div class="input-row">
           <div class="label">Random seeds</div>
           <div class="input">
-            <textarea id="input-seeed">...please press random keys...</textarea>
+            <textarea id="input-seed" class="input-field">...please press random keys...</textarea>
           </div>
           <div class="clear"></div>
         </div>
@@ -44,7 +44,7 @@
         <div class="input-row">
           <div class="label">Needed entropy:</div>
           <div class="input">
-            <select id="input-entropy" >
+            <select id="input-entropy" class="input-field modified">
               <option>29</option>
               <option>43</option>
               <option selected="selected">58</option>
@@ -56,7 +56,7 @@
         </div>
       </div>
 
-      <div class="input-bundle">
+      <div class="bundle output-bundle">
         <div class="input-row">
           <div class="label">Your Passphrase</div>
           <div class="input">

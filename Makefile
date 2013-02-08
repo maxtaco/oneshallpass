@@ -122,13 +122,13 @@ build/html/index.html: html/index.html \
 	css/main.css 
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
-	
+
 build/html/pp.html: html/pp.html \
 	build/js/crypto.js \
 	build/js/jquery.js \
 	build/js/dict.js \
 	build/js/pp.js \
-	css/main.css 
+	css/pp.css 
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
 	
@@ -137,7 +137,7 @@ build/html/pp-min.html: html/pp.html \
 	build/js-min/jquery.js \
 	build/js-min/dict.js \
 	build/js-min/pp.js \
-	css/main.css 
+	css/pp.css 
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
 
