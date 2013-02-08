@@ -28,6 +28,12 @@ body {
   font-weight:bold;
   padding-top:6px;
 }
+
+.label.output-label {
+  width: 170px;
+  margin-bottom: 10px;
+}
+
 .bundle {
   padding: 10px 0 10px 0;
 }
@@ -51,6 +57,12 @@ input, textarea, select {
   border:1px solid #999;
   height: 27px;
 }
+
+.center-label {
+  text-align: center;
+  width: 380px;
+}
+
 
 #input-entropy {
   width: 100px;
@@ -91,9 +103,6 @@ h1 {
   font-weight:bold;
   width: 380px;
   text-align: center;
-  -webkit-transition: background-color 0.5s, color 0.5s;
-  -moz-transition:    background-color 0.5s, color 0.5s;
-  -o-transition:      background-color 0.5s, color 0.5s;
 }
 
 #output-passphrase.need-more {

@@ -113,6 +113,8 @@ class Frontend
       v = $("#input-saved-host").val()
       if v and v.length
         @load_record_by_host v
+      else
+        @clear_host_notes_and_output()
 
     $("""#input-security-bits, #input-generation,
         #input-length, #input-host, #input-num-symbols,
@@ -350,6 +352,11 @@ class Frontend
   on_timeout: ->
     @clear_all_but_email()
 
+  clear_host_notes_and_output : () ->
+    @fill_both 'host', '',       "input-host"
+    @fill_both 'notes','',       "input-notes"
+    @update_output_pw ''
+
   clear_all_but_email: ->
     $('#input-email').removeClass('success').removeClass('error')
     $('#input-passphrase').removeClass('success').removeClass('error')
@@ -359,9 +366,7 @@ class Frontend
     $('#btn-login').attr('disabled', false)
     @enable_login_credentials()
     @fill_both 'passphrase', '', "input-passphrase"
-    @fill_both 'host', '',       "input-host"
-    @fill_both 'notes','',       "input-notes"
-    @update_output_pw ''
+    @clear_host_notes_and_output()
     @update_login_button()
 
 # -----------------------------------------------------------------------------
