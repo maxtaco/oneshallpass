@@ -142,7 +142,25 @@ class Frontend
 
     $("#btn-save").click =>
       @e.poke()
-      @e.push @push_cb
+      await @e.push defer status
+      if status isnt sc.OK
+        alert "Unhandled push status #{status}"
+      else
+        $("#btn-save").attr "disabled", "disabled"
+        @maybe_show_saved_hosts()
+
+    $("#btn-remove").click =>
+      @e.poke()
+      await @e.remove defer status
+      if status isnt sc.OK
+        alert "Unhandled remove status #{status}"
+      else
+        @clear_host_notes_and_output()
+        @maybe_show_saved_hosts()
+
+  toggle_remove_button : (f) ->
+    val = if f then false else "disabled"
+    $('#btn-remove').attr "disabled", val
 
   update_save_button: ->
     h = @e.get "host"
@@ -163,13 +181,7 @@ class Frontend
     @load_field r, "notes", ""
     @load_field r, "algo_version", config.input.defaults.algo_version
     $('#btn-save').attr 'disabled', 'disabled'
-
-  push_cb: (status) =>
-    if status isnt sc.OK
-      alert "Unhandled push status #{status}"
-    else
-      $("#btn-save").attr "disabled", "disabled"
-      @maybe_show_saved_hosts()
+    @toggle_remove_button true
 
   logout_cb: (status) =>
     if status isnt sc.OK
@@ -379,6 +391,7 @@ class Frontend
     @fill_both 'host', '',       "input-host"
     @fill_both 'notes','',       "input-notes"
     @update_output_pw ''
+    @toggle_remove_button false
 
   clear_all_but_email: ->
     $('#input-email').removeClass('success').removeClass('error')

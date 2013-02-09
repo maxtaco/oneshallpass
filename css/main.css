@@ -96,6 +96,9 @@ body {
 #btn-hide-passphrase {
   background-color: #575;
 }
+#btn-remove {
+  background-color: #755;
+}
 .input button {
   border:1px solid #036;
   cursor:pointer;
