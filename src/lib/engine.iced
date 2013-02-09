@@ -45,6 +45,7 @@ class VersionObj
   @make : (v, args) ->
     switch v
       when 1 then new Version1Obj args
+      when 2 then new Version3Obj args
       when 3 then new Version3Obj args
       else null
       
