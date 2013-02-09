@@ -51,9 +51,10 @@ class Frontend
       @e.poke()
 
     $('#input-host').keyup =>
-      v = $('#input-host').val()
-      $('#input-saved-host').val('') unless v is @e.get 'host'
-      @e.set "host", v
+      before = @e.get 'host'
+      @e.set "host", $('#input-host').val()
+      after = @e.get 'host'
+      $('#input-saved-host').val('') unless before is after
       @update_save_button()
       @e.poke()
 
