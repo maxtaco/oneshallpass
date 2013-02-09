@@ -153,6 +153,7 @@ class Frontend
 
   load_field : (r, f, dflt) ->
     v = dflt if not (v = r[f])? and dflt?
+    console.log "load field #{f} -> #{v} (#{typeof v})"
     @fill_both f, v, "input-#{f.replace '_', '-'}"
 
   load_record_by_host: (h) ->
