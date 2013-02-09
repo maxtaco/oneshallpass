@@ -249,7 +249,7 @@
           you called a host (e.g., "gmail" or "google" or "gmail.google.com")
           or your features for a host (how long you want the password to be,
           etc.), you may login to oneshallpass.com.  This will push and pull
-          your <i>encrypted</i> hostnames and settings with oneshallpass.com.
+          your <i>encrypted</i> hostnames and settings to and from oneshallpass.com.
           It will not sync your universal passphrase, so oneshallpass.com
           cannot access your passwords. Nor can oneshallpass.com read your
           settings or hostnames. So do not lose your passphrase, since it's not
@@ -268,11 +268,28 @@
         yield the same password.
         </p>
         <p class="question">
+          Which crypto algorithms do you use?
+        </p>
+        <p> For "hashing", PBKDF2, HMAC, and SHA-512.  For "encypting", AES-256-CBC,
+          plus the same three as above for key derivation and MAC'ing.
+          See <a href="https://github.com/maxtaco/oneshallpass/blob/master/README.md">Technical FAQ</a> for more details.
+        </p>
+        <p class="question">
           What if I lose my universal passphrase?
         </p>
         <p>
           There is no recovery. Of course, the individual sites you use with OSP probably have
           password reset features.
+        </p>
+
+        <p class="question">
+          Who are you guys and why should I trust you?
+        </p>
+        <p>OSP was written by Max Krohn and Chris Coyne, two of the co-founders of OkCupid.
+          Max has a PhD in Computer Systems and Security from MIT. But don't take
+          our word for it, please audit 
+          <a href="https://github.com/maxtaco/oneshallpass">our code</a> and let
+          us know if we've messed up.
         </p>
 
 

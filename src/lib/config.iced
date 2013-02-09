@@ -26,4 +26,7 @@ exports.config =
     security_bits : 7
     length : 32
     num_symbols : 0
+  legacy :
+    algo_version : 1
+    security_bits : 7
     

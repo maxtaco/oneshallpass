@@ -119,14 +119,8 @@ class Input
 
   fork : (keymode, fixed) ->
     out = new Input { @engine, keymode, fixed, presets : @_values }
-    out.cleanup()
+    out
   
-  #-----------------------------------------
-
-  cleanup : () ->
-    @_values.passphrase = @_clean_passphrase @_values.passphrase
-    @
-
   #-----------------------------------------
   
   get_version_obj : () -> VersionObj.make @get 'algo_version'
@@ -169,13 +163,13 @@ class Input
 
   get : (k) ->
     if (f = @fixed[k])? then f
-    else if (v = @_values[k])? then v
-    else @_defaults[k]
+    else if not (v = @_values[k])? then @_defaults[k]
+    else if (cleaner = @_template[k]?[2])? then cleaner v
+    else v
       
   #-----------------------------------------
   
   set : (k, val) ->
-    val = tem(val) if (tem = @_template[k]?[2])?
     @_values[k] = val
   
   #-----------------------------------------
@@ -318,7 +312,9 @@ exports.Engine = class Engine
   login              : (cb) -> @client().login(cb)
   signup             : (cb) -> @client().signup(cb)
   push               : (cb) -> @client().push(cb)
+  remove             : (cb) -> @client().remove(cb)
   get_stored_records : ()   -> @client().get_stored_records()
+  get_record         : (h)  -> @client().get_record h
    
   ##-----------------------------------------
 

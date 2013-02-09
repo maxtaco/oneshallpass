@@ -1,6 +1,7 @@
 Location                = require('./location').Location
 Engine                  = require('./engine').Engine
 sc                      = require('./status').codes
+{config}                = require('./config')
 {JobWatcher, JobStatus} = require './job_watcher'
 {keymodes}              = require './derive'
 
@@ -31,9 +32,7 @@ class Frontend
   attach_ux_select : (f) ->
     html_field = "#input-#{f}"
     eng_field = f.replace("-", "_")
-    console.log "bind #{html_field} #{eng_field}"
     $(html_field).change =>
-      console.log "#{html_field} on changE!"
       @e.set eng_field, parseInt $(html_field).val()
 
   attach_ux_events: ->
@@ -131,14 +130,20 @@ class Frontend
 
     $("""#input-security-bits, #input-generation,
         #input-length, #input-host, #input-num-symbols,
-        #input-notes
+        #input-notes, #input-algo-version
       """).change =>
       @update_save_button()
+
+    $("#input-algo-version").change =>
+      console.log "fuuuuck #{@e.get 'algo_version'} #{config.legacy.algo_version}"
+      cfg = config.legacy
+      if (@e.get "algo_version") is cfg.algo_version
+        @e.set "security_bits", cfg.security_bits
+        $("#input-security-bits").val cfg.security_bits
 
     $("#btn-save").click =>
       @e.poke()
       @e.push @push_cb
-
 
   update_save_button: ->
     h = @e.get "host"
@@ -146,17 +151,19 @@ class Frontend
       $("#btn-save").attr "disabled", false
     else
       $("#btn-save").attr "disabled", "disabled"
-  
+
+  load_field : (r, f, dflt) ->
+    v = dflt if not (v = r[f])? and dflt?
+    @fill_both f, v, "input-#{f.replace '_', '-'}"
+
   load_record_by_host: (h) ->
-    recs = @e.get_stored_records()
-    for r in recs when r.host is h
-      @fill_both "security_bits", r.security_bits, "input-security-bits"
-      @fill_both "generation", r.generation, "input-generation"
-      @fill_both "length", r.length, "input-length"
-      @fill_both "host", h, "input-host"
-      @fill_both "num_symbols", r.num_symbols, "input-num-symbols"
-      @fill_both "notes", (r.notes or ""), "input-notes"
-      $('#btn-save').attr 'disabled', 'disabled'
+    r = @e.get_record h
+    for f in [ "security_bits", "generation", "length", "host", 
+               "num_symbols" ]
+      @load_field r, f
+    @load_field r, "notes", ""
+    @load_field r, "algo_version", config.input.defaults.algo_version
+    $('#btn-save').attr 'disabled', 'disabled'
 
   push_cb: (status) =>
     if status isnt sc.OK
@@ -208,6 +215,8 @@ class Frontend
         >#{r.host}</option>
       """ for r in recs).join "\n"
       $("#input-saved-host").focus()
+    else
+      $(".saved-hosts-bundle").slideUp()
 
 
   join_cb: (status) =>

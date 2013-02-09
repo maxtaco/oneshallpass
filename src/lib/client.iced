@@ -74,7 +74,9 @@ exports.Client = class Client
   
   #-----------------------------------------
 
+  update_record : (del, r) -> if del then @delete_record r else @store_record r
   store_record : (r) -> @_records[r.key] = r
+  delete_record : (r) -> delete @_records[r.key]
   
   #-----------------------------------------
 
@@ -182,7 +184,6 @@ exports.Client = class Client
   #-----------------------------------------
 
   login : (cb) ->
-    console.log "login..."
     rc = if @is_logged_in() then sc.LOGGED_IN else sc.OK
     await @package_args defer rc, args, inp
     code = null
@@ -217,17 +218,26 @@ exports.Client = class Client
   ##-----------------------------------------
 
   get_stored_records : -> (v.to_dict() for k,v of @_records)
+  get_record : (h) -> @_records[h]?.to_dict()
    
   ##-----------------------------------------
 
-  push : (cb) ->
+  push : (cb) -> @_push_or_remove false, cb
+  remove : (cb) -> @_push_or_remove true, cb
+
+  ##-----------------------------------------
+
+  _push_or_remove : (del, cb) ->
     rc = sc.OK
     inp = @_eng.get_input()
     rec = inp.to_record()
     if rec
-      @store_record rec
+      @update_record del, rec
       erec = rec.encrypt @_cryptor
-      await @ajax "/records", erec.to_ajax(), "POST", defer res
+      arec = erec.to_ajax()
+      method = if del then "DELETE" else "POST"
+      delete arec.rvalue if del
+      await @ajax "/records", arec, method, defer res
       if not (@check_res res)? then rc = sc.SERVER_DOWN
     else
       rc = sc.BAD_ARGS
