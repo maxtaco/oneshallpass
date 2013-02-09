@@ -133,7 +133,6 @@ exports.Client = class Client
     d = 
       bits : inp.get 'security_bits'
       algo_version : inp.get 'algo_version'
-    console.log "input for login ---> #{JSON.stringify d}"
     if not inp.is_ready()
       inp = null
     res = null
@@ -150,8 +149,6 @@ exports.Client = class Client
       await inp.derive_key defer pwh
       if pwh?
         res = { pwh, email : inp.get 'email' }
-        console.log "ok done"
-        console.log res
         rc = sc.OK
       else
         rc = sc.BAD_DERIVE

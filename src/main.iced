@@ -135,7 +135,6 @@ class Frontend
       @update_save_button()
 
     $("#input-algo-version").change =>
-      console.log "fuuuuck #{@e.get 'algo_version'} #{config.legacy.algo_version}"
       cfg = config.legacy
       if (@e.get "algo_version") is cfg.algo_version
         @e.set "security_bits", cfg.security_bits
