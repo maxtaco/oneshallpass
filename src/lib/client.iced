@@ -128,6 +128,10 @@ exports.Client = class Client
 
   package_input : (mode) ->
     inp = @_eng.fork_input mode, config.server
+    d = 
+      bits : inp.get 'security_bits'
+      algo_version : inp.get 'algo_version'
+    console.log "input for login ---> #{JSON.stringify d}"
     if not inp.is_ready()
       inp = null
     res = null
@@ -144,6 +148,8 @@ exports.Client = class Client
       await inp.derive_key defer pwh
       if pwh?
         res = { pwh, email : inp.get 'email' }
+        console.log "ok done"
+        console.log res
         rc = sc.OK
       else
         rc = sc.BAD_DERIVE
@@ -176,6 +182,7 @@ exports.Client = class Client
   #-----------------------------------------
 
   login : (cb) ->
+    console.log "login..."
     rc = if @is_logged_in() then sc.LOGGED_IN else sc.OK
     await @package_args defer rc, args, inp
     code = null

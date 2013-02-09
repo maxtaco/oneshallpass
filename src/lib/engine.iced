@@ -119,8 +119,14 @@ class Input
 
   fork : (keymode, fixed) ->
     out = new Input { @engine, keymode, fixed, presets : @_values }
-    out
+    out.cleanup()
   
+  #-----------------------------------------
+
+  cleanup : () ->
+    @_values.passphrase = @_clean_passphrase @_values.passphrase
+    @
+
   #-----------------------------------------
   
   get_version_obj : () -> VersionObj.make @get 'algo_version'
@@ -146,6 +152,7 @@ class Input
 
     vo = @get_version_obj()
     uid = @unique_id vo
+    console.log "derive #{uid}"
     
     compute_hook = (i, tot) =>
       if (ret = (uid is @unique_id(vo))) and i % 10 is 0
