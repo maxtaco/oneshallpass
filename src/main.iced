@@ -28,6 +28,14 @@ class Frontend
     $("##{input_id}").val(@e.get key).addClass "modified"
     @update_login_button()
 
+  attach_ux_select : (f) ->
+    html_field = "#input-#{f}"
+    eng_field = f.replace("-", "_")
+    console.log "bind #{html_field} #{eng_field}"
+    $(html_field).change =>
+      console.log "#{html_field} on changE!"
+      @e.set eng_field, parseInt $(html_field).val()
+
   attach_ux_events: ->
 
     basic_inputs = [
@@ -58,22 +66,14 @@ class Frontend
       @update_save_button()
       @e.poke()
 
-    $('#input-generation').change =>
-      @e.set "generation", parseInt $('#input-generation').val()
-
-    $('#input-security-bits').change =>
-      @e.set "security_bits", parseInt $('#input-security-bits').val()
 
     $('#input-notes').keyup =>
       @e.set "notes", $('#input-notes').val()
       @update_save_button()
       @e.poke()
 
-    $('#input-num-symbols').change =>
-      @e.set "num_symbols", $('#input-num-symbols').val()
-
-    $('#input-length').change =>
-      @e.set "length", $('#input-length').val()
+    for f in [ 'generation', 'security-bits', 'algo-version', 'length', 'num-symbols']
+      @attach_ux_select f
 
     $('#btn-hide-passphrase').click =>
       $('#input-passphrase').attr("type","password")

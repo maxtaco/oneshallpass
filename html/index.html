@@ -112,8 +112,8 @@
           <div class="input">
             <table id="advanced-table" cellspacing="0" cellpadding="0" border="0">
               <tr>
-                <td>generation</td>
-                <td>
+                <td class="adv-label">generation</td>
+                <td class="mid-col">
                   <select id="input-generation">
                     <option>1</option>
                     <option>2</option>
@@ -137,7 +137,7 @@
                     <option>20</option>
                   </select>
                 </td>                      
-                <td>hashes</td>
+                <td class="adv-label">hashes</td>
                 <td>
                   <select id="input-security-bits">
                     <option value="1">2^1</option>
@@ -146,8 +146,8 @@
                     <option value="4">2^4</option>
                     <option value="5">2^5</option>
                     <option value="6">2^6</option>
-                    <option value="7" selected="selected">2^7</option>
-                    <option value="8">2^8</option>
+                    <option value="7">2^7</option>
+                    <option value="8" selected="selected">2^8</option>
                     <option value="9">2^9</option>
                     <option value="10">2^10</option>
                     <option value="11">2^11</option>
@@ -160,8 +160,8 @@
                 </td>            
               </tr>
               <tr>
-                <td>symbols</td>
-                <td>
+                <td class="adv-label">symbols</td>
+                <td class="mid-col">
                   <select id="input-num-symbols">
                     <option>0</option>
                     <option>1</option>
@@ -169,7 +169,7 @@
                     <option>3</option>
                   </select>                  
                 </td>
-                <td>length</td>
+                <td class="adv-label">length</td>
                 <td>
                   <select id="input-length">
                     <option>8</option>
@@ -180,6 +180,17 @@
                     <option>13</option>
                     <option>14</option>
                     <option>15</option>
+                    <option>16</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td colspan="2" class="adv-label">legacy mode</td>
+                <td>
+                  <select id="input-algo-version">
+                    <option value="3">no</option>
+                    <option value="1">yes</option>
                   </select>
                 </td>
               </tr>

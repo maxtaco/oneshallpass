@@ -220,7 +220,16 @@ h1 {
   width:250px;
 }
 #advanced-table td {
-  padding:5px;
+  padding-top:4px;
+  padding-bottom: 4px;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+#advanced-table td.mid-col {
+  padding-right: 9px;
+}
+#advanced-table td.adv-label {
+  text-align: right
 }
 #notes-label-cell {
   width:70px;
