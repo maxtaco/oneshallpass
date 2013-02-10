@@ -11,9 +11,10 @@ CRYPTO_SRC=deps/crypto-js/src
 default: html
 html: \
 	build/html/index.html \
-	build/html/index-min.html \
+	build/html/index-big.html \
 	build/html/pp.html \
-	build/html/pp-min.html
+	build/html/pp-big.html \
+	build/html/v2.html
 
 all: default
 deps: deps-crypto-js
@@ -98,7 +99,7 @@ build/js/lib.js: build/iced/config.js \
 	mkdir -p `dirname $@`
 	(iced bin/stitch.iced build/iced/ > $@~) && mv $@~ $@
 
-build/html/index-min.html: html/index.html \
+build/html/index.html: html/index.html \
 	build/js-min/lib.js \
 	build/js-min/iced.js \
 	build/js-min/purepack.js \
@@ -110,7 +111,7 @@ build/html/index-min.html: html/index.html \
 	mkdir -p `dirname $@`
 	(python bin/inline.py -m < $< > $@~) && mv $@~ $@
 
-build/html/index.html: html/index.html \
+build/html/index-big.html: html/index.html \
 	build/js/lib.js \
 	build/js/iced.js \
 	build/js/crypto.js \
@@ -122,7 +123,7 @@ build/html/index.html: html/index.html \
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
 
-build/html/pp.html: html/pp.html \
+build/html/pp-big.html: html/pp.html \
 	build/js/crypto.js \
 	build/js/jquery.js \
 	build/js/dict.js \
@@ -131,7 +132,7 @@ build/html/pp.html: html/pp.html \
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
 	
-build/html/pp-min.html: html/pp.html \
+build/html/pp.html: html/pp.html \
 	build/js-min/crypto.js \
 	build/js-min/jquery.js \
 	build/js-min/dict.js \
@@ -139,6 +140,9 @@ build/html/pp-min.html: html/pp.html \
 	css/pp.css 
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
+
+build/html/v2.html: v2/www/index.html
+	cat < $< > $@
 
 %.md: %.md.in
 	python bin/footnoter.py < $< > $@
