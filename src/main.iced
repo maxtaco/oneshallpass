@@ -172,12 +172,9 @@ class Frontend
   load_field : (r, f, dflt) ->
     v = dflt if not (v = r[f])? and dflt?
     @fill_both f, v, "input-#{f.replace '_', '-'}"
-    console.log "load field #{f} -> #{v}"
 
   load_record_by_host: (h) ->
     r = @e.get_record h
-    console.log "RECORD"
-    console.log r
     # load the algo version first, since there might be race conditions
     # in setting it last with the background computation firing up
     @load_field r, "algo_version", config.input.defaults.algo_version
