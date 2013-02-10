@@ -632,6 +632,8 @@
           return this.p_bytes(o);
         case 'boolean':
           return this.p_boolean(o);
+        case 'undefined':
+          return this.p_null();
         case 'object':
           if (!(o != null)) {
             return this.p_null();
