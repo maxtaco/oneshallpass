@@ -129,9 +129,6 @@ exports.Client = class Client
 
   package_input : (mode) ->
     inp = @_eng.fork_input mode, config.server
-    d = 
-      bits : inp.get 'security_bits'
-      algo_version : inp.get 'algo_version'
     if not inp.is_ready()
       inp = null
     res = null

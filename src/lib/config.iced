@@ -7,6 +7,7 @@ exports.config =
       generation : 1
       length : 12
       num_symbols : 0
+      notes : null
   derive:
     initial_delay : 500
     sync_initial_delay : 200
