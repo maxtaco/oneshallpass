@@ -184,10 +184,7 @@
 
     Buffer.prototype._get = function(i) {
       var bi, li, lim, ret;
-      bi = this._logsz ? i >>> this._logsz : 0;
-      li = i % this._sz;
-      lim = bi === this._b ? this._i : this._sz;
-      ret = bi <= this._b && li < lim ? this._buffers[bi][li] : 0;
+      ret = i >= this._tot ? 0 : (bi = this._logsz ? i >>> this._logsz : 0, li = i % this._sz, lim = bi === this._b ? this._i : this._sz, bi <= this._b && li < lim ? this._buffers[bi][li] : 0);
       return ret;
     };
 
@@ -697,7 +694,7 @@
 
     Packer.prototype.p_array = function(a) {
       var e, _i, _len, _results;
-      this.p_len(a.length, C.fix_array_min, C.array16, C.array32);
+      this.p_len(a.length, C.fix_array_min, C.fix_array_max, C.array16, C.array32);
       _results = [];
       for (_i = 0, _len = a.length; _i < _len; _i++) {
         e = a[_i];
@@ -709,7 +706,7 @@
     Packer.prototype.p_obj = function(o) {
       var k, n, v, _results;
       n = (Object.keys(o)).length;
-      this.p_len(n, C.fix_map_min, C.map16, C.map32);
+      this.p_len(n, C.fix_map_min, C.fix_map_max, C.map16, C.map32);
       _results = [];
       for (k in o) {
         v = o[k];
@@ -761,9 +758,9 @@
       return this._buffer.push_bytes(b);
     };
 
-    Packer.prototype.p_len = function(l, s, m, b) {
-      if (l <= 0xf) {
-        return this.p_byte(l | s);
+    Packer.prototype.p_len = function(l, smin, smax, m, b) {
+      if (l <= (smax - smin)) {
+        return this.p_byte(l | smin);
       } else if (l <= 0xffff) {
         this.p_byte(m);
         return this.p_short(l);

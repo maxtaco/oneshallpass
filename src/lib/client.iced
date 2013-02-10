@@ -2,7 +2,6 @@
 {config} = require './config'
 derive   = require './derive'
 util     = require './util'
-purepack = require 'purepack'
 crypt    = require './crypt'
 sc       = require('./status').codes
 
