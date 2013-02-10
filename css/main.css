@@ -98,12 +98,17 @@ body {
 }
 #btn-remove {
   background-color: #755;
+  margin-left: 10px;
 }
 .input button {
   border:1px solid #036;
   cursor:pointer;
   height: 27px;
   margin-left:0px;
+}
+
+#label-legacy, #input-algo-version {
+  font-size: 0.9em; 
 }
 
 button.toggle-viz {

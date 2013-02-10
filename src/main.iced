@@ -136,9 +136,9 @@ class Frontend
 
     $("#input-algo-version").change =>
       cfg = config.legacy
-      if (@e.get "algo_version") is cfg.algo_version
-        @e.set "security_bits", cfg.security_bits
-        $("#input-security-bits").val cfg.security_bits
+      bits = if (@e.get "algo_version") is cfg.algo_version then cfg.security_bits
+      else (@e.get "security_bits") + 1
+      @fill_both "security_bits", bits, "input-security-bits"
 
     $("#btn-save").click =>
       @e.poke()
@@ -172,14 +172,19 @@ class Frontend
   load_field : (r, f, dflt) ->
     v = dflt if not (v = r[f])? and dflt?
     @fill_both f, v, "input-#{f.replace '_', '-'}"
+    console.log "load field #{f} -> #{v}"
 
   load_record_by_host: (h) ->
     r = @e.get_record h
+    console.log "RECORD"
+    console.log r
+    # load the algo version first, since there might be race conditions
+    # in setting it last with the background computation firing up
+    @load_field r, "algo_version", config.input.defaults.algo_version
     for f in [ "security_bits", "generation", "length", "host", 
                "num_symbols" ]
       @load_field r, f
     @load_field r, "notes", ""
-    @load_field r, "algo_version", config.input.defaults.algo_version
     $('#btn-save').attr 'disabled', 'disabled'
     @toggle_remove_button true
 

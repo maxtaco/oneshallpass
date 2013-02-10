@@ -147,6 +147,7 @@ class Input
 
     vo = @get_version_obj()
     uid = @unique_id vo
+    console.log "derive #{uid}"
     
     compute_hook = (i, tot) =>
       if (ret = (uid is @unique_id(vo))) and i % 10 is 0
@@ -187,7 +188,8 @@ class Input
 
   to_record : () ->
     d = {}
-    for k, row of @_template when row[1] and (v = @get k)
+    for k, row of @_template when row[1] 
+      v = @get k
       if row[0] and not v? then return null
       d[k] = v
       
