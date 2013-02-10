@@ -147,7 +147,6 @@ class Input
 
     vo = @get_version_obj()
     uid = @unique_id vo
-    console.log "derive #{uid}"
     
     compute_hook = (i, tot) =>
       if (ret = (uid is @unique_id(vo))) and i % 10 is 0
