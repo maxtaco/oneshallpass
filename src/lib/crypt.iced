@@ -42,12 +42,13 @@ exports.Cryptor = class Cryptor
   verify_mac : (obj, received) ->
     {words} = @compute_mac obj
     if received.length isnt words.length then return false
+      
     ret = true
-
     # Careful! Make sure not to short-circuit here, to prevent
     # timing attacks...
     for w,i in received
       ret = false unless (w is words[i])
+      
     return ret
 
   ##-----------------------------------------
