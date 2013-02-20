@@ -6,7 +6,7 @@ different camps:
 
 1. They reuse the same password for multiple sites.
 2. They choose different passwords for each site, and need to write them down
-   somewhere (either offline or online). 
+   somewhere (either offline or online).
 3. They try to remember different passwords for each site, following
    ad-hoc manually-computable encoding system.
 4. They use a commercial product, like 1password.
@@ -40,7 +40,7 @@ General FAQ
 ===========
 
 ### How do I prefill my e-mail for a bookmark?
- 
+
 You can bookmark the URL https://oneshallpass.com/#email=you@email.com
 
 ### How do I make a good passphrase?
@@ -50,13 +50,13 @@ also distributed as part of this project.
 
 ### Why shouldn't I dial up the security parameter to 10 or 16?
 
-You might want to use 1SP on your phone, and it's way slower at 
+You might want to use 1SP on your phone, and it's way slower at
 computing passwords than your desktop is.
 
 ### "One Shall Pass", is that a reference to Lord of the Rings?
 
-No. Gandalf says "you cannot pass" to the Balrog on the Bridge of 
-Khazad-dûm.  "One Shall Pass" is a reference to 
+No. Gandalf says "you cannot pass" to the Balrog on the Bridge of
+Khazad-dûm.  "One Shall Pass" is a reference to
 <a href="http://www.youtube.com/watch?v=dhRUe-gz690">this scene</a>
 from Monty Python's Holy Grail.
 
@@ -79,20 +79,20 @@ The 1SP input form takes as input five key pieces of information:
 
 The first three fields are fed as input to PBKDF-2, which
 makes your passphrase harder to crack.
-For every guess an adversary makes, he will have 
-to run multiple calls to HMAC-SHA512 to check if his guess 
+For every guess an adversary makes, he will have
+to run multiple calls to HMAC-SHA512 to check if his guess
 is correct.  1SP runs the PBKDF-2 algorithm as follows:
 
 * _PRF_, the pseudo-reandom password, is HMAC-SHA512;
 * _P_, the password, is the passphrase _p_ taken from your input;
 * _S_, the salt, is _e_, the user's email address;
 * _c_, the iteration count, is 2^s; and
-* _dkLen_, the derived key length, is 512 bits, the output of the 
+* _dkLen_, the derived key length, is 512 bits, the output of the
 chosen _PRF_.  Therefore, only one block is needed from PBKDF-2.
 * _b_, the block ID, is 1, since there's only one block of input and output.
 
 This algorithm outputs _DK_, a 512-bit derived key.  This needs
-to be done only once per session, and the output can be cached 
+to be done only once per session, and the output can be cached
 for use across multiple sites.  Then, each site's password is
 computed as:
 
@@ -105,8 +105,8 @@ with the private signing key derived from _p_.
 1SP version 2 will find the first _i_ for which the following
 conditions are met:
 
-1. When the hash is base64-encoded, the leftmost 8 characters contain 
-at least 1 uppercase, 1 lowercase, and 1 digit, and no more than 5 
+1. When the hash is base64-encoded, the leftmost 8 characters contain
+at least 1 uppercase, 1 lowercase, and 1 digit, and no more than 5
 uppercase, lowercase or digit characters.
 1. The first 16 characters of the base64-encoding contain no symbols
 (_e.g._, "/", "+" or "=")
@@ -114,7 +114,7 @@ uppercase, lowercase or digit characters.
 The nice part about this version of 1SP (rather than the previous
 version), is that the expensive computation (the iterated hashing
 of the input passphrase) needs to happen only once per session,
-and not once per site.  The adversary still has to do the same amount 
+and not once per site.  The adversary still has to do the same amount
 of work in either case.
 
 ### How secure is this?
@@ -130,10 +130,10 @@ HMAC-SHA512 requires two invocations of SHA2, but I have not seen a proof that
 two are required.  So conservatively, assume that one invocation of HMAC-
 SHA512 is equivalent to one call to SHA2.
 
-The Bitcon system \[{#bitcoin#}\] can help us put a monetary value on
+The Bitcoin system \[{#bitcoin#}\] can help us put a monetary value on
 the cost of computing a hash.  After all, an adversary can either
 spend cycles mining bitcoins or cracking your passphrase.  So cracking
-your passphrase has a quantifiable opportunity cost. 
+your passphrase has a quantifiable opportunity cost.
 
 As of 7 Feb 2013, the Bitcoin difficulty rate is
 3,275,465, meaning it takes 2^32*3275465 hashes on average to
@@ -185,7 +185,7 @@ password "dog" will have to be cracked independently.
 ### What implementation of SHA2 and HMAC is 1SP using?
 
 Jeff Mott's `crypto-js` library \[{#cryptojs#}\].  I tested
-it with test-vectors from RFC-4231 and RFC-4868.  To make sure it 
+it with test-vectors from RFC-4231 and RFC-4868.  To make sure it
 works for yourself, try `make test`; you'll need the `node`
 binary in your path.
 
@@ -215,7 +215,7 @@ server.
 
 When encrypting and decrypting server-stored data, your OneShallPass web
 client will derive two new keys from your master passphrase using PBKDF-2 as
-above, but with differing initial block IDs.   A 256-bit key is derived 
+above, but with differing initial block IDs.   A 256-bit key is derived
 as an AES encryption key (using an initial block ID of 3), and a 256-bit
 key is derived as an HMAC key to authenticate all encryption (using an initial
 block ID of 4).
