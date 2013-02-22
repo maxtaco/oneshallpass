@@ -182,10 +182,22 @@
       return this.toString(e);
     };
 
+    Buffer.prototype.bytes_left = function() {
+      return this._tot - this._cp;
+    };
+
     Buffer.prototype._get = function(i, n) {
-      var bi, li, lim, ret;
+      var bi, j, li, lim, ret, zero_pad;
       if (n == null) n = null;
-      ret = i >= this._tot ? 0 : (bi = this._logsz ? i >>> this._logsz : 0, li = i % this._sz, lim = bi === this._b ? this._i : this._sz, ret = bi > this._b || li >= lim ? n != null ? [] : 0 : n == null ? this._buffers[bi][li] : (n = Math.min(lim - li, n), this._buffers[bi].subarray(li, li + n)));
+      zero_pad = n != null ? (function() {
+        var _i, _results;
+        _results = [];
+        for (j = _i = 0; 0 <= n ? _i < n : _i > n; j = 0 <= n ? ++_i : --_i) {
+          _results.push(0);
+        }
+        return _results;
+      })() : 0;
+      ret = i >= this._tot ? zero_pad : (bi = this._logsz ? i >>> this._logsz : 0, li = i % this._sz, lim = bi === this._b ? this._i : this._sz, ret = bi > this._b || li >= lim ? zero_pad : n == null ? this._buffers[bi][li] : (n = Math.min(lim - li, n), this._buffers[bi].subarray(li, li + n)));
       return ret;
     };
 
@@ -427,9 +439,15 @@
     };
 
     Buffer.prototype.consume_string = function(n) {
-      var chnk, chunksz, i, parts, s;
+      var bl, chnk, chunksz, i, parts, raw, s, w;
       i = 0;
       chunksz = 0x800;
+      bl = this.bytes_left();
+      w = null;
+      if (n > bl) {
+        w = "Corruption: asked for " + n + " bytes, but only " + bl + " available";
+        n = bl;
+      }
       parts = (function() {
         var _results;
         _results = [];
@@ -441,7 +459,8 @@
         }
         return _results;
       }).call(this);
-      return parts.join('');
+      raw = parts.join('');
+      return [w, raw];
     };
 
     return Buffer;
@@ -823,6 +842,7 @@
     function Unpacker() {
       this._buffer = null;
       this._e = [];
+      this._w = [];
     }
 
     Unpacker.prototype.decode = function(s, enc) {
@@ -830,12 +850,23 @@
     };
 
     Unpacker.prototype.u_raw = function(n) {
-      return this._buffer.consume_string(n);
+      var raw, warning, _ref1;
+      _ref1 = this._buffer.consume_string(n), warning = _ref1[0], raw = _ref1[1];
+      if (warning != null) this._w.push(warning);
+      return raw;
     };
 
     Unpacker.prototype.get_error = function() {
       if (this._e.length) {
         return this._e;
+      } else {
+        return null;
+      }
+    };
+
+    Unpacker.prototype.get_warning = function() {
+      if (this._w.length) {
+        return this._w;
       } else {
         return null;
       }
@@ -935,65 +966,68 @@
     };
 
     Unpacker.prototype.u = function() {
-      var b, l;
+      var b, l, ret;
       b = this._buffer.consume_byte();
-      if (b <= C.positive_fix_max) {
-        return b;
-      } else if (b >= C.negative_fix_min && b <= C.negative_fix_max) {
-        return twos_compl_inv(b, 8);
-      } else if (b >= C.fix_raw_min && b <= C.fix_raw_max) {
-        l = b & C.fix_raw_count_mask;
-        return this.u_raw(l);
-      } else if (b >= C.fix_array_min && b <= C.fix_array_max) {
-        l = b & C.fix_array_count_mask;
-        return this.u_array(l);
-      } else if (b >= C.fix_map_min && b <= C.fix_map_max) {
-        l = b & C.fix_map_count_mask;
-        return this.u_map(l);
-      } else {
-        switch (b) {
-          case C["null"]:
-            return null;
-          case C["true"]:
-            return true;
-          case C["false"]:
-            return false;
-          case C.uint8:
-            return this.u_uint8();
-          case C.uint16:
-            return this.u_uint16();
-          case C.uint32:
-            return this.u_uint32();
-          case C.uint64:
-            return this.u_uint64();
-          case C.int8:
-            return this.u_int8();
-          case C.int16:
-            return this.u_int16();
-          case C.int32:
-            return this.u_int32();
-          case C.int64:
-            return this.u_int64();
-          case C.double:
-            return this.u_double();
-          case C.float:
-            return this.u_float();
-          case C.raw16:
-            return this.u_raw(this.u_uint16());
-          case C.raw32:
-            return this.u_raw(this.u_uint32());
-          case C.array16:
-            return this.u_array(this.u_uint16());
-          case C.array32:
-            return this.u_array(this.u_uint32());
-          case C.map16:
-            return this.u_map(this.u_uint16());
-          case C.map32:
-            return this.u_map(this.u_uint32());
-          default:
-            return this.error("unhandled type " + b);
+      ret = (function() {
+        if (b <= C.positive_fix_max) {
+          return b;
+        } else if (b >= C.negative_fix_min && b <= C.negative_fix_max) {
+          return twos_compl_inv(b, 8);
+        } else if (b >= C.fix_raw_min && b <= C.fix_raw_max) {
+          l = b & C.fix_raw_count_mask;
+          return this.u_raw(l);
+        } else if (b >= C.fix_array_min && b <= C.fix_array_max) {
+          l = b & C.fix_array_count_mask;
+          return this.u_array(l);
+        } else if (b >= C.fix_map_min && b <= C.fix_map_max) {
+          l = b & C.fix_map_count_mask;
+          return this.u_map(l);
+        } else {
+          switch (b) {
+            case C["null"]:
+              return null;
+            case C["true"]:
+              return true;
+            case C["false"]:
+              return false;
+            case C.uint8:
+              return this.u_uint8();
+            case C.uint16:
+              return this.u_uint16();
+            case C.uint32:
+              return this.u_uint32();
+            case C.uint64:
+              return this.u_uint64();
+            case C.int8:
+              return this.u_int8();
+            case C.int16:
+              return this.u_int16();
+            case C.int32:
+              return this.u_int32();
+            case C.int64:
+              return this.u_int64();
+            case C.double:
+              return this.u_double();
+            case C.float:
+              return this.u_float();
+            case C.raw16:
+              return this.u_raw(this.u_uint16());
+            case C.raw32:
+              return this.u_raw(this.u_uint32());
+            case C.array16:
+              return this.u_array(this.u_uint16());
+            case C.array32:
+              return this.u_array(this.u_uint32());
+            case C.map16:
+              return this.u_map(this.u_uint16());
+            case C.map32:
+              return this.u_map(this.u_uint32());
+            default:
+              return this.error("unhandled type " + b);
+          }
         }
-      }
+      }).call(this);
+      return ret;
     };
 
     return Unpacker;
@@ -1001,7 +1035,7 @@
   })();
 
   exports.unpack = function(x, enc) {
-    var err, res, unpacker;
+    var err, res, unpacker, warn;
     if (enc == null) enc = 'base64';
     unpacker = new Unpacker;
     err = null;
@@ -1009,10 +1043,11 @@
     if (unpacker.decode(x, enc)) {
       res = unpacker.u();
       err = unpacker.get_error();
+      warn = unpacker.get_warning();
     } else {
       err = "Decoding type '" + enc + "' failed";
     }
-    return [err, res];
+    return [err, res, warn];
   };
 
 }).call(this);
