@@ -5,7 +5,6 @@ wa = CryptoJS.lib.WordArray.create inp
 $ -> run_test()
 
 run_test = () ->
-  val = null
   bads = []
   for i in [0...100]
     sha = CryptoJS.algo.SHA512.create()
