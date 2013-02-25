@@ -28,7 +28,8 @@ $ ->
     ths = ("<th>#{h}</td>" for h in headings)
     headrow = "<tr>" + ths.join(" ") + "</tr>"
 
-
     tab = "<h2>Errors Found!</h2>\n<table border=1>#{headrow} #{trs.join('\n')}</table>"
     $("#shitcan").append tab
+  else
+    $("#shitcan").append "No problems found; try again....."
 
