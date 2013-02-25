@@ -6,7 +6,15 @@
     {% include jquery.js %}
     {% include chrome.js %}
   </script>
-  <h1>This page gives me unstable results on Chrome 25.0.1364.99 on Mac OS X 10.8.2</h1>
+  <h1>Test Case For Weird Chrome Behavior</h1>
+  <p>This page runs a SHA-512 (Jeff Mott's CryptoJS implementation v3.0.2) on the input string that
+  	contains 12 \x36 characters.  It does so 1000 times and complains if the results don't 
+  	align.  If it finds a disagreement, it will output the attempts that didn't match
+  	(when compared to the 0th attempt which always comes out correctly).
+  </p>
+  <p>This page gives me unstable results on Chrome 25.0.1364.99 on Mac OS X 10.8.2.  Reload a few times
+  	to see what I mean.</p>
+  <p>It works as expected on recent versions of Sarafi and Firefox (and older versions of Chrome).</p>
   <div id="shitcan">
   </pre>
 </html>
