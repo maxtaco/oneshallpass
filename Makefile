@@ -1,7 +1,7 @@
 
 JSMIN=uglifyjs -c -m
 
-CRYPTO_JS_VERSION=3.0.2
+CRYPTO_JS_VERSION=3.1.2
 JQUERY_VERSION=1.9.0
 ICED_VERSION=1.4.0a
 PUREPACK_VERSION=0.0.10
@@ -14,7 +14,9 @@ html: \
 	build/html/index-big.html \
 	build/html/pp.html \
 	build/html/pp-big.html \
-	build/html/v2.html
+	build/html/v2.html \
+	build/html/chromebug.html \
+	build/html/chromebug-big.html
 
 all: default
 deps: deps-crypto-js
@@ -73,6 +75,9 @@ build/js/main.js: src/main.iced
 	mkdir -p `dirname $@`
 	(iced --bare --print -I none $^ > $@~) && mv $@~ $@
 build/js/pp.js: src/pp.iced
+	mkdir -p `dirname $@`
+	(iced --bare --print -I none $^ > $@~) && mv $@~ $@
+build/js/chrome.js: src/chrome.iced
 	mkdir -p `dirname $@`
 	(iced --bare --print -I none $^ > $@~) && mv $@~ $@
 build/js/metastitch.js: src/metastitch.iced
@@ -141,6 +146,17 @@ build/html/pp.html: html/pp.html \
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
 
+build/html/chromebug.html: html/chromebug.html \
+	build/js-min/crypto.js \
+	build/js-min/chrome.js 
+	mkdir -p `dirname $@`
+	(python bin/inline.py < $< > $@~) && mv $@~ $@
+
+build/html/chromebug-big.html: html/chromebug.html \
+	build/js/crypto.js \
+	build/js/chrome.js 
+	mkdir -p `dirname $@`
+	
 build/html/v2.html: v2/www/index.html
 	cat < $< > $@
 
