@@ -65,7 +65,7 @@ Technical FAQ
 
 ### What is the crypto behind One Shall Pass?
 
-In a nuthsell, HMAC-SHA512 \[[1](#citations),[2](#citations)\],
+In a nutshell, HMAC-SHA512 \[[1](#citations),[2](#citations)\],
 and PBKDF-2 \[[3](#citations)\] with some slight tweaks.
 
 The 1SP input form takes as input five key pieces of information:
