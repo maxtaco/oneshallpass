@@ -198,6 +198,8 @@ it yourself using `make` in the top-level directory. By default, you'll
 need `node` installed with the `uglifyjs` package, but you can skip
 this dependency by replacing the `JSFILT` variable in `Makefile`
 with `cat`.  This same technique also works well for debugging.
+Building 1SP also requires the `stitch` and `iced-coffee-script`
+modules from NPM.
 
 ### How does logging into the server work?
 
