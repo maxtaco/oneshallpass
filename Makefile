@@ -29,8 +29,10 @@ build/js-min/%.js: build/js/%.js
 	$(JSMIN) < $^ > $@
 
 build/js/jquery.js: includes/jquery-$(JQUERY_VERSION).js
+	mkdir -p `dirname $@`
 	cat < $< > $@
 build/js/dict.js: data/dict.js
+	mkdir -p `dirname $@`
 	cat < $< > $@
 
 build/js/main.js: src/main.iced

@@ -1,4 +1,4 @@
-Location                = require('./location.iced').Location
+Location                = require('./lib/location.iced').Location
 Engine                  = require('./lib/engine.iced').Engine
 sc                      = require('./lib/status.iced').codes
 {config}                = require('./lib/config.iced')
