@@ -1,0 +1,24 @@
+{
+    "name": "oneshallpass",
+    "version": "3.0.0",
+    "description": "Client side HTML client for OneShallPass",
+    "dependencies": {
+        "iced-coffee-script": "*",
+        "browserify" : "*",
+        "icsify" : "*",
+        "uglify-js" : "*",
+        "cryptojs-1sp" : "*"
+    },
+    "devDependencies": {
+    },
+    "scripts": {
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/maxtaco/oneshallpass.git"
+    },
+    "homepage": "https://github.com/maxtaco/oneshallpass",
+    "keywords": [
+    ],
+    "license": "MIT"
+}
