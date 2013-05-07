@@ -1,12 +1,8 @@
 
-JSMIN=uglifyjs -c -m
+JSMIN=node_modules/.bin/uglifyjs -c -m
+BROWSERIFY=node_modules/.bin/browserify -t icsify
 
-CRYPTO_JS_VERSION=3.0.2
 JQUERY_VERSION=1.9.0
-ICED_VERSION=1.4.0a
-PUREPACK_VERSION=0.0.10
-
-CRYPTO_SRC=deps/crypto-js/src
 
 default: html
 html: \
@@ -14,17 +10,15 @@ html: \
 	build/html/index-big.html \
 	build/html/pp.html \
 	build/html/pp-big.html \
-	build/html/v2.html \
-	build/html/chromebug.html \
-	build/html/chromebug-big.html
+	build/html/v2.html
 
 all: default
 
+setup: 
+	npm install -d
+
 clean:
 	rm -rf build
-
-depclean:
-	rm -rf deps
 
 test: 
 	for f in test/*.js; do echo "test $$f..."; node $$f; done
@@ -34,74 +28,33 @@ build/js-min/%.js: build/js/%.js
 	mkdir -p `dirname $@`
 	$(JSMIN) < $^ > $@
 
-build/js/iced.js: includes/iced-$(ICED_VERSION).js
-	cat < $< > $@
 build/js/jquery.js: includes/jquery-$(JQUERY_VERSION).js
-	cat < $< > $@
-build/js/purepack.js: includes/purepack-$(PUREPACK_VERSION).js
 	cat < $< > $@
 build/js/dict.js: data/dict.js
 	cat < $< > $@
 
 build/js/main.js: src/main.iced
 	mkdir -p `dirname $@`
-	(iced --bare --print -I none $^ > $@~) && mv $@~ $@
+	($(BROWSERIFY) $< > $@~) && mv $@~ $@
 build/js/pp.js: src/pp.iced
 	mkdir -p `dirname $@`
-	(iced --bare --print -I none $^ > $@~) && mv $@~ $@
-build/js/chrome.js: src/chrome.iced
-	mkdir -p `dirname $@`
-	(iced --bare --print -I none $^ > $@~) && mv $@~ $@
-build/js/metastitch.js: src/metastitch.iced
-	mkdir -p `dirname $@`
-	(iced --bare --print -I none $^ > $@~) && mv $@~ $@
-
-build/iced/%.js: src/lib/%.iced
-	mkdir -p `dirname $@`
-	(iced --print -I none $^ > $@~) && mv $@~ $@
-
-build/js/lib.js: build/iced/config.js \
-	build/iced/derive.js \
-	build/iced/document.js \
-	build/iced/engine.js \
-	build/iced/location.js \
-	build/iced/util.js \
-	build/iced/client.js \
-	build/iced/prng.js \
-	build/iced/crypt.js \
-	build/iced/pack.js \
-	build/iced/status.js \
-	build/iced/job_watcher.js \
-	build/iced/vhash.js
-	mkdir -p `dirname $@`
-	(iced bin/stitch.iced build/iced/ > $@~) && mv $@~ $@
+	($(BROWSERIFY) $< > $@~) && mv $@~ $@
 
 build/html/index.html: html/index.html \
-	build/js-min/lib.js \
-	build/js-min/iced.js \
-	build/js-min/purepack.js \
 	build/js-min/jquery.js \
-	build/js-min/crypto.js \
 	build/js-min/main.js \
-	build/js-min/metastitch.js \
 	css/main.css 
 	mkdir -p `dirname $@`
 	(python bin/inline.py -m < $< > $@~) && mv $@~ $@
 
 build/html/index-big.html: html/index.html \
-	build/js/lib.js \
-	build/js/iced.js \
-	build/js/crypto.js \
-	build/js/purepack.js \
 	build/js/jquery.js \
 	build/js/main.js \
-	build/js/metastitch.js \
 	css/main.css 
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
 
 build/html/pp-big.html: html/pp.html \
-	build/js/crypto.js \
 	build/js/jquery.js \
 	build/js/dict.js \
 	build/js/pp.js \
@@ -110,7 +63,6 @@ build/html/pp-big.html: html/pp.html \
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
 	
 build/html/pp.html: html/pp.html \
-	build/js-min/crypto.js \
 	build/js-min/jquery.js \
 	build/js-min/dict.js \
 	build/js-min/pp.js \
@@ -118,21 +70,10 @@ build/html/pp.html: html/pp.html \
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
 
-build/html/chromebug.html: html/chromebug.html \
-	build/js-min/crypto.js \
-	build/js-min/chrome.js 
-	mkdir -p `dirname $@`
-	(python bin/inline.py < $< > $@~) && mv $@~ $@
-
-build/html/chromebug-big.html: html/chromebug.html \
-	build/js/crypto.js \
-	build/js/chrome.js 
-	mkdir -p `dirname $@`
-	
 build/html/v2.html: v2/www/index.html
 	cat < $< > $@
 
 %.md: %.md.in
 	python bin/footnoter.py < $< > $@
 
-.PHONY: clean depclean test
+.PHONY: clean depclean test setup

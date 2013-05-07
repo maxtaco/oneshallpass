@@ -7,7 +7,8 @@
         "browserify" : "*",
         "icsify" : "*",
         "uglify-js" : "*",
-        "cryptojs-1sp" : "*"
+        "cryptojs-1sp" : "*",
+        "purepack" : "*"
     },
     "devDependencies": {
     },

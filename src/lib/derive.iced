@@ -1,7 +1,7 @@
 
-{config} = require './config'
-C = require('./cryptojs-1sp').CryptoJS
-{pack_to_word_array} = require './pack'
+{config} = require './config.iced'
+C = require('cryptojs-1sp').CryptoJS
+{pack_to_word_array} = require './pack.iced'
 
 ##=======================================================================
 

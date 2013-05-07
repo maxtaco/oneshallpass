@@ -1,9 +1,9 @@
 
-{config} = require './config'
-derive   = require './derive'
-util     = require './util'
-crypt    = require './crypt'
-sc       = require('./status').codes
+{config} = require './config.iced'
+derive   = require './derive.iced'
+util     = require './util.iced'
+crypt    = require './crypt.iced'
+sc       = require('./status.iced').codes
 C        = require('cryptojs-1sp').CryptoJS
 
 states =

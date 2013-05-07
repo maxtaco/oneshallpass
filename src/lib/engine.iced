@@ -1,8 +1,8 @@
 
-util = require './util'
-{config} = require './config'
-derive = require './derive'
-{Client,Record} = require './client'
+util = require './util.iced'
+{config} = require './config.iced'
+derive = require './derive.iced'
+{Client,Record} = require './client.iced'
 
 ##=======================================================================
 
