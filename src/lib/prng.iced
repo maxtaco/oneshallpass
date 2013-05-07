@@ -1,4 +1,6 @@
 
+{CrytoJS} = require('cryptojs-1sp')
+
 ##=======================================================================
 
 exports.Prng = class Prng

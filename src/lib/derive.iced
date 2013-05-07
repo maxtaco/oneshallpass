@@ -1,6 +1,6 @@
 
 {config} = require './config'
-C = if CryptoJS? then CryptoJS else null
+C = require('./cryptojs-1sp').CryptoJS
 {pack_to_word_array} = require './pack'
 
 ##=======================================================================

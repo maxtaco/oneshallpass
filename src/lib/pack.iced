@@ -1,6 +1,6 @@
 
 purepack = require 'purepack'
-C = if CryptoJS? then CryptoJS else null
+C = require('cryptojs-1sp').CryptoJS
 
 ##=======================================================================
 

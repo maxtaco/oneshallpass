@@ -4,6 +4,7 @@ derive   = require './derive'
 util     = require './util'
 crypt    = require './crypt'
 sc       = require('./status').codes
+C        = require('cryptojs-1sp').CryptoJS
 
 states =
   NONE : 0
@@ -12,7 +13,7 @@ states =
   WAITING_FOR_INPUT : 3
 
 ENCODING = "base64"
-C = CryptoJS
+
  
 ##=======================================================================
 

@@ -1,9 +1,9 @@
 Location                = require('./location').Location
-Engine                  = require('./engine').Engine
-sc                      = require('./status').codes
-{config}                = require('./config')
-{JobWatcher, JobStatus} = require './job_watcher'
-{keymodes}              = require './derive'
+Engine                  = require('./lib/engine').Engine
+sc                      = require('./lib/status').codes
+{config}                = require('./lib/config')
+{JobWatcher, JobStatus} = require './lib/job_watcher'
+{keymodes}              = require './lib/derive'
 
 # -----------------------------------------------------------------------------
 

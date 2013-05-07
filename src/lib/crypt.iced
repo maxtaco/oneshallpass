@@ -1,7 +1,7 @@
 
 purepack = require 'purepack'
 {prng} = require './prng'
-C = CryptoJS
+C = require('cryptojs-1sp').CryptoJS
 {pack_to_word_array,unpack_from_word_array} = require './pack'
 
 ##=======================================================================

@@ -19,7 +19,6 @@ html: \
 	build/html/chromebug-big.html
 
 all: default
-deps: deps-crypto-js
 
 clean:
 	rm -rf build
@@ -27,36 +26,9 @@ clean:
 depclean:
 	rm -rf deps
 
-deps-crypto-js: $(CRYPTO_SRC)/core.js
-
 test: 
 	for f in test/*.js; do echo "test $$f..."; node $$f; done
 	for f in test/*.iced; do echo "test $$f..."; iced $$f; done
-
-$(CRYPTO_SRC)/core.js:
-	mkdir -p deps
-	cd deps ; \
-	if [ -d crypto-js ] ; then \
-		(cd crypto-js && svn up); \
-	else \
-		svn checkout http://crypto-js.googlecode.com/svn/tags/$(CRYPTO_JS_VERSION) crypto-js ; \
-	fi
-
-build/js/crypto.js: \
-	$(CRYPTO_SRC)/core.js \
-	$(CRYPTO_SRC)/x64-core.js \
-	$(CRYPTO_SRC)/enc-base64.js \
-	$(CRYPTO_SRC)/hmac.js \
-	$(CRYPTO_SRC)/sha1.js \
-	$(CRYPTO_SRC)/sha256.js \
-	$(CRYPTO_SRC)/sha512.js \
-	$(CRYPTO_SRC)/md5.js \
-	$(CRYPTO_SRC)/evpkdf.js \
-	$(CRYPTO_SRC)/cipher-core.js \
-	$(CRYPTO_SRC)/aes.js \
-	$(CRYPTO_SRC)/pbkdf2.js
-	mkdir -p `dirname $@`
-	cat $^ > $@
 
 build/js-min/%.js: build/js/%.js
 	mkdir -p `dirname $@`
