@@ -1,5 +1,5 @@
 
-{CrytoJS} = require('cryptojs-1sp')
+{CryptoJS} = require('cryptojs-1sp')
 
 ##=======================================================================
 

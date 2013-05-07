@@ -8,7 +8,7 @@
         "icsify" : "*",
         "uglify-js" : "*",
         "cryptojs-1sp" : "*",
-        "purepack" : "0.0.13"
+        "purepack" : "0.0.15"
     },
     "devDependencies": {
     },
