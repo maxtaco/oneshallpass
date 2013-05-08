@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 
-fs = require ('fs');
-
-lib = fs.readFileSync("./build/js-min/crypto.js").toString()
-eval lib
+fs = require 'fs'
+{CryptoJS} = require 'cryptojs-1sp'
 derive = require '../src/lib/derive'
 
 check_vector = (CryptoJS, v, cb) ->
@@ -81,10 +79,8 @@ crazy_test_skip_for_now = {
 	DK : "eefe3d61cd4da4e4e9945b3d6ba2158c2634e984"
 }
 
-eval fs.readFileSync("./build/js-min/crypto.js").toString()
-
 rc = 0
-for v in test_vectors
+for v,i in test_vectors
   await check_vector CryptoJS, v, defer res
   rc = 1 unless res
 process.exit rc

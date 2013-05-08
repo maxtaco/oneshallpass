@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 
 var fs = require ('fs');
-
-var lib = fs.readFileSync("./build/js-min/crypto.js");
-eval(lib.toString());
+var CryptoJS = require('cryptojs-1sp').CryptoJS;
 
 function make_wa_from_byte(byte, n) {
     var v = [];
