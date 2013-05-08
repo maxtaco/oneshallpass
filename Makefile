@@ -9,8 +9,7 @@ html: \
 	build/html/index.html \
 	build/html/index-big.html \
 	build/html/pp.html \
-	build/html/pp-big.html \
-	build/html/v2.html
+	build/html/pp-big.html
 
 all: default
 
@@ -71,9 +70,6 @@ build/html/pp.html: html/pp.html \
 	css/pp.css 
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
-
-build/html/v2.html: v2/www/index.html
-	cat < $< > $@
 
 %.md: %.md.in
 	python bin/footnoter.py < $< > $@
