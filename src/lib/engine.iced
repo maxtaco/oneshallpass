@@ -266,7 +266,7 @@ exports.Engine = class Engine
     { @on_compute_step, @on_compute_done, @on_timeout } = opts.hooks
     @_cache = new Cache
     @_inp = new Input { engine : @, presets }
-    @_client = new Client @
+    @_client = new Client @, (opts.net or {})
     @_timers = new Timers @
     @_timers.start() unless @_inp.get 'no_timeout'
 

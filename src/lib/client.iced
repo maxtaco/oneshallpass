@@ -43,11 +43,17 @@ exports.Client = class Client
 
   #-----------------------------------------
 
-  constructor : (@_eng) ->
+  constructor : (@_eng, {@url_prefix}) ->
     @_active = false
     @_state = states.NONE
     @_session = null
     @_records = {}
+
+  #-----------------------------------------
+
+  resolve_url : (u) ->
+    if (p = @url_prefix)? then [u, p].join '' 
+    else u
 
   #-----------------------------------------
 
@@ -202,6 +208,7 @@ exports.Client = class Client
   ##-----------------------------------------
   
   ajax : (url, data, method, cb) ->
+    url = @resolve_url url
     error = (x, status, error_thrown) ->
       cb { ok : false, status : x.status, data : null }
     success = (data, status, x) ->

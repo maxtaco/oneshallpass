@@ -9,7 +9,7 @@ As found in the stiched `lib.js`, accessed via:
 ### constructor:
 
 ```coffeescript
-  default_values : {
+  presets : {
     passphrase:       (optional)
     email:            (optional)
     algo_version:     (optional)
@@ -21,6 +21,9 @@ As found in the stiched `lib.js`, accessed via:
     on_compute_step:  (keymode, step_num, total_steps)
     on_compute_done:  (keymode, key)
     on_timeout     :  ()
+  }
+  net : {
+    url_prefix:       (optional -- full path to server)
   }
 ```
 
