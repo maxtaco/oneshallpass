@@ -1,0 +1,262 @@
+
+body {
+  margin:0;
+  padding:0;
+  background-color:#cde;
+  font-family:helvetica, arial, verdana, sans;
+}
+#wrapper {
+  font-family:helvetica;
+}
+#col1 {
+  float:left;
+  width:400px;
+  margin:10px;
+  padding:0px;
+  border:1px solid #7ab;
+  background-color: #fff8ff;
+}
+body.extension #col1 {
+  margin: 0;
+  float: none;
+  border: none;
+}
+#col2 {
+  margin:10px;
+  float:left;
+  width:300px;
+}
+.label {
+  width:120px;
+  float:left;
+  color:#036;
+  font-weight:bold;
+  padding-top:6px;
+}
+.input-bundle {
+  padding: 10px 0 10px 0;
+}
+.input-bundle.saved-hosts-bundle {
+  border-top:1px solid #ccc;
+}
+.input-bundle.host-bundle {
+  border-top:1px solid #ccc;
+}
+.input-bundle.password-bundle {
+  background-color:#eee;
+  border-top:1px solid #bbb;
+}
+
+.input {
+  margin-left:10px;
+  width:250px;
+  float:left;
+}
+
+.input .minor {
+  font-size: 0.8em;
+  width: 250px;
+  color:#999;
+  height: 14px;
+}
+
+.input input {
+  font-size: 1.0em;
+  width:250px;
+  color:#999;
+  padding:3px;
+  border:1px solid #999;
+  height: 27px;
+}
+
+#input-passphrase {
+  width:210px;
+}
+
+.input input.modified {
+  color:#000;
+}
+.input input.modified[disabled] {
+  color:#999;
+}
+.input input.modified.success {
+  background-color:#6f6;
+  color:#060;
+  border:1px solid #060;  
+}
+.input input.modified.error {
+  background-color:#f66;
+  color:#fff;
+  border:1px solid #900;
+}
+
+.input-row {
+  padding:10px 0 10px 10px;
+}
+
+#btn-show-passphrase {
+  background-color: #755;
+}
+
+#btn-hide-passphrase {
+  background-color: #575;
+}
+#btn-remove {
+  background-color: #755;
+  margin-left: 10px;
+}
+.input button {
+  border:1px solid #036;
+  cursor:pointer;
+  height: 27px;
+  margin-left:0px;
+}
+
+#label-legacy, #input-algo-version {
+  font-size: 0.9em; 
+}
+
+button.toggle-viz {
+  color:#fff;
+  border:1px solid #036;
+  font-size:0.5em;
+  cursor:pointer;
+  height: 27px;
+  margin-left: 5px;
+  width: 35px;
+  text-align: center;
+  float: right;
+}
+
+.input-row button#btn-logout {
+  background-color:#393;
+  border:1px solid #030;
+}
+.input-row button[disabled], .input-row button#btn-logout[disabled] {
+  background-color: #ccc;
+  color:#999;
+  border:1px solid #999;
+}
+
+
+.clear {clear:both;}
+.explanation {
+  font-size:0.8em;
+}
+.explanation p {
+  padding:5px;
+  background-color:#cde;
+  border:1px solid #cde;
+
+}
+
+#login-status {
+  font-family:helvetica;
+  font-size:0.9em;
+  float:left;
+  width:189px;
+  border:1px solid #fff;
+  margin-top:2px;
+  margin-left:5px;
+  height:19px;
+  padding:5px 0 0 3px;
+}
+#login-status.logged-in {
+  font-family:courier new;
+  font-size:0.9em;
+  border:1px solid #fff;
+  background-color:#fff;
+  color:#090;
+  font-weight:bold;
+}
+#login-status-row {
+  margin-bottom:10px;
+  margin-top:10px;
+}
+h1 {
+  margin-top:0px;
+  padding-top:0px;
+}
+
+#job-watcher {
+  min-height:0px;
+  padding:0 0 5px 0;
+  background-color:#9bd;
+  border-top:1px solid #7ab;
+}
+
+#job-watcher .job {
+  font-family:courier new;
+  font-size:0.8em;
+  color: #036;
+  padding:5px;
+}
+
+#output-password {
+  color:#603;
+  font-family:courier new;
+  font-weight:bold;
+  -webkit-transition: background-color 0.5s, color 0.5s;
+  -moz-transition:    background-color 0.5s, color 0.5s;
+  -o-transition:      background-color 0.5s, color 0.5s;
+}
+#output-password.just-changed {
+  background-color:#fdf;
+  -webkit-transition: background-color 0.0s, color 0.0s;
+  -moz-transition:    background-color 0.0s, color 0.0s;
+  -o-transition:      background-color 0.0s, color 0.0s;
+}
+.job-status, .job-txt, .job-completion {
+  float:left;
+}
+.job-status {
+  width:80px;
+  text-align:right;
+  font-size:0.9em;
+}
+.job-txt {
+  margin-left:10px;
+  width:240px;
+  font-size:0.9em;
+}
+.job-completion {
+  width:53px;
+  background-color:#ace;
+}
+.job-completion-bar {
+  height:10px;
+  background-color:#fff;
+  border:1px solid #7ab;
+}
+#advanced-table {
+  font-size:0.8em;
+  width:250px;
+}
+#advanced-table td {
+  padding-top:4px;
+  padding-bottom: 4px;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+#advanced-table td.mid-col {
+  padding-right: 9px;
+}
+#advanced-table td.adv-label {
+  text-align: right
+}
+#notes-label-cell {
+  width:70px;
+}
+#notes-ta-cell {
+  width:150px;
+}
+#input-notes {
+  height:40px;
+  width:175px;
+}
+.question {
+  background-color:#fff;
+  color:#000;
+  font-size:1.1em;
+  font-weight: bold;
+}

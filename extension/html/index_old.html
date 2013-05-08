@@ -1,0 +1,359 @@
+<html>
+ <head>
+  <title>One Shall Pass</title>
+  <!--*
+
+               O N E    S H A L L    P A S S
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   This page uses in-line CSS and JavaScript, so you
+   may take it with you as a portable utility.
+
+   For more information, or to audit the file's JavaScript,
+   please see https://github.com/maxtaco/oneshallpass
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  *-->
+  <script>
+    {% include jquery.js %}
+    {% include main.js %}
+  </script>
+  <link rel="stylesheet" type="text/css" href="../css/main_old.css"/>
+  <meta name="viewport" content="width=device-width" />
+ </head>
+ <body>
+
+  <div id="wrapper">
+    <div id="col1">
+
+
+      <div class="input-bundle">
+
+        <div class="input-row">
+          <div class="label">Email</div>
+          <div class="input">
+            <input type="text" id="input-email" value="you@example.com" tabindex="1" />
+          </div>
+          <div class="clear"></div>
+        </div>
+
+        <div class="input-row">
+          <div class="label">Passphrase</div>
+          <div class="input">
+            <button class="toggle-viz" id="btn-hide-passphrase">hide</button>
+            <button class="toggle-viz" id="btn-show-passphrase" style="display: none;">show</button>
+            <input type="text" id="input-passphrase" value="bowls halves tweedy apogees" tabindex="2" />
+          </div>
+          <div class="clear"></div>
+        </div>
+
+        <div class="input-row" id="login-row">
+          <div class="label">Optional Login</div>
+          <div class="input">
+            <button id="btn-login"  disabled="true"  tabindex="3" />Login or Join</button>
+            <button id="btn-logout" style="display:none;"  tabindex="4" />Logout</button>
+            <div class="clear"></div>
+            <div id="bad-login-dialog" style="display:none;">
+              <p id="join-msg">
+                A hash of this email + passphrase is unrecognized by the server. Either
+                fix the typo, or...
+              </p>
+              <button id="btn-join">Join with this Combo</button>
+              <div class="clear"></div>
+            </div>
+            <div id="good-join-dialog" style="display:none;">
+              <p id="join-success-msg">
+                Success! Check for an authentication email at <b class="join-email"></b>.
+                Once you've clicked the link in the email, you can retry the login button above.
+              </p>
+            </div>
+            <div id="bad-general-dialog" style="display:none;">
+              <p id="bad-general-msg">
+              </p>
+            </div>
+
+          </div>
+          <div class="clear"></div>
+        </div>
+
+      </div>
+
+      <div class="input-bundle saved-hosts-bundle" style="display:none;">
+        <div class="input-row">
+          <div class="label">Load</div>
+          <div class="input">
+            <select id="input-saved-host"  tabindex="5">
+            </select>
+          </div>
+          <div class="clear"></div>
+        </div>          
+      </div>
+
+      <div class="input-bundle host-bundle">
+        <div class="input-row">
+          <div class="label">Host</div>
+          <div class="input">
+            <input type="text" id="input-host" value="iTunes" tabindex="6" />
+          </div>
+          <div class="clear"></div>
+        </div>
+        <div class="input-row">
+          <div class="label">Options</div>
+          <div class="input">
+            <table id="advanced-table" cellspacing="0" cellpadding="0" border="0">
+              <tr>
+                <td class="adv-label">generation</td>
+                <td class="mid-col">
+                  <select id="input-generation">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                    <option>17</option>
+                    <option>18</option>
+                    <option>19</option>
+                    <option>20</option>
+                  </select>
+                </td>                      
+                <td class="adv-label">hashes</td>
+                <td>
+                  <select id="input-security-bits">
+                    <option value="1">2^1</option>
+                    <option value="2">2^2</option>
+                    <option value="3">2^3</option>
+                    <option value="4">2^4</option>
+                    <option value="5">2^5</option>
+                    <option value="6">2^6</option>
+                    <option value="7">2^7</option>
+                    <option value="8" selected="selected">2^8</option>
+                    <option value="9">2^9</option>
+                    <option value="10">2^10</option>
+                    <option value="11">2^11</option>
+                    <option value="12">2^12</option>
+                    <option value="13">2^13</option>
+                    <option value="14">2^14</option>
+                    <option value="15">2^15</option>
+                    <option value="16">2^16</option>
+                  </select>
+                </td>            
+              </tr>
+              <tr>
+                <td class="adv-label">symbols</td>
+                <td class="mid-col">
+                  <select id="input-num-symbols">
+                    <option>0</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                  </select>                  
+                </td>
+                <td class="adv-label">length</td>
+                <td>
+                  <select id="input-length">
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option selected="selected">12</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td id="label-legacy" colspan="2" class="adv-label">legacy mode</td>
+                <td>
+                  <select id="input-algo-version">
+                    <option value="3">off</option>
+                    <option value="1">on</option>
+                  </select>
+                </td>
+              </tr>
+              <tr style="display:none;" id="notes-row">
+                <td id="notes-label-cell" class="adv-label">notes</td>
+                <td id="notes-ta-cell" colspan="3">
+                  <textarea id="input-notes"></textarea>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="clear"></div>
+        </div>
+        <div class="input-row" id="save-row" style="display:none;">
+          <div class="label">Save</div>
+          <div class="input">
+            <button id="btn-save" disabled="disabled"  tabindex="7">Save</button>
+            <button id="btn-remove" disabled="disabled">Remove</button>
+          </div>
+          <div class="clear"></div>
+        </div>          
+      </div>      
+
+      <div class="input-bundle password-bundle">
+        <div class="input-row">
+          <div class="label">Your Password</div>
+          <div class="input">
+            <input type="text" id="output-password" readonly="readonly" value=""  tabindex="8"/>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+
+
+      <div id="job-watcher">
+      </div>
+
+    </div>
+
+    <div id="col2">
+      <h1>One Shall Pass</h1>
+      <div class="explanation">
+
+        <p>
+          One Shall Pass is a <i>browser-side</i> service for calculating strong, site-specific passwords. It is <a href="https://github.com/maxtaco/oneshallpass">open source</a>. In contrast to other password services, 1SP does not save your passwords or universal passphrase anywhere.
+        </p>
+
+        <p>
+          This page is self-contained, with only inline JS and CSS, and no images. So
+          you can conveniently save it or use it offline. You can also watch 
+          your network monitor to witness it makes no remote calls beyond the initial page load.
+        </p>
+
+        <p id="sync-explanation">
+
+          There is one (optional) networked feature: if you're afraid you'll forget what
+          you called a host (e.g., "gmail" or "google" or "gmail.google.com")
+          or your features for a host (how long you want the password to be,
+          etc.), you may login to oneshallpass.com.  This will push and pull
+          your <i>encrypted</i> hostnames and settings to and from oneshallpass.com.
+          It will not sync your universal passphrase, so oneshallpass.com
+          cannot access your passwords. Nor can oneshallpass.com read your
+          settings or hostnames. So do not lose your passphrase, since it's not
+          recoverable.
+
+        </p>        
+        <p>
+          <a href="#no" id="faq-link">FAQ</a>
+        </p>
+      </div>
+      <div class="explanation" style="display:none;" id="faq">
+        <p class="question">
+          How does it work?
+        </p>
+        <p>In JavaScript, 1SP hashes a structure including your email address your universal passphrase (which you choose and mustn't forget), then hashes the results with a host (such as "github.com"), and your settings for that host. If you enter the same inputs on another computer, 1SP will
+        yield the same password.
+        </p>
+        <p class="question">
+          Which crypto algorithms do you use?
+        </p>
+        <p> For "hashing", PBKDF2, HMAC, and SHA-512.  For "encypting", AES-256-CBC,
+          plus the same three as above for key derivation and MAC'ing.
+          See <a href="https://github.com/maxtaco/oneshallpass/blob/master/README.md">Technical FAQ</a> for more details.
+        </p>
+        <p class="question">
+          What if I lose my universal passphrase?
+        </p>
+        <p>
+          There is no recovery. Of course, the individual sites you use with 1SP probably have
+          password reset features.
+        </p>
+
+        <p class="question">
+          Who are you guys and why should I trust you?
+        </p>
+        <p>1SP was written by Max Krohn and Chris Coyne, two of the co-founders of OkCupid.
+          Max has a PhD in Computer Systems and Security from MIT. But don't take
+          our word for it, please audit 
+          <a href="https://github.com/maxtaco/oneshallpass">our code</a> and let
+          us know if we've messed up.
+        </p>
+
+        <p class="question">
+          What do the settings options mean?
+        </p>
+        <p>
+            <b>generation</b> is the version number for a host password. If you feel your password
+            for a certain site has been compromised, or the site notifies you that their database has
+            been hacked, just move to the next generation number.
+        </p>
+        <p>
+            <b>symbols</b> controls how many non-alphanumerics go into your password.  Some sites don't
+            allow them, and a few sites demand them.
+        </p>
+        <p>
+            <b>hashes</b> controls how many SHA-512 hashes are performed on
+your universal passphrase and email address before hashing the results with a
+host-specific setting. This is a defense  against an attacker who has
+compromised the database of a site you use, and wants to work backwards using
+your email address to guess your universal passphrase. The default setting
+makes it prohibitively expensive, assuming your universal passphrase is
+decent.
+        </p>
+
+        <p>
+            <b>length</b> determines the number of characters in your host passwords. Some sites have weird rules.
+        </p>
+
+        <p class="question">
+          How does the hashing not lock the page?
+        </p>
+
+        <p>
+          The JS on this page was programmed in <a href="http://maxtaco.github.com/coffee-script/">IcedCoffeeScript</a>
+          which makes async programming a lot easier. All the hashing steps defer occasionally. This would be annoying
+          to write in native JS, but ICS takes care of the details.
+        </p>
+
+        <p class="question">
+          How should I pick a passphrase?
+        </p>
+
+        <p>
+          We recommend a sequence of 4 to 6 random words, that have no grammatical
+          connection to each other.  This will give you between 50 and 80 bits of entropy,
+          depending on the size of your dictionary and the number of words in your passphrase.
+          Human beings tend to be bad at stringing together random unrelated words, so we made a little <a href="https://oneshallpass.com/pp.html">Web page</a> that does a decent job of it to help you out.
+        </p>
+
+        <p class="question">
+        Where can I learn more about implementation and technical details?
+        </p>
+
+        <p>Please see our GitHub-based
+          <a href="https://github.com/maxtaco/oneshallpass/blob/master/README.md">Technical FAQ</a></p>
+
+        <p class="question">
+          Where is the old 1SP?
+        </p>
+
+        <p>The old version of OneShallPass is still available in its 
+          <a href="/v2.html">original form</a> or with "Legacy mode" set
+          to "on" in the new version.  The key-derivation feature changed between
+          the two versions in a way that wasn't backwards compatible.  But
+          the new system is strictly better: it (1) adheres to well-known RFCs;
+          (2) means less hashing for honest users; and (3) just as much hashing for
+          would-be password crackers.
+        </p>
+      </div>
+    </div>
+    <div class="clear"></div>
+  </div>
+
+ </body>
+</html>

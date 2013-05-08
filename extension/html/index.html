@@ -1,0 +1,207 @@
+<html>
+  <head>
+    <title>One Shall Pass</title>
+    <script src="../build/js/jquery.js"></script>
+    <script src="../build/js/main.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main_old.css"/>
+    <meta name="viewport" content="width=device-width" />
+  </head>
+  <body class="extension">
+
+    <div id="wrapper">
+      <div id="col1">
+
+        <div class="input-bundle">
+
+          <div class="input-row">
+            <div class="label">Email</div>
+            <div class="input">
+              <input type="text" id="input-email" value="you@example.com" tabindex="1" />
+            </div>
+            <div class="clear"></div>
+          </div>
+
+          <div class="input-row">
+            <div class="label">Passphrase</div>
+            <div class="input">
+              <button class="toggle-viz" id="btn-hide-passphrase">hide</button>
+              <button class="toggle-viz" id="btn-show-passphrase" style="display: none;">show</button>
+              <input type="text" id="input-passphrase" value="bowls halves tweedy apogees" tabindex="2" />
+            </div>
+            <div class="clear"></div>
+          </div>
+
+          <div class="input-row" id="login-row">
+            <div class="label">Optional Login</div>
+            <div class="input">
+              <button id="btn-login"  disabled="true"  tabindex="3" />Login or Join</button>
+              <button id="btn-logout" style="display:none;"  tabindex="4" />Logout</button>
+              <div class="clear"></div>
+              <div id="bad-login-dialog" style="display:none;">
+                <p id="join-msg">
+                  A hash of this email + passphrase is unrecognized by the server. Either
+                  fix the typo, or...
+                </p>
+                <button id="btn-join">Join with this Combo</button>
+                <div class="clear"></div>
+              </div>
+              <div id="good-join-dialog" style="display:none;">
+                <p id="join-success-msg">
+                  Success! Check for an authentication email at <b class="join-email"></b>.
+                  Once you've clicked the link in the email, you can retry the login button above.
+                </p>
+              </div>
+              <div id="bad-general-dialog" style="display:none;">
+                <p id="bad-general-msg">
+                </p>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+          </div>
+
+        </div>
+
+        <div class="input-bundle saved-hosts-bundle" style="display:none;">
+          <div class="input-row">
+            <div class="label">Load</div>
+            <div class="input">
+              <select id="input-saved-host"  tabindex="5">
+              </select>
+            </div>
+            <div class="clear"></div>
+          </div>          
+        </div>
+
+        <div class="input-bundle host-bundle">
+          <div class="input-row">
+            <div class="label">Host</div>
+            <div class="input">
+              <input type="text" id="input-host" value="iTunes" tabindex="6" />
+            </div>
+            <div class="clear"></div>
+          </div>
+          <div class="input-row">
+            <div class="label">Options</div>
+            <div class="input">
+              <table id="advanced-table" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td class="adv-label">generation</td>
+                  <td class="mid-col">
+                    <select id="input-generation">
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                      <option>6</option>
+                      <option>7</option>
+                      <option>8</option>
+                      <option>9</option>
+                      <option>10</option>
+                      <option>11</option>
+                      <option>12</option>
+                      <option>13</option>
+                      <option>14</option>
+                      <option>15</option>
+                      <option>16</option>
+                      <option>17</option>
+                      <option>18</option>
+                      <option>19</option>
+                      <option>20</option>
+                    </select>
+                  </td>                      
+                  <td class="adv-label">hashes</td>
+                  <td>
+                    <select id="input-security-bits">
+                      <option value="1">2^1</option>
+                      <option value="2">2^2</option>
+                      <option value="3">2^3</option>
+                      <option value="4">2^4</option>
+                      <option value="5">2^5</option>
+                      <option value="6">2^6</option>
+                      <option value="7">2^7</option>
+                      <option value="8" selected="selected">2^8</option>
+                      <option value="9">2^9</option>
+                      <option value="10">2^10</option>
+                      <option value="11">2^11</option>
+                      <option value="12">2^12</option>
+                      <option value="13">2^13</option>
+                      <option value="14">2^14</option>
+                      <option value="15">2^15</option>
+                      <option value="16">2^16</option>
+                    </select>
+                  </td>            
+                </tr>
+                <tr>
+                  <td class="adv-label">symbols</td>
+                  <td class="mid-col">
+                    <select id="input-num-symbols">
+                      <option>0</option>
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                    </select>                  
+                  </td>
+                  <td class="adv-label">length</td>
+                  <td>
+                    <select id="input-length">
+                      <option>8</option>
+                      <option>9</option>
+                      <option>10</option>
+                      <option>11</option>
+                      <option selected="selected">12</option>
+                      <option>13</option>
+                      <option>14</option>
+                      <option>15</option>
+                      <option>16</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td id="label-legacy" colspan="2" class="adv-label">legacy mode</td>
+                  <td>
+                    <select id="input-algo-version">
+                      <option value="3">off</option>
+                      <option value="1">on</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr style="display:none;" id="notes-row">
+                  <td id="notes-label-cell" class="adv-label">notes</td>
+                  <td id="notes-ta-cell" colspan="3">
+                    <textarea id="input-notes"></textarea>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="clear"></div>
+          </div>
+          <div class="input-row" id="save-row" style="display:none;">
+            <div class="label">Save</div>
+            <div class="input">
+              <button id="btn-save" disabled="disabled"  tabindex="7">Save</button>
+              <button id="btn-remove" disabled="disabled">Remove</button>
+            </div>
+            <div class="clear"></div>
+          </div>          
+        </div>      
+
+        <div class="input-bundle password-bundle">
+          <div class="input-row">
+            <div class="label">Your Password</div>
+            <div class="input">
+              <input type="text" id="output-password" readonly="readonly" value=""  tabindex="8"/>
+            </div>
+            <div class="clear"></div>
+          </div>
+        </div>
+
+        <div id="job-watcher"></div>
+
+      </div><!-- /col1 -->
+    </div><!-- /wrapper -->
+
+  </body>
+</html>
