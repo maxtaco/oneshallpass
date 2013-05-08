@@ -4,12 +4,14 @@ BROWSERIFY=node_modules/.bin/browserify -t icsify
 
 JQUERY_VERSION=1.9.0
 
-default: html
+default: html js
 html: \
 	build/html/index.html \
 	build/html/index-big.html \
 	build/html/pp.html \
 	build/html/pp-big.html
+
+js: extension/build/js/main.js
 
 all: default
 
@@ -40,6 +42,10 @@ build/js/main.js: src/main.iced
 build/js/pp.js: src/pp.iced
 	mkdir -p `dirname $@`
 	($(BROWSERIFY) $< > $@~) && mv $@~ $@
+
+extension/build/js/main.js: build/js/main.js	
+	mkdir -p `dirname $@`
+	cat $< > $@
 
 build/html/index.html: html/index.html \
 	build/js-min/jquery.js \
