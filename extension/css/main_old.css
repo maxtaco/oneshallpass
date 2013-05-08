@@ -5,8 +5,19 @@ body {
   background-color:#cde;
   font-family:helvetica, arial, verdana, sans;
 }
+body.extension {
+  background: #f6f6f6;
+}
+input:focus {
+  outline: none;
+}
 #wrapper {
   font-family:helvetica;
+}
+h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 1.2em;
 }
 #col1 {
   float:left;
@@ -19,8 +30,15 @@ body {
 body.extension #col1 {
   margin: 0;
   float: none;
+  background: none;
   border: none;
 }
+/*body.extension #col1 > div:first-child {
+  padding-top: 5px;
+}
+body.extension #col1 > div:last-child {
+  padding-bottom: 5px;
+}*/
 #col2 {
   margin:10px;
   float:left;
@@ -32,6 +50,12 @@ body.extension #col1 {
   color:#036;
   font-weight:bold;
   padding-top:6px;
+}
+body.extension .label {
+  width: 105px;
+  font-size: 0.8em;
+  text-align: right;
+  color: #333;
 }
 .input-bundle {
   padding: 10px 0 10px 0;
@@ -46,11 +70,18 @@ body.extension #col1 {
   background-color:#eee;
   border-top:1px solid #bbb;
 }
+body.extension .input-bundle.password-bundle {
+  background: none;
+  border-top: 1px solid #ccc;
+}
 
 .input {
   margin-left:10px;
   width:250px;
   float:left;
+}
+body.extension .input {
+  margin-left: 20px;
 }
 
 .input .minor {
@@ -67,6 +98,16 @@ body.extension #col1 {
   padding:3px;
   border:1px solid #999;
   height: 27px;
+}
+
+body.extension .input input {
+  padding: 4px 6px;
+  font-size: 0.8em;
+  color: #555;
+  background: #fff;
+  border: none;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4) inset;
 }
 
 #input-passphrase {
@@ -92,6 +133,9 @@ body.extension #col1 {
 
 .input-row {
   padding:10px 0 10px 10px;
+}
+body.extension .input-row {
+  padding: 5px;
 }
 
 #btn-show-passphrase {
@@ -138,6 +182,13 @@ button.toggle-viz {
   border:1px solid #999;
 }
 
+body.extension .input button {
+  font-size: 0.7em;
+  color: #555;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e6e6e6));
+  border: 1px solid #bbb;
+  border-radius: 3px;
+}
 
 .clear {clear:both;}
 .explanation {

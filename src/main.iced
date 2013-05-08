@@ -297,6 +297,8 @@ class Frontend
         on_compute_step: (keymode, step, ts) => @on_compute_step keymode, step, ts
         on_compute_done: (keymode, key)      => @on_compute_done keymode, key
         on_timeout:      ()                  => @on_timeout()
+      net:
+        url_prefix: "https://oneshallpass.com"
 
     p = new Location(window.location).decode_url_params()
     @e      = new Engine opts
