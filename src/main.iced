@@ -290,15 +290,15 @@ class Frontend
     $('#btn-join').attr('disabled',false)
 
   create_engine: ->
-    opts =
-      presets:
-        algo_version: 3
-      hooks:
-        on_compute_step: (keymode, step, ts) => @on_compute_step keymode, step, ts
-        on_compute_done: (keymode, key)      => @on_compute_done keymode, key
-        on_timeout:      ()                  => @on_timeout()
-      net:
-        url_prefix: "https://oneshallpass.com"
+    # We can specify these opts at the top level, so respect those defaults
+    # if we've specified them....
+    opts = engine_opts or {}
+    opts.presets =
+      algo_version: 3
+    opts.hooks =
+      on_compute_step: (keymode, step, ts) => @on_compute_step keymode, step, ts
+      on_compute_done: (keymode, key)      => @on_compute_done keymode, key
+      on_timeout:      ()                  => @on_timeout()
 
     p = new Location(window.location).decode_url_params()
     @e      = new Engine opts
