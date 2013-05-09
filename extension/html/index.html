@@ -1,9 +1,8 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>One Shall Pass</title>
-    <script>
-       engine_opts = { net : { url_prefix : "https://oneshallpass.com" }};
-    </script>
+    <script src="../build/js/ext.js"></script>
     <script src="../build/js/jquery.js"></script>
     <script src="../build/js/main.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/main_old.css"/>
@@ -28,7 +27,7 @@
           <div class="input-row">
             <div class="label">Passphrase</div>
             <div class="input">
-              <button class="toggle-viz" id="btn-hide-passphrase">hide</button>
+              <button class="toggle-viz" id="btn-hide-passphrase">Hide</button>
               <button class="toggle-viz" id="btn-show-passphrase" style="display: none;">show</button>
               <input type="text" id="input-passphrase" value="bowls halves tweedy apogees" tabindex="2" />
             </div>
@@ -41,23 +40,24 @@
               <button id="btn-login"  disabled="true"  tabindex="3" />Login or Join</button>
               <button id="btn-logout" style="display:none;"  tabindex="4" />Logout</button>
               <div class="clear"></div>
-              <div id="bad-login-dialog" style="display:none;">
+
+              <div id="bad-login-dialog" class="divided" style="display:none;">
                 <p id="join-msg">
-                  A hash of this email + passphrase is unrecognized by the server. Either
-                  fix the typo, or...
+                  A hash of this email + passphrase is unrecognized by the server.
                 </p>
                 <button id="btn-join">Join with this Combo</button>
                 <div class="clear"></div>
               </div>
-              <div id="good-join-dialog" style="display:none;">
+              
+              <div id="good-join-dialog" class="divided" style="display:none;">
                 <p id="join-success-msg">
                   Success! Check for an authentication email at <b class="join-email"></b>.
                   Once you've clicked the link in the email, you can retry the login button above.
                 </p>
               </div>
-              <div id="bad-general-dialog" style="display:none;">
-                <p id="bad-general-msg">
-                </p>
+              
+              <div id="bad-general-dialog" class="divided" style="display:none;">
+                <p id="bad-general-msg"></p>
               </div>
 
             </div>
@@ -173,7 +173,7 @@
                   </td>
                 </tr>
                 <tr style="display:none;" id="notes-row">
-                  <td id="notes-label-cell" class="adv-label">notes</td>
+                  <td id="notes-label-cell" class="adv-label">Notes</td>
                   <td id="notes-ta-cell" colspan="3">
                     <textarea id="input-notes"></textarea>
                   </td>

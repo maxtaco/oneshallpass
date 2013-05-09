@@ -8,7 +8,14 @@ body {
 body.extension {
   background: #f6f6f6;
 }
-input:focus {
+body.extension input,
+body.extension select,
+body.extension textarea {
+  box-sizing: border-box;
+}
+body.extension input:focus,
+body.extension select:focus,
+body.extension textarea:focus {
   outline: none;
 }
 #wrapper {
@@ -32,6 +39,13 @@ body.extension #col1 {
   float: none;
   background: none;
   border: none;
+}
+.notice {
+  padding: 5px 7px;
+  font-size: 0.8em;
+  background: #fec;
+  border: 1px solid #fd9;
+  border-radius: 5px;
 }
 /*body.extension #col1 > div:first-child {
   padding-top: 5px;
@@ -83,6 +97,9 @@ body.extension .input-bundle.password-bundle {
 body.extension .input {
   margin-left: 20px;
 }
+body.extension .input::-webkit-input-placeholder {
+  color: #999;
+}
 
 .input .minor {
   font-size: 0.8em;
@@ -111,7 +128,7 @@ body.extension .input input {
 }
 
 #input-passphrase {
-  width:210px;
+  width:200px;
 }
 
 .input input.modified {
@@ -129,6 +146,16 @@ body.extension .input input {
   background-color:#f66;
   color:#fff;
   border:1px solid #900;
+}
+body.extension input.modified.success {
+  background-color: #9f9;
+  color: #555;
+  border: none;
+}
+body.extension input.modified.error {
+  background-color: #fec;
+  color: #555;
+  border: none;
 }
 
 .input-row {
@@ -167,7 +194,7 @@ button.toggle-viz {
   cursor:pointer;
   height: 27px;
   margin-left: 5px;
-  width: 35px;
+  width: 45px;
   text-align: center;
   float: right;
 }
@@ -186,8 +213,17 @@ body.extension .input button {
   font-size: 0.7em;
   color: #555;
   background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e6e6e6));
-  border: 1px solid #bbb;
+  border: 1px solid #bbb !important;
   border-radius: 3px;
+}
+
+body.extension div.divided {
+  margin-top: 10px;
+  border-top: 1px solid #ccc;
+}
+body.extension div.divided p {
+  margin: 8px 0;
+  font-size: 0.8em;
 }
 
 .clear {clear:both;}
@@ -257,6 +293,12 @@ h1 {
   -moz-transition:    background-color 0.0s, color 0.0s;
   -o-transition:      background-color 0.0s, color 0.0s;
 }
+body.extension #output-password {
+  color: #083;
+}
+body.extension #output-password.just-changed {
+  background-color: #6f6;
+}
 .job-status, .job-txt, .job-completion {
   float:left;
 }
@@ -267,7 +309,7 @@ h1 {
 }
 .job-txt {
   margin-left:10px;
-  width:240px;
+  width:230px;
   font-size:0.9em;
 }
 .job-completion {
@@ -302,8 +344,13 @@ h1 {
   width:150px;
 }
 #input-notes {
-  height:40px;
-  width:175px;
+  padding: 4px 6px;
+  height: 40px;
+  width: 175px;
+  border: none;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5) inset;
+  resize: none;
 }
 .question {
   background-color:#fff;

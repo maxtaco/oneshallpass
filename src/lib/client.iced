@@ -52,7 +52,7 @@ exports.Client = class Client
   #-----------------------------------------
 
   resolve_url : (u) ->
-    if (p = @url_prefix)? then [u, p].join '' 
+    if (p = @url_prefix)? then [p, u].join '' 
     else u
 
   #-----------------------------------------

@@ -196,7 +196,7 @@ class Frontend
       $('#input-passphrase').addClass 'success'
       @update_login_button()
       @maybe_show_saved_hosts()
-      $("#save-row").slideDown()
+      $("#save-row").show() #.slideDown()
       @fill_both 'host', '', "input-host"      
       @update_output_pw ''
       @update_save_button()
@@ -220,7 +220,7 @@ class Frontend
     recs = @e.get_stored_records()
     if recs.length
       recs = recs.sort (a,b) -> if a.host < b.host then -1 else 1
-      $(".saved-hosts-bundle").slideDown()
+      $(".saved-hosts-bundle").show() #.slideDown()
       $("#input-saved-host").html """
         <option value="">- choose -</option>
       """ + ("""
@@ -371,7 +371,7 @@ class Frontend
         <div class="job" id="job-#{label}" style="display:none;">job #{label}</div>
       """
       el = $("#job-#{label}")
-      el.slideDown()
+      el.show() #.slideDown()
 
     j = @jw.getInfo label
 
