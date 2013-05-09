@@ -1,6 +1,6 @@
 {
     "name": "oneshallpass",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "description": "Client side HTML client for OneShallPass",
     "dependencies": {
         "iced-coffee-script": "*",
