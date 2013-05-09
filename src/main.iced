@@ -35,6 +35,15 @@ class Frontend
     $(html_field).change =>
       @e.set eng_field, parseInt $(html_field).val()
 
+  input_host_event: ->
+    console.log('okay')
+    before = @e.get 'host'
+    @e.set "host", $('#input-host').val()
+    after = @e.get 'host'
+    $('#input-saved-host').val('') unless before is after
+    @update_save_button()
+    @e.poke()
+
   attach_ux_events: ->
 
     basic_inputs = [
@@ -57,14 +66,7 @@ class Frontend
       @update_login_button()
       @e.poke()
 
-    $('#input-host').keyup =>
-      before = @e.get 'host'
-      @e.set "host", $('#input-host').val()
-      after = @e.get 'host'
-      $('#input-saved-host').val('') unless before is after
-      @update_save_button()
-      @e.poke()
-
+    $('#input-host').keyup @.input_host_event.bind @
 
     $('#input-notes').keyup =>
       @e.set "notes", $('#input-notes').val()
@@ -413,4 +415,4 @@ class Frontend
 # -----------------------------------------------------------------------------
 
 $ ->
-  new Frontend()
+  window.fe = new Frontend()
