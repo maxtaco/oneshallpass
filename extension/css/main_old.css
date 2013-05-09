@@ -271,6 +271,9 @@ h1 {
   background-color:#9bd;
   border-top:1px solid #7ab;
 }
+body.extension #job-watcher {
+  padding: 5px 0;
+}
 
 #job-watcher .job {
   font-family:courier new;

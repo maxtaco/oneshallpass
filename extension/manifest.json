@@ -16,6 +16,7 @@
 	},
 
 	"permissions": [
+		"tabs",
 		"*://oneshallpass.com/*"
 	]
 }
