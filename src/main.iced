@@ -292,7 +292,8 @@ class Frontend
   create_engine: ->
     # We can specify these opts at the top level, so respect those defaults
     # if we've specified them....
-    opts = engine_opts or {}
+    opts = if engine_opts? then engine_opts else {}
+    
     opts.presets =
       algo_version: 3
     opts.hooks =
