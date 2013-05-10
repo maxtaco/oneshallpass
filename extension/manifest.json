@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "One Shall Pass",
 	"description": "An open source password manager",
-	"version": "0.1.0",
+	"version": "0.1.1",
 
 	"browser_action": {
 		"default_icon": "/images/icon_19.png",
