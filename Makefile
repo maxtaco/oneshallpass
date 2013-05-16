@@ -9,7 +9,8 @@ html: \
 	build/html/index.html \
 	build/html/index-big.html \
 	build/html/pp.html \
-	build/html/pp-big.html
+	build/html/pp-big.html \
+	build/html/robots.txt
 
 js: extension/build/js/main.js
 
@@ -76,6 +77,9 @@ build/html/pp.html: html/pp.html \
 	css/pp.css 
 	mkdir -p `dirname $@`
 	(python bin/inline.py < $< > $@~) && mv $@~ $@
+
+build/html/robots.txt:
+	echo "User-agent: *" > $@
 
 %.md: %.md.in
 	python bin/footnoter.py < $< > $@
