@@ -151,6 +151,11 @@ class Frontend
         $("#btn-save").attr "disabled", "disabled"
         @maybe_show_saved_hosts()
 
+    $("#gen-backup-dump").click =>
+      dumping_ground = $("#backup-dump")
+      dumping_ground.show()
+      @e.gen_backup_dump dumping_ground
+
     $("#btn-remove").click =>
       @e.poke()
       await @e.remove defer status

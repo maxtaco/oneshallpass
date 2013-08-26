@@ -319,6 +319,13 @@ exports.Engine = class Engine
    
   ##-----------------------------------------
 
+  gen_backup_dump : (dumping_ground) ->
+    dat = if @is_logged_in() then JSON.stringify @get_stored_records()
+    else "Please log in first!"
+    dumping_ground.html dat
+
+  ##-----------------------------------------
+
   logout: (cb) ->
     # Do this one first, since force will logout a second time, but
     # ignore the return status code

@@ -255,3 +255,8 @@ h1 {
   font-size:1.1em;
   font-weight: bold;
 }
+#backup-dump {
+  display: none;
+  width: 250px;
+  height: 200px;
+}
