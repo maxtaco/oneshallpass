@@ -236,8 +236,8 @@ h1 {
 #advanced-table td.mid-col {
   padding-right: 9px;
 }
-#advanced-table td.adv-label {
-  text-align: right
+#advanced-table td.advanced-label {
+  text-align: right;
 }
 #notes-label-cell {
   width:70px;

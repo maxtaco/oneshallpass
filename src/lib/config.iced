@@ -17,9 +17,9 @@ exports.config =
     min_size : 8
     max_size : 16
   timeouts :
-    cache : 5*60
-    document : 2*60
-    input : 5*60
+    cache : 10*60
+    document : 5*60
+    input : 10*60
   server:
     host : "oneshallpass.com"
     generation : 1
