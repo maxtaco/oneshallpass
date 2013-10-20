@@ -64,7 +64,7 @@ Technical FAQ
 
 ### What is the crypto behind One Shall Pass?
 
-In a nuthsell, HMAC-SHA512 \[{#hmac#},{#sha2#}\],
+In a nutshell, HMAC-SHA512 \[{#hmac#},{#sha2#}\],
 and PBKDF-2 \[{#pbkdf2#}\] with some slight tweaks.
 
 The 1SP input form takes as input five key pieces of information:
@@ -197,6 +197,8 @@ it yourself using `make` in the top-level directory. By default, you'll
 need `node` installed with the `uglifyjs` package, but you can skip
 this dependency by replacing the `JSFILT` variable in `Makefile`
 with `cat`.  This same technique also works well for debugging.
+Building 1SP also requires the `stitch` and `iced-coffee-script`
+modules from NPM.
 
 ### How does logging into the server work?
 
