@@ -22,8 +22,8 @@ paying a substantial monthly fee and worse, cannot audit the code that
 your security depends upon.
 
 This app — “One Shall Pass” — gives you the best of all worlds.  The
-idea is that you remember one passphrase (which should be a <a
-href="https://oneshallpass.com/pp.html">quality passphrase!</a>), and
+idea is that you remember one passphrase (which should be a [quality
+passphrase][pp]), and
 One Shall Pass (1SP) will generate for you as many site-specific
 passwords as you need.  It runs on any browser, like the one on your
 laptop, your smartphone, or your friend's machine.  It's
@@ -45,8 +45,7 @@ You can bookmark the URL https://oneshallpass.com/#email=you@email.com
 
 ### How do I make a good passphrase?
 
-Try <a href="https://oneshallpass.com/pp.html">this</a> handy tool,
-also distributed as part of this project.
+Try [this handy tool][pp], also distributed as part of this project.
 
 ### Why shouldn't I dial up the security parameter to 10 or 16?
 
@@ -119,8 +118,8 @@ of work in either case.
 
 ### How secure is this?
 
-If you use the <a href="https://oneshallpass.com/pp.html">suggested passphrase
-generation tool</a>, and the default security setting, your password will
+If you use the [suggested passphrase
+generation tool][pp], and the default security setting, your password will
 require in expectation 2^(58+8-1) = 2^65 calls to HMAC-SHA512 to crack. That
 is, the passphrase generator gives 58 bits of entropy, 1SP's use of PBKDF-2
 consumes 2^8 calls to HMAC-SHA512 to turn a passphrase into a derived key,
@@ -262,3 +261,4 @@ Citations
 
 {#!msgpack: http://msgpack.org #}
 
+[pp]: https://oneshallpass.com/pp.html
