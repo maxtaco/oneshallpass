@@ -1,18 +1,18 @@
 One Shall Pass
 ===========
 
-When it comes to choosing passwords for Websites, most people fall into one of four
+When it comes to choosing passwords for websites, most people fall into one of four
 different camps:
 
 1. They reuse the same password for multiple sites.
 2. They choose different passwords for each site, and need to write them down
    somewhere (either offline or online).
-3. They try to remember different passwords for each site, following
+3. They try to remember different passwords for each site, following an
    ad-hoc manually-computable encoding system.
 4. They use a commercial product, like 1password.
 
 If you're in the first camp, the constant security debacles at major
-Websites like Zappos and LinkedIn mean that your accounts on other
+websites like Zappos and LinkedIn mean that your accounts on other
 sites are in danger of being compromised.  If you're in the second
 camp, you are out of luck if you're without your cheatsheet, maybe
 because you're on a mobile device or using a friend's computer.  If
@@ -67,7 +67,7 @@ Technical FAQ
 In a nutshell, HMAC-SHA512 \[{#hmac#},{#sha2#}\],
 and PBKDF-2 \[{#pbkdf2#}\] with some slight tweaks.
 
-The 1SP input form takes as input five key pieces of information:
+The 1SP input form takes as input six key pieces of information:
 
 * _p_, the passphrase
 * _e_, the email address
@@ -171,7 +171,7 @@ It resists "existential forgery" under "known plaintext attacks".
 
 If you're asking about "salting" 1SP's passwords, you envision a
 better world in which many millions of people are using 1SP to manage
-their passwords! We're not they're yet, but that "American Dream" is
+their passwords! We're not there yet, but that "American Dream" is
 handled by the current 1SP mechanism.
 
 Imagine an attacker who breaks into a site, steals its password file, and
@@ -216,12 +216,12 @@ server.
 
 When encrypting and decrypting server-stored data, your OneShallPass web
 client will derive two new keys from your master passphrase using PBKDF-2 as
-above, but with differing initial block IDs.   A 256-bit key is derived
+above, but with differing initial block IDs.  A 256-bit key is derived
 as an AES encryption key (using an initial block ID of 3), and a 256-bit
 key is derived as an HMAC key to authenticate all encryption (using an initial
 block ID of 4).
 
-To encrypt a key, the 1SP client uses the current "host" field of the  the web
+To encrypt a key, the 1SP client uses the current "host" field of the web
 form (_e.g._, `chase.com`) as the plaintext. It picks a deterministic
 initialization vector (IV) of all 0s, then encrypts with AES-256 in CBC mode,
 using the derived key from above.  It then MACs the ciphertext and the IV with
