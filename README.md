@@ -145,24 +145,21 @@ to crack.
 If you want better security, you can choose a 5-word passphrase,
 which conservatively costs about $34 billion to crack.
 
-### Why not `bcrypt`?
+### Why not `bcrypt` or `scrypt`?
 
-Standard `bcrypt` has not, to my knowledge, been analyzed to offer the
-security properties we need for 1SP.  `bcrypt` and their ilk are
-useful for hashing passwords on the server-side.  They make guesses
-expensive for adversaries trying to "crack" a compromised password
-file, in which the adversary's goal is to recover as many as passwords
-possible in the shortest amount of time.
+1SP uses PBKDF2 for key-streching.  Future versions might
+move to `scrypt`.
 
-We seek different properties.  In particular, we assume that an attacker has
-access to some of your passwords stored on servers that he broke into (and
-whose programmers failed to secure with any sort of hashing mechanism). And
-he's smart enough to know that you're using 1SP.  Thus, for each site he's
-broken into, he has a pair (t,m), where t is the input text to the 1SP function
-above, and m is the output.  His goal is now to log-in as you to a different
-site, that he hasn't compromised.  In other words, he seeks a new pair (t',m'),
-that he hasn't seen before, where m' is the output of the 1SP function for some
-new text t', referring to a new site.
+### Why HMAC?
+
+We assume that an attacker has access to some of your passwords stored on
+servers that he broke into (and whose programmers failed to secure with any
+sort of hashing mechanism). And he's smart enough to know that you're using
+1SP.  Thus, for each site he's broken into, he has a pair (t,m), where t is the
+input text to the 1SP function above, and m is the output.  His goal is now to
+log-in as you to a different site, that he hasn't compromised.  In other words,
+he seeks a new pair (t',m'), that he hasn't seen before, where m' is the output
+of the 1SP function for some new text t', referring to a new site.
 
 This is exactly the property HMAC provides \[[5](#citations),[6](#citations)\]
 It resists "existential forgery" under "known plaintext attacks".
