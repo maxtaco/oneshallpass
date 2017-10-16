@@ -6,7 +6,7 @@
 
 config = 
   defaults : 
-    entropy : 58
+    entropy : 72
     vary : 5
     initial_keep : 1.2
     maximum_entropy : 87
