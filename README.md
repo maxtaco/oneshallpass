@@ -47,9 +47,9 @@ You can bookmark the URL https://oneshallpass.com/#email=you@email.com
 
 Try [this handy tool][pp], also distributed as part of this project.
 
-### Why shouldn't I dial up the security parameter to 10 or 16?
+### Why shouldn't I dial up the security parameter to 16?
 
-You might want to use 1SP on your phone, and it's way slower at
+You might want to use 1SP on your phone, and it's slower at
 computing passwords than your desktop is.
 
 ### "One Shall Pass", is that a reference to Lord of the Rings?
@@ -120,9 +120,9 @@ of work in either case.
 
 If you use the [suggested passphrase
 generation tool][pp], and the default security setting, your password will
-require in expectation 2^(58+8-1) = 2^65 calls to HMAC-SHA512 to crack. That
-is, the passphrase generator gives 58 bits of entropy, 1SP's use of PBKDF-2
-consumes 2^8 calls to HMAC-SHA512 to turn a passphrase into a derived key,
+require in expectation 2^(72+10-1) = 2^81 calls to HMAC-SHA512 to crack. That
+is, the passphrase generator gives 72 bits of entropy, 1SP's use of PBKDF-2
+consumes 2^10 calls to HMAC-SHA512 to turn a passphrase into a derived key,
 but on average, a cracker only needs to exhaust half of the search space to
 find your passphase (hence the 2^(-1) factor).  The obvious way to compute
 HMAC-SHA512 requires two invocations of SHA2, but I have not seen a proof that
@@ -139,10 +139,10 @@ As of 7 May 2020, the Bitcoin difficulty rate is
 get a Bitcoin unit, which is 12.5 Bitcoins, each of which is worth
 about $9,447 dollars.  So a conservative estimate is that a call to
 SHA2 costs about 12.5\*9447/(2^32\*16104807485529) dollars, or roughly 2^(-59.0) dollars.
-So your password will require 2^(65-59) or roughly $64 to crack.
+So your password will require 2^(81-59) or roughly $4.2 million to crack.
 
-If you want better security, you can choose a 5-word passphrase (i.e. 72 bits
-of entropy), which conservatively costs about $1 million to crack.
+If you want better security, you can choose a 6-word passphrase (i.e. 87 bits
+of entropy), which conservatively costs about $550 billion to crack.
 
 ### Why not `bcrypt` or `scrypt`?
 
